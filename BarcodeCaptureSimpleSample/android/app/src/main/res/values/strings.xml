@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">BarcodeCaptureSimpleSample</string>
+    <string name="title_activity_main">BarcodeCaptureSimpleSample</string>
+    <string name="package_name">com.scandit.barcodecapturesimplesample</string>
+    <string name="custom_url_scheme">com.scandit.barcodecapturesimplesample</string>
+</resources>
