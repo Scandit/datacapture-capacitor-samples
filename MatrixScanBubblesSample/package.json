@@ -13,8 +13,8 @@
         "@capacitor/cli": "^2.4.7",
         "@capacitor/core": "^2.4.7",
         "@capacitor/ios": "2.4.7",
-        "scandit-capacitor-datacapture-barcode": "6.9.1",
-        "scandit-capacitor-datacapture-core": "6.9.1"
+        "scandit-capacitor-datacapture-barcode": "6.9.2",
+        "scandit-capacitor-datacapture-core": "6.9.2"
     },
     "devDependencies": {
         "clean-webpack-plugin": "^3.0.0",
