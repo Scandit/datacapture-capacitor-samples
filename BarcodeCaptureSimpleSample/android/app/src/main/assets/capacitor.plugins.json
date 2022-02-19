@@ -1,0 +1,10 @@
+[
+	{
+		"pkg": "scandit-capacitor-datacapture-barcode",
+		"classpath": "com.scandit.capacitor.datacapture.barcode.ScanditBarcodeNative"
+	},
+	{
+		"pkg": "scandit-capacitor-datacapture-core",
+		"classpath": "com.scandit.capacitor.datacapture.core.ScanditCaptureCoreNative"
+	}
+]

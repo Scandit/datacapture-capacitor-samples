@@ -9,12 +9,12 @@
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "dependencies": {
-        "@capacitor/android": "2.4.7",
-        "@capacitor/cli": "^2.4.7",
-        "@capacitor/core": "^2.4.7",
-        "@capacitor/ios": "2.4.7",
-        "scandit-capacitor-datacapture-barcode": "6.10.1",
-        "scandit-capacitor-datacapture-core": "6.10.1"
+        "@capacitor/android": "^2.5.0",
+        "@capacitor/cli": "^2.5.0",
+        "@capacitor/core": "^2.5.0",
+        "@capacitor/ios": "^2.5.0",
+        "scandit-capacitor-datacapture-barcode": "6.11.0",
+        "scandit-capacitor-datacapture-core": "6.11.0"
     },
     "devDependencies": {
         "clean-webpack-plugin": "^3.0.0",

@@ -1,0 +1,7 @@
+{
+  "appId": "com.scandit.textcapturesample",
+  "appName": "TextCaptureSample",
+  "bundledWebRuntime": true,
+  "npmClient": "yarn",
+  "webDir": "dist"
+}

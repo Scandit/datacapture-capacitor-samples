@@ -99,7 +99,6 @@ async function runApp() {
         window.view,
         Scandit.BarcodeTrackingBasicOverlayStyle.Dot
     );
-    basicOverlay.defaultBrush = new Scandit.Brush(Scandit.Color.fromHex('FFF0'), Scandit.Color.fromHex('FFFF'), 2)
 
     // Add an advanced barcode tracking overlay to the data capture view to render AR visualization on top of
     // the camera preview.
