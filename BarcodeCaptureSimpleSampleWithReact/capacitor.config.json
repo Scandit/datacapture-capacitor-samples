@@ -1,0 +1,6 @@
+{
+	"appId": "com.scandit.barcodecapturesimplesamplewithreact",
+	"appName": "BarcodeCaptureSimpleSampleWithReact",
+	"webDir": "build",
+	"bundledWebRuntime": false
+}

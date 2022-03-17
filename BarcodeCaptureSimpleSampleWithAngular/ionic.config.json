@@ -1,0 +1,7 @@
+{
+  "name": "BarcodeCaptureSimpleSampleWithAngular",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

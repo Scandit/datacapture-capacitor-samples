@@ -1,0 +1,7 @@
+{
+  "name": "BarcodeCaptureSimpleSampleWithReact",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}

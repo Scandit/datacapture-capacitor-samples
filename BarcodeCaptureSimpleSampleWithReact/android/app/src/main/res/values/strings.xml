@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">BarcodeCaptureSimpleSampleWithReact</string>
+    <string name="title_activity_main">BarcodeCaptureSimpleSampleWithReact</string>
+    <string name="package_name">com.scandit.barcodecapturesimplesamplewithreact</string>
+    <string name="custom_url_scheme">com.scandit.barcodecapturesimplesamplewithreact</string>
+</resources>

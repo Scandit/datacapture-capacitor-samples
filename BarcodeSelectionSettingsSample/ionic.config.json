@@ -1,0 +1,7 @@
+{
+  "name": "BarcodeSelectionSettingsSample",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

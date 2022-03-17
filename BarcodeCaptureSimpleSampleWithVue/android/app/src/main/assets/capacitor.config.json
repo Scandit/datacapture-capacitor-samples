@@ -1,0 +1,6 @@
+{
+	"appId": "com.scandit.barcodecapturesimplesamplewithvue",
+	"appName": "BarcodeCaptureSimpleSampleWithVue",
+	"webDir": "dist",
+	"bundledWebRuntime": false
+}

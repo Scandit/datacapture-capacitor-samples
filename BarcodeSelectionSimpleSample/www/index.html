@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <title>BarcodeSelection Simple Sample</title>
+  <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-tap-highlight" content="no">
+
+  <script type="module" src="https://unpkg.com/@ionic/pwa-elements@latest/dist/ionicpwaelements/ionicpwaelements.esm.js"></script>
+  <script nomodule src="https://unpkg.com/@ionic/pwa-elements@latest/dist/ionicpwaelements/ionicpwaelements.js"></script>
+
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="css/style.css">
+  <meta name="theme-color" content="#31d53d">
+
+  <style>
+    #data-capture-view {
+      width: 100vw;
+      height: calc(100vh - env(safe-area-inset-bottom, 0px) - 0.8em - (2*1em));
+      z-index: 1;
+    }
+
+    #buttons {
+      width: 100vw;
+      height: calc(env(safe-area-inset-bottom, 0px) + 0.8em);
+      padding: 1em 0;
+      background-color: black;
+
+      position: fixed;
+      bottom: 0;
+      left: 0;
+
+      display: flex;
+      justify-content: space-around;
+      align-items: flex-start;
+    }
+
+    #buttons button {
+      border: none;
+      color: white;
+      font-size: 0.8em;
+      background: transparent;
+    }
+
+    #buttons button.selected {
+      font-weight: bold;
+    }
+
+    div.result {
+      position: absolute;
+      bottom: 50%;
+      left: 50%;
+      transform: translate(-50%, 50%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      width: 70%;
+      background: #FFFE;
+      border-radius: 8px;
+    }
+
+    .result p {
+      text-align: center;
+      font-family: Helvetica;
+    }
+
+    .result button {
+      color: #2EC1CE;
+      background: transparent;
+      border: none;
+      padding: 10px;
+      font-size: 1em;
+    }
+  </style>
+</head>
+<body style="margin: 0; padding: 0; height: 100vh;">
+<div id="data-capture-view"></div>
+<div id="buttons">
+  <button id="tapToSelect" onclick="toggleBarcodeSelectionType()">Tap to Select</button>
+  <button id="aimToSelect" onclick="toggleBarcodeSelectionType()">Aim to Select</button>
+</div>
+</body>
+</html>

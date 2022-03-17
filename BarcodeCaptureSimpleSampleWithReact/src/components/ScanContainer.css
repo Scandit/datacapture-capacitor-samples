@@ -1,0 +1,14 @@
+.container {
+  text-align: center;
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.scan__content {
+   width: 100%;
+   height: 100%;
+   background-color: transparent;
+}

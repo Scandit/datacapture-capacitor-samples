@@ -1,0 +1,6 @@
+{
+	"appId": "com.scandit.barcodecapturesimplesamplewithangular",
+	"appName": "BarcodeCaptureSimpleSampleWithAngular",
+	"webDir": "www",
+	"bundledWebRuntime": false
+}
