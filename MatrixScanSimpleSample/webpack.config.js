@@ -5,6 +5,7 @@ const CopyPlugin = require("copy-webpack-plugin");
 
 
 module.exports = {
+    mode: 'production',
     entry: path.resolve(__dirname, 'www/index.js'),
     plugins: [
         new CleanWebpackPlugin(),

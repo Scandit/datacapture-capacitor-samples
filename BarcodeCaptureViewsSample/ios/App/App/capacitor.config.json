@@ -1,0 +1,6 @@
+{
+	"appId": "io.scandit.barcodecaptureviewssample",
+	"appName": "BarcodeCaptureViewsSample",
+	"webDir": "www",
+	"bundledWebRuntime": false
+}
