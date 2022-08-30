@@ -1,0 +1,12 @@
+{
+  "appId": "com.scandit.usdlverificationsample",
+  "appName": "USDLVerificationSample",
+  "bundledWebRuntime": true,
+  "npmClient": "yarn",
+  "webDir": "dist",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  }
+}

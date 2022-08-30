@@ -1,0 +1,56 @@
+html, body {
+  padding: 0;
+  margin: 0;
+}
+
+div.result {
+  position: absolute;
+  bottom: 50%;
+  left: 50%;
+  transform: translate(-50%, 50%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 70%;
+  background: #FFFE;
+  border-radius: 8px;
+}
+
+div.notification {
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  transform: translate(-50%, 50%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 50%;
+  background: #FFFE;
+  border-radius: 8px;
+}
+
+.notification p {
+  text-align: center;
+  font-family: Helvetica;
+}
+
+.result p {
+  text-align: center;
+  font-family: Helvetica;
+}
+
+.result button {
+  color: #2EC1CE;
+  background: transparent;
+  border: none;
+  padding: 10px;
+  font-size: 1em;
+}
+
+.green {
+  color: green;
+}
+
+.red {
+  color: red;
+}

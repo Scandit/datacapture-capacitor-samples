@@ -1,0 +1,6 @@
+[
+	{
+		"pkg": "scandit-capacitor-datacapture-core",
+		"classpath": "com.scandit.capacitor.datacapture.core.ScanditCaptureCoreNative"
+	}
+]
