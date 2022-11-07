@@ -1,9 +1,8 @@
-import { Plugins } from '@capacitor/core';
 import 'scandit-capacitor-datacapture-core';
 import 'scandit-capacitor-datacapture-parser';
 import 'scandit-capacitor-datacapture-text';
 
-const { ScanditCaptureCorePlugin } = Plugins;
+import { ScanditCaptureCorePlugin } from 'scandit-capacitor-datacapture-core';
 
 async function runApp() {
     const Mode = {

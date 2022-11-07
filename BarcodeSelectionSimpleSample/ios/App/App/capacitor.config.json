@@ -1,12 +1,12 @@
 {
-  "appId": "com.scandit.barcodeselectionsimplesample",
-  "appName": "BSSimple",
-  "bundledWebRuntime": true,
-  "npmClient": "yarn",
-  "webDir": "dist",
-  "plugins": {
-    "SplashScreen": {
-      "launchShowDuration": 0
-    }
-  }
+	"appId": "com.scandit.barcodeselectionsimplesample",
+	"appName": "BSSimple",
+	"bundledWebRuntime": true,
+	"npmClient": "yarn",
+	"webDir": "dist",
+	"plugins": {
+		"SplashScreen": {
+			"launchShowDuration": 0
+		}
+	}
 }

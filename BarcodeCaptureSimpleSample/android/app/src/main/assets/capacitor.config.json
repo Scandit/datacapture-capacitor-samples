@@ -1,12 +1,12 @@
 {
-  "appId": "com.scandit.barcodecapturesimplesample",
-  "appName": "BarcodeCaptureSimpleSample",
-  "bundledWebRuntime": true,
-  "npmClient": "yarn",
-  "webDir": "dist",
-  "plugins": {
-    "SplashScreen": {
-      "launchShowDuration": 0
-    }
-  }
+	"appId": "com.scandit.barcodecapturesimplesample",
+	"appName": "BarcodeCaptureSimpleSample",
+	"bundledWebRuntime": true,
+	"npmClient": "yarn",
+	"webDir": "dist",
+	"plugins": {
+		"SplashScreen": {
+			"launchShowDuration": 0
+		}
+	}
 }

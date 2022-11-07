@@ -2,12 +2,11 @@ import { Component } from '@angular/core';
 
 import { AlertController, Platform } from '@ionic/angular';
 
-import { Plugins } from '@capacitor/core';
 import 'scandit-capacitor-datacapture-core';
 import 'scandit-capacitor-datacapture-barcode';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
-const { ScanditCaptureCorePlugin } = Plugins;
+import { ScanditCaptureCorePlugin } from 'scandit-capacitor-datacapture-core';
 
 @Component({
   selector: 'app-home',

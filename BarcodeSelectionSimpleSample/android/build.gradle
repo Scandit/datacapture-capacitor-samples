@@ -2,7 +2,7 @@
 
 buildscript {
     ext {
-        agp_version = "7.0.3"
+        agp_version = "7.2.1"
     }
     
     repositories {
@@ -24,7 +24,6 @@ allprojects {
         mavenLocal()
         google()
         mavenCentral()
-        jcenter()
     }
 }
 

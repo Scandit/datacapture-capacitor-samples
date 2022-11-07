@@ -1,8 +1,7 @@
-import {Plugins} from '@capacitor/core';
 import 'scandit-capacitor-datacapture-core';
 import 'scandit-capacitor-datacapture-barcode';
 
-const {ScanditCaptureCorePlugin} = Plugins;
+import { ScanditCaptureCorePlugin } from 'scandit-capacitor-datacapture-core';
 
 async function runApp() {
     let results = {};

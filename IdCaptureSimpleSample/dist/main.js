@@ -469,2403 +469,667 @@ const WebView = /*#__PURE__*/ (/* unused pure expression or super */ null && (re
 
 //# sourceMappingURL=index.js.map
 
-;// CONCATENATED MODULE: ./node_modules/scandit-capacitor-datacapture-core/node_modules/@capacitor/core/dist/esm/core-plugin-definitions.js
-var CameraSource;
-(function (CameraSource) {
-    CameraSource["Prompt"] = "PROMPT";
-    CameraSource["Camera"] = "CAMERA";
-    CameraSource["Photos"] = "PHOTOS";
-})(CameraSource || (CameraSource = {}));
-var CameraDirection;
-(function (CameraDirection) {
-    CameraDirection["Rear"] = "REAR";
-    CameraDirection["Front"] = "FRONT";
-})(CameraDirection || (CameraDirection = {}));
-var CameraResultType;
-(function (CameraResultType) {
-    CameraResultType["Uri"] = "uri";
-    CameraResultType["Base64"] = "base64";
-    CameraResultType["DataUrl"] = "dataUrl";
-})(CameraResultType || (CameraResultType = {}));
-var FilesystemDirectory;
-(function (FilesystemDirectory) {
+;// CONCATENATED MODULE: ./node_modules/scandit-capacitor-datacapture-core/node_modules/@capacitor/core/dist/index.js
+/*! Capacitor: https://capacitorjs.com/ - MIT License */
+const dist_createCapacitorPlatforms = (win) => {
+    const defaultPlatformMap = new Map();
+    defaultPlatformMap.set('web', { name: 'web' });
+    const capPlatforms = win.CapacitorPlatforms || {
+        currentPlatform: { name: 'web' },
+        platforms: defaultPlatformMap,
+    };
+    const addPlatform = (name, platform) => {
+        capPlatforms.platforms.set(name, platform);
+    };
+    const setPlatform = (name) => {
+        if (capPlatforms.platforms.has(name)) {
+            capPlatforms.currentPlatform = capPlatforms.platforms.get(name);
+        }
+    };
+    capPlatforms.addPlatform = addPlatform;
+    capPlatforms.setPlatform = setPlatform;
+    return capPlatforms;
+};
+const dist_initPlatforms = (win) => (win.CapacitorPlatforms = dist_createCapacitorPlatforms(win));
+/**
+ * @deprecated Set `CapacitorCustomPlatform` on the window object prior to runtime executing in the web app instead
+ */
+const dist_CapacitorPlatforms = /*#__PURE__*/ dist_initPlatforms((typeof globalThis !== 'undefined'
+    ? globalThis
+    : typeof self !== 'undefined'
+        ? self
+        : typeof window !== 'undefined'
+            ? window
+            : typeof __webpack_require__.g !== 'undefined'
+                ? __webpack_require__.g
+                : {}));
+/**
+ * @deprecated Set `CapacitorCustomPlatform` on the window object prior to runtime executing in the web app instead
+ */
+const dist_addPlatform = dist_CapacitorPlatforms.addPlatform;
+/**
+ * @deprecated Set `CapacitorCustomPlatform` on the window object prior to runtime executing in the web app instead
+ */
+const dist_setPlatform = dist_CapacitorPlatforms.setPlatform;
+
+const dist_legacyRegisterWebPlugin = (cap, webPlugin) => {
+    var _a;
+    const config = webPlugin.config;
+    const Plugins = cap.Plugins;
+    if (!config || !config.name) {
+        // TODO: add link to upgrade guide
+        throw new Error(`Capacitor WebPlugin is using the deprecated "registerWebPlugin()" function, but without the config. Please use "registerPlugin()" instead to register this web plugin."`);
+    }
+    // TODO: add link to upgrade guide
+    console.warn(`Capacitor plugin "${config.name}" is using the deprecated "registerWebPlugin()" function`);
+    if (!Plugins[config.name] || ((_a = config === null || config === void 0 ? void 0 : config.platforms) === null || _a === void 0 ? void 0 : _a.includes(cap.getPlatform()))) {
+        // Add the web plugin into the plugins registry if there already isn't
+        // an existing one. If it doesn't already exist, that means
+        // there's no existing native implementation for it.
+        // - OR -
+        // If we already have a plugin registered (meaning it was defined in the native layer),
+        // then we should only overwrite it if the corresponding web plugin activates on
+        // a certain platform. For example: Geolocation uses the WebPlugin on Android but not iOS
+        Plugins[config.name] = webPlugin;
+    }
+};
+
+var dist_ExceptionCode;
+(function (ExceptionCode) {
     /**
-     * The Documents directory
-     * On iOS it's the app's documents directory.
-     * Use this directory to store user-generated content.
-     * On Android it's the Public Documents folder, so it's accessible from other apps.
-     * It's not accesible on Android 10 unless the app enables legacy External Storage
-     * by adding `android:requestLegacyExternalStorage="true"` in the `application` tag
-     * in the `AndroidManifest.xml`
+     * API is not implemented.
+     *
+     * This usually means the API can't be used because it is not implemented for
+     * the current platform.
      */
-    FilesystemDirectory["Documents"] = "DOCUMENTS";
+    ExceptionCode["Unimplemented"] = "UNIMPLEMENTED";
     /**
-     * The Data directory
-     * On iOS it will use the Documents directory
-     * On Android it's the directory holding application files.
-     * Files will be deleted when the application is uninstalled.
+     * API is not available.
+     *
+     * This means the API can't be used right now because:
+     *   - it is currently missing a prerequisite, such as network connectivity
+     *   - it requires a particular platform or browser version
      */
-    FilesystemDirectory["Data"] = "DATA";
+    ExceptionCode["Unavailable"] = "UNAVAILABLE";
+})(dist_ExceptionCode || (dist_ExceptionCode = {}));
+class dist_CapacitorException extends Error {
+    constructor(message, code, data) {
+        super(message);
+        this.message = message;
+        this.code = code;
+        this.data = data;
+    }
+}
+const dist_getPlatformId = (win) => {
+    var _a, _b;
+    if (win === null || win === void 0 ? void 0 : win.androidBridge) {
+        return 'android';
+    }
+    else if ((_b = (_a = win === null || win === void 0 ? void 0 : win.webkit) === null || _a === void 0 ? void 0 : _a.messageHandlers) === null || _b === void 0 ? void 0 : _b.bridge) {
+        return 'ios';
+    }
+    else {
+        return 'web';
+    }
+};
+
+const dist_createCapacitor = (win) => {
+    var _a, _b, _c, _d, _e;
+    const capCustomPlatform = win.CapacitorCustomPlatform || null;
+    const cap = win.Capacitor || {};
+    const Plugins = (cap.Plugins = cap.Plugins || {});
     /**
-     * The Cache directory
-     * Can be deleted in cases of low memory, so use this directory to write app-specific files
-     * that your app can re-create easily.
+     * @deprecated Use `capCustomPlatform` instead, default functions like registerPlugin will function with the new object.
      */
-    FilesystemDirectory["Cache"] = "CACHE";
-    /**
-     * The external directory
-     * On iOS it will use the Documents directory
-     * On Android it's the directory on the primary shared/external
-     * storage device where the application can place persistent files it owns.
-     * These files are internal to the applications, and not typically visible
-     * to the user as media.
-     * Files will be deleted when the application is uninstalled.
-     */
-    FilesystemDirectory["External"] = "EXTERNAL";
-    /**
-     * The external storage directory
-     * On iOS it will use the Documents directory
-     * On Android it's the primary shared/external storage directory.
-     * It's not accesible on Android 10 unless the app enables legacy External Storage
-     * by adding `android:requestLegacyExternalStorage="true"` in the `application` tag
-     * in the `AndroidManifest.xml`
-     */
-    FilesystemDirectory["ExternalStorage"] = "EXTERNAL_STORAGE";
-})(FilesystemDirectory || (FilesystemDirectory = {}));
-var FilesystemEncoding;
-(function (FilesystemEncoding) {
-    FilesystemEncoding["UTF8"] = "utf8";
-    FilesystemEncoding["ASCII"] = "ascii";
-    FilesystemEncoding["UTF16"] = "utf16";
-})(FilesystemEncoding || (FilesystemEncoding = {}));
-var HapticsImpactStyle;
-(function (HapticsImpactStyle) {
-    HapticsImpactStyle["Heavy"] = "HEAVY";
-    HapticsImpactStyle["Medium"] = "MEDIUM";
-    HapticsImpactStyle["Light"] = "LIGHT";
-})(HapticsImpactStyle || (HapticsImpactStyle = {}));
-var HapticsNotificationType;
-(function (HapticsNotificationType) {
-    HapticsNotificationType["SUCCESS"] = "SUCCESS";
-    HapticsNotificationType["WARNING"] = "WARNING";
-    HapticsNotificationType["ERROR"] = "ERROR";
-})(HapticsNotificationType || (HapticsNotificationType = {}));
-var KeyboardStyle;
-(function (KeyboardStyle) {
-    KeyboardStyle["Dark"] = "DARK";
-    KeyboardStyle["Light"] = "LIGHT";
-})(KeyboardStyle || (KeyboardStyle = {}));
-var KeyboardResize;
-(function (KeyboardResize) {
-    KeyboardResize["Body"] = "body";
-    KeyboardResize["Ionic"] = "ionic";
-    KeyboardResize["Native"] = "native";
-    KeyboardResize["None"] = "none";
-})(KeyboardResize || (KeyboardResize = {}));
-var ActionSheetOptionStyle;
-(function (ActionSheetOptionStyle) {
-    ActionSheetOptionStyle["Default"] = "DEFAULT";
-    ActionSheetOptionStyle["Destructive"] = "DESTRUCTIVE";
-    ActionSheetOptionStyle["Cancel"] = "CANCEL";
-})(ActionSheetOptionStyle || (ActionSheetOptionStyle = {}));
-//
-var PermissionType;
-(function (PermissionType) {
-    PermissionType["Camera"] = "camera";
-    PermissionType["Photos"] = "photos";
-    PermissionType["Geolocation"] = "geolocation";
-    PermissionType["Notifications"] = "notifications";
-    PermissionType["ClipboardRead"] = "clipboard-read";
-    PermissionType["ClipboardWrite"] = "clipboard-write";
-    PermissionType["Microphone"] = "microphone";
-})(PermissionType || (PermissionType = {}));
-var PhotosAlbumType;
-(function (PhotosAlbumType) {
-    /**
-     * Album is a "smart" album (such as Favorites or Recently Added)
-     */
-    PhotosAlbumType["Smart"] = "smart";
-    /**
-     * Album is a cloud-shared album
-     */
-    PhotosAlbumType["Shared"] = "shared";
-    /**
-     * Album is a user-created album
-     */
-    PhotosAlbumType["User"] = "user";
-})(PhotosAlbumType || (PhotosAlbumType = {}));
-var StatusBarStyle;
-(function (StatusBarStyle) {
-    /**
-     * Light text for dark backgrounds.
-     */
-    StatusBarStyle["Dark"] = "DARK";
-    /**
-     * Dark text for light backgrounds.
-     */
-    StatusBarStyle["Light"] = "LIGHT";
-})(StatusBarStyle || (StatusBarStyle = {}));
-var StatusBarAnimation;
-(function (StatusBarAnimation) {
-    /**
-     * No animation during show/hide.
-     */
-    StatusBarAnimation["None"] = "NONE";
-    /**
-     * Slide animation during show/hide.
-     */
-    StatusBarAnimation["Slide"] = "SLIDE";
-    /**
-     * Fade animation during show/hide.
-     */
-    StatusBarAnimation["Fade"] = "FADE";
-})(StatusBarAnimation || (StatusBarAnimation = {}));
-//# sourceMappingURL=core-plugin-definitions.js.map
-;// CONCATENATED MODULE: ./node_modules/scandit-capacitor-datacapture-core/node_modules/@capacitor/core/dist/esm/web-runtime.js
-var CapacitorWeb = /** @class */ (function () {
-    function CapacitorWeb() {
-        var _this = this;
-        this.platform = 'web';
-        this.isNative = false;
-        // Need to assign here to avoid having to define every plugin but still
-        // get the typed benefits of the provided plugins in PluginRegistry
-        this.Plugins = {};
-        // Gracefully degrade in non-Proxy supporting engines, e.g. IE11. This
-        // effectively means that trying to access an unavailable plugin will
-        // locally throw, but this is still better than throwing a syntax error.
-        if (typeof Proxy !== 'undefined') {
-            // Build a proxy for the Plugins object that returns the "Noop Plugin"
-            // if a plugin isn't available
-            this.Plugins = new Proxy(this.Plugins, {
-                get: function (target, prop) {
-                    if (typeof target[prop] === 'undefined') {
-                        var thisRef_1 = _this;
-                        return new Proxy({}, {
-                            get: function (_target, _prop) {
-                                if (typeof _target[_prop] === 'undefined') {
-                                    return thisRef_1.pluginMethodNoop.bind(thisRef_1, _target, _prop, prop);
-                                }
-                                else {
-                                    return _target[_prop];
-                                }
-                            }
-                        });
+    const capPlatforms = win.CapacitorPlatforms;
+    const defaultGetPlatform = () => {
+        return capCustomPlatform !== null
+            ? capCustomPlatform.name
+            : dist_getPlatformId(win);
+    };
+    const getPlatform = ((_a = capPlatforms === null || capPlatforms === void 0 ? void 0 : capPlatforms.currentPlatform) === null || _a === void 0 ? void 0 : _a.getPlatform) || defaultGetPlatform;
+    const defaultIsNativePlatform = () => getPlatform() !== 'web';
+    const isNativePlatform = ((_b = capPlatforms === null || capPlatforms === void 0 ? void 0 : capPlatforms.currentPlatform) === null || _b === void 0 ? void 0 : _b.isNativePlatform) || defaultIsNativePlatform;
+    const defaultIsPluginAvailable = (pluginName) => {
+        const plugin = registeredPlugins.get(pluginName);
+        if (plugin === null || plugin === void 0 ? void 0 : plugin.platforms.has(getPlatform())) {
+            // JS implementation available for the current platform.
+            return true;
+        }
+        if (getPluginHeader(pluginName)) {
+            // Native implementation available.
+            return true;
+        }
+        return false;
+    };
+    const isPluginAvailable = ((_c = capPlatforms === null || capPlatforms === void 0 ? void 0 : capPlatforms.currentPlatform) === null || _c === void 0 ? void 0 : _c.isPluginAvailable) ||
+        defaultIsPluginAvailable;
+    const defaultGetPluginHeader = (pluginName) => { var _a; return (_a = cap.PluginHeaders) === null || _a === void 0 ? void 0 : _a.find(h => h.name === pluginName); };
+    const getPluginHeader = ((_d = capPlatforms === null || capPlatforms === void 0 ? void 0 : capPlatforms.currentPlatform) === null || _d === void 0 ? void 0 : _d.getPluginHeader) || defaultGetPluginHeader;
+    const handleError = (err) => win.console.error(err);
+    const pluginMethodNoop = (_target, prop, pluginName) => {
+        return Promise.reject(`${pluginName} does not have an implementation of "${prop}".`);
+    };
+    const registeredPlugins = new Map();
+    const defaultRegisterPlugin = (pluginName, jsImplementations = {}) => {
+        const registeredPlugin = registeredPlugins.get(pluginName);
+        if (registeredPlugin) {
+            console.warn(`Capacitor plugin "${pluginName}" already registered. Cannot register plugins twice.`);
+            return registeredPlugin.proxy;
+        }
+        const platform = getPlatform();
+        const pluginHeader = getPluginHeader(pluginName);
+        let jsImplementation;
+        const loadPluginImplementation = async () => {
+            if (!jsImplementation && platform in jsImplementations) {
+                jsImplementation =
+                    typeof jsImplementations[platform] === 'function'
+                        ? (jsImplementation = await jsImplementations[platform]())
+                        : (jsImplementation = jsImplementations[platform]);
+            }
+            else if (capCustomPlatform !== null &&
+                !jsImplementation &&
+                'web' in jsImplementations) {
+                jsImplementation =
+                    typeof jsImplementations['web'] === 'function'
+                        ? (jsImplementation = await jsImplementations['web']())
+                        : (jsImplementation = jsImplementations['web']);
+            }
+            return jsImplementation;
+        };
+        const createPluginMethod = (impl, prop) => {
+            var _a, _b;
+            if (pluginHeader) {
+                const methodHeader = pluginHeader === null || pluginHeader === void 0 ? void 0 : pluginHeader.methods.find(m => prop === m.name);
+                if (methodHeader) {
+                    if (methodHeader.rtype === 'promise') {
+                        return (options) => cap.nativePromise(pluginName, prop.toString(), options);
                     }
                     else {
-                        return target[prop];
+                        return (options, callback) => cap.nativeCallback(pluginName, prop.toString(), options, callback);
                     }
                 }
+                else if (impl) {
+                    return (_a = impl[prop]) === null || _a === void 0 ? void 0 : _a.bind(impl);
+                }
+            }
+            else if (impl) {
+                return (_b = impl[prop]) === null || _b === void 0 ? void 0 : _b.bind(impl);
+            }
+            else {
+                throw new dist_CapacitorException(`"${pluginName}" plugin is not implemented on ${platform}`, dist_ExceptionCode.Unimplemented);
+            }
+        };
+        const createPluginMethodWrapper = (prop) => {
+            let remove;
+            const wrapper = (...args) => {
+                const p = loadPluginImplementation().then(impl => {
+                    const fn = createPluginMethod(impl, prop);
+                    if (fn) {
+                        const p = fn(...args);
+                        remove = p === null || p === void 0 ? void 0 : p.remove;
+                        return p;
+                    }
+                    else {
+                        throw new dist_CapacitorException(`"${pluginName}.${prop}()" is not implemented on ${platform}`, dist_ExceptionCode.Unimplemented);
+                    }
+                });
+                if (prop === 'addListener') {
+                    p.remove = async () => remove();
+                }
+                return p;
+            };
+            // Some flair ✨
+            wrapper.toString = () => `${prop.toString()}() { [capacitor code] }`;
+            Object.defineProperty(wrapper, 'name', {
+                value: prop,
+                writable: false,
+                configurable: false,
             });
-        }
+            return wrapper;
+        };
+        const addListener = createPluginMethodWrapper('addListener');
+        const removeListener = createPluginMethodWrapper('removeListener');
+        const addListenerNative = (eventName, callback) => {
+            const call = addListener({ eventName }, callback);
+            const remove = async () => {
+                const callbackId = await call;
+                removeListener({
+                    eventName,
+                    callbackId,
+                }, callback);
+            };
+            const p = new Promise(resolve => call.then(() => resolve({ remove })));
+            p.remove = async () => {
+                console.warn(`Using addListener() without 'await' is deprecated.`);
+                await remove();
+            };
+            return p;
+        };
+        const proxy = new Proxy({}, {
+            get(_, prop) {
+                switch (prop) {
+                    // https://github.com/facebook/react/issues/20030
+                    case '$$typeof':
+                        return undefined;
+                    case 'toJSON':
+                        return () => ({});
+                    case 'addListener':
+                        return pluginHeader ? addListenerNative : addListener;
+                    case 'removeListener':
+                        return removeListener;
+                    default:
+                        return createPluginMethodWrapper(prop);
+                }
+            },
+        });
+        Plugins[pluginName] = proxy;
+        registeredPlugins.set(pluginName, {
+            name: pluginName,
+            proxy,
+            platforms: new Set([
+                ...Object.keys(jsImplementations),
+                ...(pluginHeader ? [platform] : []),
+            ]),
+        });
+        return proxy;
+    };
+    const registerPlugin = ((_e = capPlatforms === null || capPlatforms === void 0 ? void 0 : capPlatforms.currentPlatform) === null || _e === void 0 ? void 0 : _e.registerPlugin) || defaultRegisterPlugin;
+    // Add in convertFileSrc for web, it will already be available in native context
+    if (!cap.convertFileSrc) {
+        cap.convertFileSrc = filePath => filePath;
     }
-    CapacitorWeb.prototype.pluginMethodNoop = function (_target, _prop, pluginName) {
-        return Promise.reject(pluginName + " does not have web implementation.");
-    };
-    CapacitorWeb.prototype.getPlatform = function () {
-        return this.platform;
-    };
-    CapacitorWeb.prototype.isPluginAvailable = function (name) {
-        return this.Plugins.hasOwnProperty(name);
-    };
-    CapacitorWeb.prototype.convertFileSrc = function (filePath) {
-        return filePath;
-    };
-    CapacitorWeb.prototype.handleError = function (e) {
-        console.error(e);
-    };
-    return CapacitorWeb;
-}());
+    cap.getPlatform = getPlatform;
+    cap.handleError = handleError;
+    cap.isNativePlatform = isNativePlatform;
+    cap.isPluginAvailable = isPluginAvailable;
+    cap.pluginMethodNoop = pluginMethodNoop;
+    cap.registerPlugin = registerPlugin;
+    cap.Exception = dist_CapacitorException;
+    cap.DEBUG = !!cap.DEBUG;
+    cap.isLoggingEnabled = !!cap.isLoggingEnabled;
+    // Deprecated props
+    cap.platform = cap.getPlatform();
+    cap.isNative = cap.isNativePlatform();
+    return cap;
+};
+const dist_initCapacitorGlobal = (win) => (win.Capacitor = dist_createCapacitor(win));
 
-//# sourceMappingURL=web-runtime.js.map
-;// CONCATENATED MODULE: ./node_modules/scandit-capacitor-datacapture-core/node_modules/@capacitor/core/dist/esm/global.js
+const core_dist_Capacitor = /*#__PURE__*/ dist_initCapacitorGlobal(typeof globalThis !== 'undefined'
+    ? globalThis
+    : typeof self !== 'undefined'
+        ? self
+        : typeof window !== 'undefined'
+            ? window
+            : typeof __webpack_require__.g !== 'undefined'
+                ? __webpack_require__.g
+                : {});
+const dist_registerPlugin = core_dist_Capacitor.registerPlugin;
+/**
+ * @deprecated Provided for backwards compatibility for Capacitor v2 plugins.
+ * Capacitor v3 plugins should import the plugin directly. This "Plugins"
+ * export is deprecated in v3, and will be removed in v4.
+ */
+const core_dist_Plugins = core_dist_Capacitor.Plugins;
+/**
+ * Provided for backwards compatibility. Use the registerPlugin() API
+ * instead, and provide the web plugin as the "web" implmenetation.
+ * For example
+ *
+ * export const Example = registerPlugin('Example', {
+ *   web: () => import('./web').then(m => new m.Example())
+ * })
+ *
+ * @deprecated Deprecated in v3, will be removed from v4.
+ */
+const dist_registerWebPlugin = (plugin) => dist_legacyRegisterWebPlugin(core_dist_Capacitor, plugin);
 
-// Create our default Capacitor instance, which will be
-// overridden on native platforms
-var global_Capacitor = (function (globalThis) {
-    // Create a new CapacitorWeb instance if one doesn't already exist on globalThis
-    // Ensure the global is assigned the same Capacitor instance,
-    // then export Capacitor so it can be imported in other modules
-    return globalThis.Capacitor = (globalThis.Capacitor || new CapacitorWeb());
-})(
-// figure out the current globalThis, such as "window", "self" or "global"
-// ensure errors are not thrown in an node SSR environment or web worker
-typeof self !== 'undefined' ? self : typeof window !== 'undefined' ? window : typeof __webpack_require__.g !== 'undefined' ? __webpack_require__.g : {});
-var global_Plugins = global_Capacitor.Plugins;
-
-//# sourceMappingURL=global.js.map
-;// CONCATENATED MODULE: ./node_modules/scandit-capacitor-datacapture-core/node_modules/@capacitor/core/dist/esm/web/index.js
-var WebPluginRegistry = /** @class */ (function () {
-    function WebPluginRegistry() {
-        this.plugins = {};
-        this.loadedPlugins = {};
-    }
-    WebPluginRegistry.prototype.addPlugin = function (plugin) {
-        this.plugins[plugin.config.name] = plugin;
-    };
-    WebPluginRegistry.prototype.getPlugin = function (name) {
-        return this.plugins[name];
-    };
-    WebPluginRegistry.prototype.loadPlugin = function (name) {
-        var plugin = this.getPlugin(name);
-        if (!plugin) {
-            console.error("Unable to load web plugin " + name + ", no such plugin found.");
-            return;
-        }
-        plugin.load();
-    };
-    WebPluginRegistry.prototype.getPlugins = function () {
-        var p = [];
-        for (var name_1 in this.plugins) {
-            p.push(this.plugins[name_1]);
-        }
-        return p;
-    };
-    return WebPluginRegistry;
-}());
-
-var WebPlugins = new WebPluginRegistry();
-
-var web_WebPlugin = /** @class */ (function () {
-    function WebPlugin(config, pluginRegistry) {
-        this.config = config;
-        this.loaded = false;
+/**
+ * Base class web plugins should extend.
+ */
+class dist_WebPlugin {
+    constructor(config) {
         this.listeners = {};
         this.windowListeners = {};
-        if (!pluginRegistry) {
-            WebPlugins.addPlugin(this);
-        }
-        else {
-            pluginRegistry.addPlugin(this);
+        if (config) {
+            // TODO: add link to upgrade guide
+            console.warn(`Capacitor WebPlugin "${config.name}" config object was deprecated in v3 and will be removed in v4.`);
+            this.config = config;
         }
     }
-    WebPlugin.prototype.addWindowListener = function (handle) {
-        window.addEventListener(handle.windowEventName, handle.handler);
-        handle.registered = true;
-    };
-    WebPlugin.prototype.removeWindowListener = function (handle) {
-        if (!handle) {
-            return;
-        }
-        window.removeEventListener(handle.windowEventName, handle.handler);
-        handle.registered = false;
-    };
-    WebPlugin.prototype.addListener = function (eventName, listenerFunc) {
-        var _this = this;
-        var listeners = this.listeners[eventName];
+    addListener(eventName, listenerFunc) {
+        const listeners = this.listeners[eventName];
         if (!listeners) {
             this.listeners[eventName] = [];
         }
         this.listeners[eventName].push(listenerFunc);
         // If we haven't added a window listener for this event and it requires one,
         // go ahead and add it
-        var windowListener = this.windowListeners[eventName];
+        const windowListener = this.windowListeners[eventName];
         if (windowListener && !windowListener.registered) {
             this.addWindowListener(windowListener);
         }
-        return {
-            remove: function () {
-                _this.removeListener(eventName, listenerFunc);
-            }
+        const remove = async () => this.removeListener(eventName, listenerFunc);
+        const p = Promise.resolve({ remove });
+        Object.defineProperty(p, 'remove', {
+            value: async () => {
+                console.warn(`Using addListener() without 'await' is deprecated.`);
+                await remove();
+            },
+        });
+        return p;
+    }
+    async removeAllListeners() {
+        this.listeners = {};
+        for (const listener in this.windowListeners) {
+            this.removeWindowListener(this.windowListeners[listener]);
+        }
+        this.windowListeners = {};
+    }
+    notifyListeners(eventName, data) {
+        const listeners = this.listeners[eventName];
+        if (listeners) {
+            listeners.forEach(listener => listener(data));
+        }
+    }
+    hasListeners(eventName) {
+        return !!this.listeners[eventName].length;
+    }
+    registerWindowListener(windowEventName, pluginEventName) {
+        this.windowListeners[pluginEventName] = {
+            registered: false,
+            windowEventName,
+            pluginEventName,
+            handler: event => {
+                this.notifyListeners(pluginEventName, event);
+            },
         };
-    };
-    WebPlugin.prototype.removeListener = function (eventName, listenerFunc) {
-        var listeners = this.listeners[eventName];
+    }
+    unimplemented(msg = 'not implemented') {
+        return new core_dist_Capacitor.Exception(msg, dist_ExceptionCode.Unimplemented);
+    }
+    unavailable(msg = 'not available') {
+        return new core_dist_Capacitor.Exception(msg, dist_ExceptionCode.Unavailable);
+    }
+    async removeListener(eventName, listenerFunc) {
+        const listeners = this.listeners[eventName];
         if (!listeners) {
             return;
         }
-        var index = listeners.indexOf(listenerFunc);
+        const index = listeners.indexOf(listenerFunc);
         this.listeners[eventName].splice(index, 1);
         // If there are no more listeners for this type of event,
         // remove the window listener
         if (!this.listeners[eventName].length) {
             this.removeWindowListener(this.windowListeners[eventName]);
         }
-    };
-    WebPlugin.prototype.removeAllListeners = function () {
-        this.listeners = {};
-        for (var listener in this.windowListeners) {
-            this.removeWindowListener(this.windowListeners[listener]);
-        }
-        this.windowListeners = {};
-    };
-    WebPlugin.prototype.notifyListeners = function (eventName, data) {
-        var listeners = this.listeners[eventName];
-        if (listeners) {
-            listeners.forEach(function (listener) { return listener(data); });
-        }
-    };
-    WebPlugin.prototype.hasListeners = function (eventName) {
-        return !!this.listeners[eventName].length;
-    };
-    WebPlugin.prototype.registerWindowListener = function (windowEventName, pluginEventName) {
-        var _this = this;
-        this.windowListeners[pluginEventName] = {
-            registered: false,
-            windowEventName: windowEventName,
-            pluginEventName: pluginEventName,
-            handler: function (event) {
-                _this.notifyListeners(pluginEventName, event);
-            }
-        };
-    };
-    WebPlugin.prototype.requestPermissions = function () {
-        if (Capacitor.isNative) {
-            return Capacitor.nativePromise(this.config.name, 'requestPermissions', {});
-        }
-        else {
-            return Promise.resolve({ results: [] });
-        }
-    };
-    WebPlugin.prototype.load = function () {
-        this.loaded = true;
-    };
-    return WebPlugin;
-}());
-
-var shouldMergeWebPlugin = function (plugin) {
-    return plugin.config.platforms && plugin.config.platforms.indexOf(Capacitor.platform) >= 0;
-};
-/**
- * For all our known web plugins, merge them into the global plugins
- * registry if they aren't already existing. If they don't exist, that
- * means there's no existing native implementation for it.
- * @param knownPlugins the Capacitor.Plugins global registry.
- */
-var mergeWebPlugins = function (knownPlugins) {
-    var plugins = WebPlugins.getPlugins();
-    for (var _i = 0, plugins_1 = plugins; _i < plugins_1.length; _i++) {
-        var plugin = plugins_1[_i];
-        mergeWebPlugin(knownPlugins, plugin);
     }
-};
-var mergeWebPlugin = function (knownPlugins, plugin) {
-    // If we already have a plugin registered (meaning it was defined in the native layer),
-    // then we should only overwrite it if the corresponding web plugin activates on
-    // a certain platform. For example: Geolocation uses the WebPlugin on Android but not iOS
-    if (knownPlugins.hasOwnProperty(plugin.config.name) && !shouldMergeWebPlugin(plugin)) {
-        return;
+    addWindowListener(handle) {
+        window.addEventListener(handle.windowEventName, handle.handler);
+        handle.registered = true;
     }
-    knownPlugins[plugin.config.name] = plugin;
-};
-//# sourceMappingURL=index.js.map
-;// CONCATENATED MODULE: ./node_modules/scandit-capacitor-datacapture-core/node_modules/tslib/tslib.es6.js
-/*! *****************************************************************************
-Copyright (c) Microsoft Corporation.
-
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted.
-
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
-REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
-AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
-INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
-LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
-OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
-PERFORMANCE OF THIS SOFTWARE.
-***************************************************************************** */
-/* global Reflect, Promise */
-
-var extendStatics = function(d, b) {
-    extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return extendStatics(d, b);
-};
-
-function __extends(d, b) {
-    extendStatics(d, b);
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-}
-
-var __assign = function() {
-    __assign = Object.assign || function __assign(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
-        }
-        return t;
-    }
-    return __assign.apply(this, arguments);
-}
-
-function __rest(s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-}
-
-function __decorate(decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-}
-
-function __param(paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-}
-
-function __metadata(metadataKey, metadataValue) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(metadataKey, metadataValue);
-}
-
-function __awaiter(thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-}
-
-function __generator(thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
-}
-
-function __createBinding(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}
-
-function __exportStar(m, exports) {
-    for (var p in m) if (p !== "default" && !exports.hasOwnProperty(p)) exports[p] = m[p];
-}
-
-function __values(o) {
-    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
-    if (m) return m.call(o);
-    if (o && typeof o.length === "number") return {
-        next: function () {
-            if (o && i >= o.length) o = void 0;
-            return { value: o && o[i++], done: !o };
-        }
-    };
-    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
-}
-
-function __read(o, n) {
-    var m = typeof Symbol === "function" && o[Symbol.iterator];
-    if (!m) return o;
-    var i = m.call(o), r, ar = [], e;
-    try {
-        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
-    }
-    catch (error) { e = { error: error }; }
-    finally {
-        try {
-            if (r && !r.done && (m = i["return"])) m.call(i);
-        }
-        finally { if (e) throw e.error; }
-    }
-    return ar;
-}
-
-function __spread() {
-    for (var ar = [], i = 0; i < arguments.length; i++)
-        ar = ar.concat(__read(arguments[i]));
-    return ar;
-}
-
-function __spreadArrays() {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
-};
-
-function __await(v) {
-    return this instanceof __await ? (this.v = v, this) : new __await(v);
-}
-
-function __asyncGenerator(thisArg, _arguments, generator) {
-    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
-    var g = generator.apply(thisArg, _arguments || []), i, q = [];
-    return i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i;
-    function verb(n) { if (g[n]) i[n] = function (v) { return new Promise(function (a, b) { q.push([n, v, a, b]) > 1 || resume(n, v); }); }; }
-    function resume(n, v) { try { step(g[n](v)); } catch (e) { settle(q[0][3], e); } }
-    function step(r) { r.value instanceof __await ? Promise.resolve(r.value.v).then(fulfill, reject) : settle(q[0][2], r); }
-    function fulfill(value) { resume("next", value); }
-    function reject(value) { resume("throw", value); }
-    function settle(f, v) { if (f(v), q.shift(), q.length) resume(q[0][0], q[0][1]); }
-}
-
-function __asyncDelegator(o) {
-    var i, p;
-    return i = {}, verb("next"), verb("throw", function (e) { throw e; }), verb("return"), i[Symbol.iterator] = function () { return this; }, i;
-    function verb(n, f) { i[n] = o[n] ? function (v) { return (p = !p) ? { value: __await(o[n](v)), done: n === "return" } : f ? f(v) : v; } : f; }
-}
-
-function __asyncValues(o) {
-    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
-    var m = o[Symbol.asyncIterator], i;
-    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
-    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
-    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
-}
-
-function __makeTemplateObject(cooked, raw) {
-    if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
-    return cooked;
-};
-
-function __importStar(mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result.default = mod;
-    return result;
-}
-
-function __importDefault(mod) {
-    return (mod && mod.__esModule) ? mod : { default: mod };
-}
-
-function __classPrivateFieldGet(receiver, privateMap) {
-    if (!privateMap.has(receiver)) {
-        throw new TypeError("attempted to get private field on non-instance");
-    }
-    return privateMap.get(receiver);
-}
-
-function __classPrivateFieldSet(receiver, privateMap, value) {
-    if (!privateMap.has(receiver)) {
-        throw new TypeError("attempted to set private field on non-instance");
-    }
-    privateMap.set(receiver, value);
-    return value;
-}
-
-;// CONCATENATED MODULE: ./node_modules/scandit-capacitor-datacapture-core/node_modules/@capacitor/core/dist/esm/web/accessibility.js
-
-
-var AccessibilityPluginWeb = /** @class */ (function (_super) {
-    __extends(AccessibilityPluginWeb, _super);
-    function AccessibilityPluginWeb() {
-        return _super.call(this, {
-            name: 'Accessibility',
-            platforms: ['web']
-        }) || this;
-    }
-    AccessibilityPluginWeb.prototype.isScreenReaderEnabled = function () {
-        throw new Error('Feature not available in the browser');
-    };
-    AccessibilityPluginWeb.prototype.speak = function (options) {
-        if (!('speechSynthesis' in window)) {
-            return Promise.reject('Browser does not support the Speech Synthesis API');
-        }
-        var utterance = new SpeechSynthesisUtterance(options.value);
-        if (options.language) {
-            utterance.lang = options.language;
-        }
-        window.speechSynthesis.speak(utterance);
-        return Promise.resolve();
-    };
-    return AccessibilityPluginWeb;
-}(web_WebPlugin));
-
-var Accessibility = new AccessibilityPluginWeb();
-
-//# sourceMappingURL=accessibility.js.map
-;// CONCATENATED MODULE: ./node_modules/scandit-capacitor-datacapture-core/node_modules/@capacitor/core/dist/esm/web/app.js
-
-
-var AppPluginWeb = /** @class */ (function (_super) {
-    __extends(AppPluginWeb, _super);
-    function AppPluginWeb() {
-        var _this = _super.call(this, {
-            name: 'App',
-            platforms: ['web']
-        }) || this;
-        if (typeof document !== 'undefined') {
-            document.addEventListener('visibilitychange', _this.handleVisibilityChange.bind(_this), false);
-        }
-        return _this;
-    }
-    AppPluginWeb.prototype.exitApp = function () {
-        throw new Error('Method not implemented.');
-    };
-    AppPluginWeb.prototype.canOpenUrl = function (_options) {
-        return Promise.resolve({ value: true });
-    };
-    AppPluginWeb.prototype.openUrl = function (_options) {
-        return Promise.resolve({ completed: true });
-    };
-    AppPluginWeb.prototype.getLaunchUrl = function () {
-        return Promise.resolve({ url: '' });
-    };
-    AppPluginWeb.prototype.getState = function () {
-        return Promise.resolve({ isActive: document.hidden !== true });
-    };
-    AppPluginWeb.prototype.handleVisibilityChange = function () {
-        var data = {
-            isActive: document.hidden !== true
-        };
-        this.notifyListeners('appStateChange', data);
-    };
-    return AppPluginWeb;
-}(web_WebPlugin));
-
-var App = new AppPluginWeb();
-
-//# sourceMappingURL=app.js.map
-;// CONCATENATED MODULE: ./node_modules/scandit-capacitor-datacapture-core/node_modules/@capacitor/core/dist/esm/web/browser.js
-
-
-var BrowserPluginWeb = /** @class */ (function (_super) {
-    __extends(BrowserPluginWeb, _super);
-    function BrowserPluginWeb() {
-        return _super.call(this, {
-            name: 'Browser',
-            platforms: ['web']
-        }) || this;
-    }
-    BrowserPluginWeb.prototype.open = function (options) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                this._lastWindow = window.open(options.url, options.windowName || '_blank');
-                return [2 /*return*/, Promise.resolve()];
-            });
-        });
-    };
-    BrowserPluginWeb.prototype.prefetch = function (_options) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                // Does nothing
-                return [2 /*return*/, Promise.resolve()];
-            });
-        });
-    };
-    BrowserPluginWeb.prototype.close = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                this._lastWindow && this._lastWindow.close();
-                return [2 /*return*/, Promise.resolve()];
-            });
-        });
-    };
-    return BrowserPluginWeb;
-}(web_WebPlugin));
-
-var Browser = new BrowserPluginWeb();
-
-//# sourceMappingURL=browser.js.map
-;// CONCATENATED MODULE: ./node_modules/scandit-capacitor-datacapture-core/node_modules/@capacitor/core/dist/esm/web/camera.js
-
-
-
-var CameraPluginWeb = /** @class */ (function (_super) {
-    __extends(CameraPluginWeb, _super);
-    function CameraPluginWeb() {
-        return _super.call(this, {
-            name: 'Camera',
-            platforms: ['web']
-        }) || this;
-    }
-    CameraPluginWeb.prototype.getPhoto = function (options) {
-        return __awaiter(this, void 0, void 0, function () {
-            var _this = this;
-            return __generator(this, function (_a) {
-                return [2 /*return*/, new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
-                        var cameraModal_1, e_1;
-                        var _this = this;
-                        return __generator(this, function (_a) {
-                            switch (_a.label) {
-                                case 0:
-                                    if (!options.webUseInput) return [3 /*break*/, 1];
-                                    this.fileInputExperience(options, resolve);
-                                    return [3 /*break*/, 7];
-                                case 1:
-                                    if (!customElements.get('pwa-camera-modal')) return [3 /*break*/, 6];
-                                    cameraModal_1 = document.createElement('pwa-camera-modal');
-                                    document.body.appendChild(cameraModal_1);
-                                    _a.label = 2;
-                                case 2:
-                                    _a.trys.push([2, 4, , 5]);
-                                    return [4 /*yield*/, cameraModal_1.componentOnReady()];
-                                case 3:
-                                    _a.sent();
-                                    cameraModal_1.addEventListener('onPhoto', function (e) { return __awaiter(_this, void 0, void 0, function () {
-                                        var photo, _a;
-                                        return __generator(this, function (_b) {
-                                            switch (_b.label) {
-                                                case 0:
-                                                    photo = e.detail;
-                                                    if (!(photo === null)) return [3 /*break*/, 1];
-                                                    reject('User cancelled photos app');
-                                                    return [3 /*break*/, 4];
-                                                case 1:
-                                                    if (!(photo instanceof Error)) return [3 /*break*/, 2];
-                                                    reject(photo.message);
-                                                    return [3 /*break*/, 4];
-                                                case 2:
-                                                    _a = resolve;
-                                                    return [4 /*yield*/, this._getCameraPhoto(photo, options)];
-                                                case 3:
-                                                    _a.apply(void 0, [_b.sent()]);
-                                                    _b.label = 4;
-                                                case 4:
-                                                    cameraModal_1.dismiss();
-                                                    document.body.removeChild(cameraModal_1);
-                                                    return [2 /*return*/];
-                                            }
-                                        });
-                                    }); });
-                                    cameraModal_1.present();
-                                    return [3 /*break*/, 5];
-                                case 4:
-                                    e_1 = _a.sent();
-                                    this.fileInputExperience(options, resolve);
-                                    return [3 /*break*/, 5];
-                                case 5: return [3 /*break*/, 7];
-                                case 6:
-                                    console.error("Unable to load PWA Element 'pwa-camera-modal'. See the docs: https://capacitorjs.com/docs/pwa-elements.");
-                                    this.fileInputExperience(options, resolve);
-                                    _a.label = 7;
-                                case 7: return [2 /*return*/];
-                            }
-                        });
-                    }); })];
-            });
-        });
-    };
-    CameraPluginWeb.prototype.fileInputExperience = function (options, resolve) {
-        var input = document.querySelector('#_capacitor-camera-input');
-        var cleanup = function () {
-            input.parentNode && input.parentNode.removeChild(input);
-        };
-        if (!input) {
-            input = document.createElement('input');
-            input.id = '_capacitor-camera-input';
-            input.type = 'file';
-            document.body.appendChild(input);
-        }
-        input.accept = 'image/*';
-        input.capture = true;
-        if (options.source === CameraSource.Photos || options.source === CameraSource.Prompt) {
-            input.removeAttribute('capture');
-        }
-        else if (options.direction === CameraDirection.Front) {
-            input.capture = 'user';
-        }
-        else if (options.direction === CameraDirection.Rear) {
-            input.capture = 'environment';
-        }
-        input.addEventListener('change', function (_e) {
-            var file = input.files[0];
-            var format = 'jpeg';
-            if (file.type === 'image/png') {
-                format = 'png';
-            }
-            else if (file.type === 'image/gif') {
-                format = 'gif';
-            }
-            if (options.resultType === CameraResultType.DataUrl || options.resultType === CameraResultType.Base64) {
-                var reader_1 = new FileReader();
-                reader_1.addEventListener('load', function () {
-                    if (options.resultType === CameraResultType.DataUrl) {
-                        resolve({
-                            dataUrl: reader_1.result,
-                            format: format
-                        });
-                    }
-                    else if (options.resultType === CameraResultType.Base64) {
-                        var b64 = reader_1.result.split(',')[1];
-                        resolve({
-                            base64String: b64,
-                            format: format
-                        });
-                    }
-                    cleanup();
-                });
-                reader_1.readAsDataURL(file);
-            }
-            else {
-                resolve({
-                    webPath: URL.createObjectURL(file),
-                    format: format
-                });
-                cleanup();
-            }
-        });
-        input.click();
-    };
-    CameraPluginWeb.prototype._getCameraPhoto = function (photo, options) {
-        return new Promise(function (resolve, reject) {
-            var reader = new FileReader();
-            var format = photo.type.split('/')[1];
-            if (options.resultType === CameraResultType.Uri) {
-                resolve({
-                    webPath: URL.createObjectURL(photo),
-                    format: format
-                });
-            }
-            else {
-                reader.readAsDataURL(photo);
-                reader.onloadend = function () {
-                    var r = reader.result;
-                    if (options.resultType === CameraResultType.DataUrl) {
-                        resolve({
-                            dataUrl: r,
-                            format: format
-                        });
-                    }
-                    else {
-                        resolve({
-                            base64String: r.split(',')[1],
-                            format: format
-                        });
-                    }
-                };
-                reader.onerror = function (e) {
-                    reject(e);
-                };
-            }
-        });
-    };
-    return CameraPluginWeb;
-}(web_WebPlugin));
-
-var Camera = new CameraPluginWeb();
-
-//# sourceMappingURL=camera.js.map
-;// CONCATENATED MODULE: ./node_modules/scandit-capacitor-datacapture-core/node_modules/@capacitor/core/dist/esm/web/clipboard.js
-
-
-var ClipboardPluginWeb = /** @class */ (function (_super) {
-    __extends(ClipboardPluginWeb, _super);
-    function ClipboardPluginWeb() {
-        return _super.call(this, {
-            name: 'Clipboard',
-            platforms: ['web']
-        }) || this;
-    }
-    ClipboardPluginWeb.prototype.write = function (options) {
-        return __awaiter(this, void 0, void 0, function () {
-            var blob, clipboardItemInput, err_1;
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        if (!navigator.clipboard) {
-                            return [2 /*return*/, Promise.reject('Clipboard API not available in this browser')];
-                        }
-                        if (!(options.string !== undefined || options.url)) return [3 /*break*/, 2];
-                        if (!navigator.clipboard.writeText) {
-                            return [2 /*return*/, Promise.reject('Writting to clipboard not supported in this browser')];
-                        }
-                        return [4 /*yield*/, navigator.clipboard.writeText(options.string !== undefined ? options.string : options.url)];
-                    case 1:
-                        _b.sent();
-                        return [3 /*break*/, 10];
-                    case 2:
-                        if (!options.image) return [3 /*break*/, 9];
-                        if (!navigator.clipboard.write) {
-                            return [2 /*return*/, Promise.reject('Setting images not supported in this browser')];
-                        }
-                        _b.label = 3;
-                    case 3:
-                        _b.trys.push([3, 7, , 8]);
-                        return [4 /*yield*/, fetch(options.image)];
-                    case 4: return [4 /*yield*/, (_b.sent()).blob()];
-                    case 5:
-                        blob = _b.sent();
-                        clipboardItemInput = new ClipboardItem((_a = {}, _a[blob.type] = blob, _a));
-                        return [4 /*yield*/, navigator.clipboard.write([clipboardItemInput])];
-                    case 6:
-                        _b.sent();
-                        return [3 /*break*/, 8];
-                    case 7:
-                        err_1 = _b.sent();
-                        return [2 /*return*/, Promise.reject('Failed to write image')];
-                    case 8: return [3 /*break*/, 10];
-                    case 9: return [2 /*return*/, Promise.reject('Nothing to write')];
-                    case 10: return [2 /*return*/, Promise.resolve()];
-                }
-            });
-        });
-    };
-    ClipboardPluginWeb.prototype.read = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var clipboardItems, type, clipboardBlob, data, err_2;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (!navigator.clipboard) {
-                            return [2 /*return*/, Promise.reject('Clipboard API not available in this browser')];
-                        }
-                        if (!!navigator.clipboard.read) return [3 /*break*/, 1];
-                        if (!navigator.clipboard.readText) {
-                            return [2 /*return*/, Promise.reject('Reading from clipboard not supported in this browser')];
-                        }
-                        return [2 /*return*/, this.readText()];
-                    case 1:
-                        _a.trys.push([1, 5, , 6]);
-                        return [4 /*yield*/, navigator.clipboard.read()];
-                    case 2:
-                        clipboardItems = _a.sent();
-                        type = clipboardItems[0].types[0];
-                        return [4 /*yield*/, clipboardItems[0].getType(type)];
-                    case 3:
-                        clipboardBlob = _a.sent();
-                        return [4 /*yield*/, this._getBlobData(clipboardBlob, type)];
-                    case 4:
-                        data = _a.sent();
-                        return [2 /*return*/, Promise.resolve({ value: data, type: type })];
-                    case 5:
-                        err_2 = _a.sent();
-                        return [2 /*return*/, this.readText()];
-                    case 6: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    ClipboardPluginWeb.prototype.readText = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var text;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, navigator.clipboard.readText()];
-                    case 1:
-                        text = _a.sent();
-                        return [2 /*return*/, Promise.resolve({ value: text, type: 'text/plain' })];
-                }
-            });
-        });
-    };
-    ClipboardPluginWeb.prototype._getBlobData = function (clipboardBlob, type) {
-        return new Promise(function (resolve, reject) {
-            var reader = new FileReader();
-            if (type.includes('image')) {
-                reader.readAsDataURL(clipboardBlob);
-            }
-            else {
-                reader.readAsText(clipboardBlob);
-            }
-            reader.onloadend = function () {
-                var r = reader.result;
-                resolve(r);
-            };
-            reader.onerror = function (e) {
-                reject(e);
-            };
-        });
-    };
-    return ClipboardPluginWeb;
-}(web_WebPlugin));
-
-var Clipboard = new ClipboardPluginWeb();
-
-//# sourceMappingURL=clipboard.js.map
-;// CONCATENATED MODULE: ./node_modules/scandit-capacitor-datacapture-core/node_modules/@capacitor/core/dist/esm/web/filesystem.js
-
-
-
-var FilesystemPluginWeb = /** @class */ (function (_super) {
-    __extends(FilesystemPluginWeb, _super);
-    function FilesystemPluginWeb() {
-        var _this = _super.call(this, {
-            name: 'Filesystem',
-            platforms: ['web']
-        }) || this;
-        _this.DEFAULT_DIRECTORY = FilesystemDirectory.Data;
-        _this.DB_VERSION = 1;
-        _this.DB_NAME = 'Disc';
-        _this._writeCmds = ['add', 'put', 'delete'];
-        return _this;
-    }
-    FilesystemPluginWeb.prototype.initDb = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var _this = this;
-            return __generator(this, function (_a) {
-                if (this._db !== undefined) {
-                    return [2 /*return*/, this._db];
-                }
-                if (!('indexedDB' in window)) {
-                    throw new Error('This browser doesn\'t support IndexedDB');
-                }
-                return [2 /*return*/, new Promise(function (resolve, reject) {
-                        var request = indexedDB.open(_this.DB_NAME, _this.DB_VERSION);
-                        request.onupgradeneeded = FilesystemPluginWeb.doUpgrade;
-                        request.onsuccess = function () {
-                            _this._db = request.result;
-                            resolve(request.result);
-                        };
-                        request.onerror = function () { return reject(request.error); };
-                        request.onblocked = function () {
-                            console.warn('db blocked');
-                        };
-                    })];
-            });
-        });
-    };
-    FilesystemPluginWeb.doUpgrade = function (event) {
-        var eventTarget = event.target;
-        var db = eventTarget.result;
-        switch (event.oldVersion) {
-            case 0:
-            case 1:
-            default:
-                if (db.objectStoreNames.contains('FileStorage')) {
-                    db.deleteObjectStore('FileStorage');
-                }
-                var store = db.createObjectStore('FileStorage', { keyPath: 'path' });
-                store.createIndex('by_folder', 'folder');
-        }
-    };
-    FilesystemPluginWeb.prototype.dbRequest = function (cmd, args) {
-        return __awaiter(this, void 0, void 0, function () {
-            var readFlag;
-            return __generator(this, function (_a) {
-                readFlag = this._writeCmds.indexOf(cmd) !== -1 ? 'readwrite' : 'readonly';
-                return [2 /*return*/, this.initDb()
-                        .then(function (conn) {
-                        return new Promise(function (resolve, reject) {
-                            var tx = conn.transaction(['FileStorage'], readFlag);
-                            var store = tx.objectStore('FileStorage');
-                            var req = store[cmd].apply(store, args);
-                            req.onsuccess = function () { return resolve(req.result); };
-                            req.onerror = function () { return reject(req.error); };
-                        });
-                    })];
-            });
-        });
-    };
-    FilesystemPluginWeb.prototype.dbIndexRequest = function (indexName, cmd, args) {
-        return __awaiter(this, void 0, void 0, function () {
-            var readFlag;
-            return __generator(this, function (_a) {
-                readFlag = this._writeCmds.indexOf(cmd) !== -1 ? 'readwrite' : 'readonly';
-                return [2 /*return*/, this.initDb()
-                        .then(function (conn) {
-                        return new Promise(function (resolve, reject) {
-                            var tx = conn.transaction(['FileStorage'], readFlag);
-                            var store = tx.objectStore('FileStorage');
-                            var index = store.index(indexName);
-                            var req = index[cmd].apply(index, args);
-                            req.onsuccess = function () { return resolve(req.result); };
-                            req.onerror = function () { return reject(req.error); };
-                        });
-                    })];
-            });
-        });
-    };
-    FilesystemPluginWeb.prototype.getPath = function (directory, uriPath) {
-        directory = directory || this.DEFAULT_DIRECTORY;
-        var cleanedUriPath = uriPath !== undefined ? uriPath.replace(/^[/]+|[/]+$/g, '') : '';
-        var fsPath = '/' + directory;
-        if (uriPath !== '')
-            fsPath += '/' + cleanedUriPath;
-        return fsPath;
-    };
-    FilesystemPluginWeb.prototype.clear = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var conn, tx, store;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.initDb()];
-                    case 1:
-                        conn = _a.sent();
-                        tx = conn.transaction(['FileStorage'], 'readwrite');
-                        store = tx.objectStore('FileStorage');
-                        store.clear();
-                        return [2 /*return*/, {}];
-                }
-            });
-        });
-    };
-    /**
-     * Read a file from disk
-     * @param options options for the file read
-     * @return a promise that resolves with the read file data result
-     */
-    FilesystemPluginWeb.prototype.readFile = function (options) {
-        return __awaiter(this, void 0, void 0, function () {
-            var path, entry;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        path = this.getPath(options.directory, options.path);
-                        return [4 /*yield*/, this.dbRequest('get', [path])];
-                    case 1:
-                        entry = _a.sent();
-                        if (entry === undefined)
-                            throw Error('File does not exist.');
-                        return [2 /*return*/, { data: entry.content }];
-                }
-            });
-        });
-    };
-    /**
-     * Write a file to disk in the specified location on device
-     * @param options options for the file write
-     * @return a promise that resolves with the file write result
-     */
-    FilesystemPluginWeb.prototype.writeFile = function (options) {
-        return __awaiter(this, void 0, void 0, function () {
-            var path, data, doRecursive, occupiedEntry, encoding, parentPath, parentEntry, subDirIndex, parentArgPath, now, pathObj;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        path = this.getPath(options.directory, options.path);
-                        data = options.data;
-                        doRecursive = options.recursive;
-                        return [4 /*yield*/, this.dbRequest('get', [path])];
-                    case 1:
-                        occupiedEntry = _a.sent();
-                        if (occupiedEntry && occupiedEntry.type === 'directory')
-                            throw ('The supplied path is a directory.');
-                        encoding = options.encoding;
-                        parentPath = path.substr(0, path.lastIndexOf('/'));
-                        return [4 /*yield*/, this.dbRequest('get', [parentPath])];
-                    case 2:
-                        parentEntry = _a.sent();
-                        if (!(parentEntry === undefined)) return [3 /*break*/, 4];
-                        subDirIndex = parentPath.indexOf('/', 1);
-                        if (!(subDirIndex !== -1)) return [3 /*break*/, 4];
-                        parentArgPath = parentPath.substr(subDirIndex);
-                        return [4 /*yield*/, this.mkdir({ path: parentArgPath, directory: options.directory, recursive: doRecursive })];
-                    case 3:
-                        _a.sent();
-                        _a.label = 4;
-                    case 4:
-                        now = Date.now();
-                        pathObj = {
-                            path: path,
-                            folder: parentPath,
-                            type: 'file',
-                            size: data.length,
-                            ctime: now,
-                            mtime: now,
-                            content: !encoding && data.indexOf(',') >= 0 ? data.split(',')[1] : data,
-                        };
-                        return [4 /*yield*/, this.dbRequest('put', [pathObj])];
-                    case 5:
-                        _a.sent();
-                        return [2 /*return*/, {
-                                uri: pathObj.path
-                            }];
-                }
-            });
-        });
-    };
-    /**
-     * Append to a file on disk in the specified location on device
-     * @param options options for the file append
-     * @return a promise that resolves with the file write result
-     */
-    FilesystemPluginWeb.prototype.appendFile = function (options) {
-        return __awaiter(this, void 0, void 0, function () {
-            var path, data, parentPath, now, ctime, occupiedEntry, parentEntry, subDirIndex, parentArgPath, pathObj;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        path = this.getPath(options.directory, options.path);
-                        data = options.data;
-                        parentPath = path.substr(0, path.lastIndexOf('/'));
-                        now = Date.now();
-                        ctime = now;
-                        return [4 /*yield*/, this.dbRequest('get', [path])];
-                    case 1:
-                        occupiedEntry = _a.sent();
-                        if (occupiedEntry && occupiedEntry.type === 'directory')
-                            throw ('The supplied path is a directory.');
-                        return [4 /*yield*/, this.dbRequest('get', [parentPath])];
-                    case 2:
-                        parentEntry = _a.sent();
-                        if (!(parentEntry === undefined)) return [3 /*break*/, 4];
-                        subDirIndex = parentPath.indexOf('/', 1);
-                        if (!(subDirIndex !== -1)) return [3 /*break*/, 4];
-                        parentArgPath = parentPath.substr(subDirIndex);
-                        return [4 /*yield*/, this.mkdir({ path: parentArgPath, directory: options.directory, recursive: true })];
-                    case 3:
-                        _a.sent();
-                        _a.label = 4;
-                    case 4:
-                        if (occupiedEntry !== undefined) {
-                            data = occupiedEntry.content + data;
-                            ctime = occupiedEntry.ctime;
-                        }
-                        pathObj = {
-                            path: path,
-                            folder: parentPath,
-                            type: 'file',
-                            size: data.length,
-                            ctime: ctime,
-                            mtime: now,
-                            content: data
-                        };
-                        return [4 /*yield*/, this.dbRequest('put', [pathObj])];
-                    case 5:
-                        _a.sent();
-                        return [2 /*return*/, {}];
-                }
-            });
-        });
-    };
-    /**
-     * Delete a file from disk
-     * @param options options for the file delete
-     * @return a promise that resolves with the deleted file data result
-     */
-    FilesystemPluginWeb.prototype.deleteFile = function (options) {
-        return __awaiter(this, void 0, void 0, function () {
-            var path, entry, entries;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        path = this.getPath(options.directory, options.path);
-                        return [4 /*yield*/, this.dbRequest('get', [path])];
-                    case 1:
-                        entry = _a.sent();
-                        if (entry === undefined)
-                            throw Error('File does not exist.');
-                        return [4 /*yield*/, this.dbIndexRequest('by_folder', 'getAllKeys', [IDBKeyRange.only(path)])];
-                    case 2:
-                        entries = _a.sent();
-                        if (entries.length !== 0)
-                            throw Error('Folder is not empty.');
-                        return [4 /*yield*/, this.dbRequest('delete', [path])];
-                    case 3:
-                        _a.sent();
-                        return [2 /*return*/, {}];
-                }
-            });
-        });
-    };
-    /**
-     * Create a directory.
-     * @param options options for the mkdir
-     * @return a promise that resolves with the mkdir result
-     */
-    FilesystemPluginWeb.prototype.mkdir = function (options) {
-        return __awaiter(this, void 0, void 0, function () {
-            var path, doRecursive, parentPath, depth, parentEntry, occupiedEntry, parentArgPath, now, pathObj;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        path = this.getPath(options.directory, options.path);
-                        doRecursive = options.recursive;
-                        parentPath = path.substr(0, path.lastIndexOf('/'));
-                        depth = (path.match(/\//g) || []).length;
-                        return [4 /*yield*/, this.dbRequest('get', [parentPath])];
-                    case 1:
-                        parentEntry = _a.sent();
-                        return [4 /*yield*/, this.dbRequest('get', [path])];
-                    case 2:
-                        occupiedEntry = _a.sent();
-                        if (depth === 1)
-                            throw Error('Cannot create Root directory');
-                        if (occupiedEntry !== undefined)
-                            throw Error('Current directory does already exist.');
-                        if (!doRecursive && depth !== 2 && parentEntry === undefined)
-                            throw Error('Parent directory must exist');
-                        if (!(doRecursive && depth !== 2 && parentEntry === undefined)) return [3 /*break*/, 4];
-                        parentArgPath = parentPath.substr(parentPath.indexOf('/', 1));
-                        return [4 /*yield*/, this.mkdir({
-                                path: parentArgPath,
-                                directory: options.directory,
-                                recursive: doRecursive
-                            })];
-                    case 3:
-                        _a.sent();
-                        _a.label = 4;
-                    case 4:
-                        now = Date.now();
-                        pathObj = { path: path, folder: parentPath, type: 'directory', size: 0, ctime: now, mtime: now };
-                        return [4 /*yield*/, this.dbRequest('put', [pathObj])];
-                    case 5:
-                        _a.sent();
-                        return [2 /*return*/, {}];
-                }
-            });
-        });
-    };
-    /**
-     * Remove a directory
-     * @param options the options for the directory remove
-     */
-    FilesystemPluginWeb.prototype.rmdir = function (options) {
-        return __awaiter(this, void 0, void 0, function () {
-            var path, directory, recursive, fullPath, entry, readDirResult, _i, _a, entry_1, entryPath, entryObj;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        path = options.path, directory = options.directory, recursive = options.recursive;
-                        fullPath = this.getPath(directory, path);
-                        return [4 /*yield*/, this.dbRequest('get', [fullPath])];
-                    case 1:
-                        entry = _b.sent();
-                        if (entry === undefined)
-                            throw Error('Folder does not exist.');
-                        if (entry.type !== 'directory')
-                            throw Error('Requested path is not a directory');
-                        return [4 /*yield*/, this.readdir({ path: path, directory: directory })];
-                    case 2:
-                        readDirResult = _b.sent();
-                        if (readDirResult.files.length !== 0 && !recursive)
-                            throw Error('Folder is not empty');
-                        _i = 0, _a = readDirResult.files;
-                        _b.label = 3;
-                    case 3:
-                        if (!(_i < _a.length)) return [3 /*break*/, 9];
-                        entry_1 = _a[_i];
-                        entryPath = path + "/" + entry_1;
-                        return [4 /*yield*/, this.stat({ path: entryPath, directory: directory })];
-                    case 4:
-                        entryObj = _b.sent();
-                        if (!(entryObj.type === 'file')) return [3 /*break*/, 6];
-                        return [4 /*yield*/, this.deleteFile({ path: entryPath, directory: directory })];
-                    case 5:
-                        _b.sent();
-                        return [3 /*break*/, 8];
-                    case 6: return [4 /*yield*/, this.rmdir({ path: entryPath, directory: directory, recursive: recursive })];
-                    case 7:
-                        _b.sent();
-                        _b.label = 8;
-                    case 8:
-                        _i++;
-                        return [3 /*break*/, 3];
-                    case 9: return [4 /*yield*/, this.dbRequest('delete', [fullPath])];
-                    case 10:
-                        _b.sent();
-                        return [2 /*return*/, {}];
-                }
-            });
-        });
-    };
-    /**
-     * Return a list of files from the directory (not recursive)
-     * @param options the options for the readdir operation
-     * @return a promise that resolves with the readdir directory listing result
-     */
-    FilesystemPluginWeb.prototype.readdir = function (options) {
-        return __awaiter(this, void 0, void 0, function () {
-            var path, entry, entries, names;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        path = this.getPath(options.directory, options.path);
-                        return [4 /*yield*/, this.dbRequest('get', [path])];
-                    case 1:
-                        entry = _a.sent();
-                        if (options.path !== '' && entry === undefined)
-                            throw Error('Folder does not exist.');
-                        return [4 /*yield*/, this.dbIndexRequest('by_folder', 'getAllKeys', [IDBKeyRange.only(path)])];
-                    case 2:
-                        entries = _a.sent();
-                        names = entries.map(function (e) {
-                            return e.substring(path.length + 1);
-                        });
-                        return [2 /*return*/, { files: names }];
-                }
-            });
-        });
-    };
-    /**
-     * Return full File URI for a path and directory
-     * @param options the options for the stat operation
-     * @return a promise that resolves with the file stat result
-     */
-    FilesystemPluginWeb.prototype.getUri = function (options) {
-        return __awaiter(this, void 0, void 0, function () {
-            var path, entry;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        path = this.getPath(options.directory, options.path);
-                        return [4 /*yield*/, this.dbRequest('get', [path])];
-                    case 1:
-                        entry = _a.sent();
-                        if (!(entry === undefined)) return [3 /*break*/, 3];
-                        return [4 /*yield*/, this.dbRequest('get', [path + '/'])];
-                    case 2:
-                        entry = (_a.sent());
-                        _a.label = 3;
-                    case 3:
-                        if (entry === undefined)
-                            throw Error('Entry does not exist.');
-                        return [2 /*return*/, {
-                                uri: entry.path
-                            }];
-                }
-            });
-        });
-    };
-    /**
-     * Return data about a file
-     * @param options the options for the stat operation
-     * @return a promise that resolves with the file stat result
-     */
-    FilesystemPluginWeb.prototype.stat = function (options) {
-        return __awaiter(this, void 0, void 0, function () {
-            var path, entry;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        path = this.getPath(options.directory, options.path);
-                        return [4 /*yield*/, this.dbRequest('get', [path])];
-                    case 1:
-                        entry = _a.sent();
-                        if (!(entry === undefined)) return [3 /*break*/, 3];
-                        return [4 /*yield*/, this.dbRequest('get', [path + '/'])];
-                    case 2:
-                        entry = (_a.sent());
-                        _a.label = 3;
-                    case 3:
-                        if (entry === undefined)
-                            throw Error('Entry does not exist.');
-                        return [2 /*return*/, {
-                                type: entry.type,
-                                size: entry.size,
-                                ctime: entry.ctime,
-                                mtime: entry.mtime,
-                                uri: entry.path
-                            }];
-                }
-            });
-        });
-    };
-    /**
-     * Rename a file or directory
-     * @param options the options for the rename operation
-     * @return a promise that resolves with the rename result
-     */
-    FilesystemPluginWeb.prototype.rename = function (options) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                return [2 /*return*/, this._copy(options, true)];
-            });
-        });
-    };
-    /**
-     * Copy a file or directory
-     * @param options the options for the copy operation
-     * @return a promise that resolves with the copy result
-     */
-    FilesystemPluginWeb.prototype.copy = function (options) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                return [2 /*return*/, this._copy(options, false)];
-            });
-        });
-    };
-    /**
-     * Function that can perform a copy or a rename
-     * @param options the options for the rename operation
-     * @param doRename whether to perform a rename or copy operation
-     * @return a promise that resolves with the result
-     */
-    FilesystemPluginWeb.prototype._copy = function (options, doRename) {
-        if (doRename === void 0) { doRename = false; }
-        return __awaiter(this, void 0, void 0, function () {
-            var to, from, fromDirectory, toDirectory, fromPath, toPath, toObj, e_1, toPathComponents, toPath_1, toParentDirectory, fromObj, updateTime, _a, file, e_2, contents, _i, contents_1, filename;
-            var _this = this;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        to = options.to, from = options.from, fromDirectory = options.directory, toDirectory = options.toDirectory;
-                        if (!to || !from) {
-                            throw Error('Both to and from must be provided');
-                        }
-                        // If no "to" directory is provided, use the "from" directory
-                        if (!toDirectory) {
-                            toDirectory = fromDirectory;
-                        }
-                        fromPath = this.getPath(fromDirectory, from);
-                        toPath = this.getPath(toDirectory, to);
-                        // Test that the "to" and "from" locations are different
-                        if (fromPath === toPath) {
-                            return [2 /*return*/, {}];
-                        }
-                        if (toPath.startsWith(fromPath)) {
-                            throw Error('To path cannot contain the from path');
-                        }
-                        _b.label = 1;
-                    case 1:
-                        _b.trys.push([1, 3, , 6]);
-                        return [4 /*yield*/, this.stat({
-                                path: to,
-                                directory: toDirectory
-                            })];
-                    case 2:
-                        toObj = _b.sent();
-                        return [3 /*break*/, 6];
-                    case 3:
-                        e_1 = _b.sent();
-                        toPathComponents = to.split('/');
-                        toPathComponents.pop();
-                        toPath_1 = toPathComponents.join('/');
-                        if (!(toPathComponents.length > 0)) return [3 /*break*/, 5];
-                        return [4 /*yield*/, this.stat({
-                                path: toPath_1,
-                                directory: toDirectory,
-                            })];
-                    case 4:
-                        toParentDirectory = _b.sent();
-                        if (toParentDirectory.type !== 'directory') {
-                            throw new Error('Parent directory of the to path is a file');
-                        }
-                        _b.label = 5;
-                    case 5: return [3 /*break*/, 6];
-                    case 6:
-                        // Cannot overwrite a directory
-                        if (toObj && toObj.type === 'directory') {
-                            throw new Error('Cannot overwrite a directory with a file');
-                        }
-                        return [4 /*yield*/, this.stat({
-                                path: from,
-                                directory: fromDirectory,
-                            })];
-                    case 7:
-                        fromObj = _b.sent();
-                        updateTime = function (path, ctime, mtime) { return __awaiter(_this, void 0, void 0, function () {
-                            var fullPath, entry;
-                            return __generator(this, function (_a) {
-                                switch (_a.label) {
-                                    case 0:
-                                        fullPath = this.getPath(toDirectory, path);
-                                        return [4 /*yield*/, this.dbRequest('get', [fullPath])];
-                                    case 1:
-                                        entry = _a.sent();
-                                        entry.ctime = ctime;
-                                        entry.mtime = mtime;
-                                        return [4 /*yield*/, this.dbRequest('put', [entry])];
-                                    case 2:
-                                        _a.sent();
-                                        return [2 /*return*/];
-                                }
-                            });
-                        }); };
-                        _a = fromObj.type;
-                        switch (_a) {
-                            case 'file': return [3 /*break*/, 8];
-                            case 'directory': return [3 /*break*/, 15];
-                        }
-                        return [3 /*break*/, 28];
-                    case 8: return [4 /*yield*/, this.readFile({
-                            path: from,
-                            directory: fromDirectory
-                        })];
-                    case 9:
-                        file = _b.sent();
-                        if (!doRename) return [3 /*break*/, 11];
-                        return [4 /*yield*/, this.deleteFile({
-                                path: from,
-                                directory: fromDirectory
-                            })];
-                    case 10:
-                        _b.sent();
-                        _b.label = 11;
-                    case 11: 
-                    // Write the file to the new location
-                    return [4 /*yield*/, this.writeFile({
-                            path: to,
-                            directory: toDirectory,
-                            data: file.data
-                        })];
-                    case 12:
-                        // Write the file to the new location
-                        _b.sent();
-                        if (!doRename) return [3 /*break*/, 14];
-                        return [4 /*yield*/, updateTime(to, fromObj.ctime, fromObj.mtime)];
-                    case 13:
-                        _b.sent();
-                        _b.label = 14;
-                    case 14: 
-                    // Resolve promise
-                    return [2 /*return*/, {}];
-                    case 15:
-                        if (toObj) {
-                            throw Error('Cannot move a directory over an existing object');
-                        }
-                        _b.label = 16;
-                    case 16:
-                        _b.trys.push([16, 20, , 21]);
-                        // Create the to directory
-                        return [4 /*yield*/, this.mkdir({
-                                path: to,
-                                directory: toDirectory,
-                                recursive: false,
-                            })];
-                    case 17:
-                        // Create the to directory
-                        _b.sent();
-                        if (!doRename) return [3 /*break*/, 19];
-                        return [4 /*yield*/, updateTime(to, fromObj.ctime, fromObj.mtime)];
-                    case 18:
-                        _b.sent();
-                        _b.label = 19;
-                    case 19: return [3 /*break*/, 21];
-                    case 20:
-                        e_2 = _b.sent();
-                        return [3 /*break*/, 21];
-                    case 21: return [4 /*yield*/, this.readdir({
-                            path: from,
-                            directory: fromDirectory,
-                        })];
-                    case 22:
-                        contents = (_b.sent()).files;
-                        _i = 0, contents_1 = contents;
-                        _b.label = 23;
-                    case 23:
-                        if (!(_i < contents_1.length)) return [3 /*break*/, 26];
-                        filename = contents_1[_i];
-                        // Move item from the from directory to the to directory
-                        return [4 /*yield*/, this._copy({
-                                from: from + "/" + filename,
-                                to: to + "/" + filename,
-                                directory: fromDirectory,
-                                toDirectory: toDirectory,
-                            }, doRename)];
-                    case 24:
-                        // Move item from the from directory to the to directory
-                        _b.sent();
-                        _b.label = 25;
-                    case 25:
-                        _i++;
-                        return [3 /*break*/, 23];
-                    case 26:
-                        if (!doRename) return [3 /*break*/, 28];
-                        return [4 /*yield*/, this.rmdir({
-                                path: from,
-                                directory: fromDirectory
-                            })];
-                    case 27:
-                        _b.sent();
-                        _b.label = 28;
-                    case 28: return [2 /*return*/, {}];
-                }
-            });
-        });
-    };
-    FilesystemPluginWeb._debug = true;
-    return FilesystemPluginWeb;
-}(web_WebPlugin));
-
-var Filesystem = new FilesystemPluginWeb();
-
-//# sourceMappingURL=filesystem.js.map
-;// CONCATENATED MODULE: ./node_modules/scandit-capacitor-datacapture-core/node_modules/@capacitor/core/dist/esm/util.js
-var extend = function (target) {
-    var objs = [];
-    for (var _i = 1; _i < arguments.length; _i++) {
-        objs[_i - 1] = arguments[_i];
-    }
-    objs.forEach(function (o) {
-        if (o && typeof (o) === 'object') {
-            for (var k in o) {
-                if (o.hasOwnProperty(k)) {
-                    target[k] = o[k];
-                }
-            }
-        }
-    });
-    return target;
-};
-var uuid4 = function () {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
-    });
-};
-//# sourceMappingURL=util.js.map
-;// CONCATENATED MODULE: ./node_modules/scandit-capacitor-datacapture-core/node_modules/@capacitor/core/dist/esm/web/geolocation.js
-
-
-
-var GeolocationPluginWeb = /** @class */ (function (_super) {
-    __extends(GeolocationPluginWeb, _super);
-    function GeolocationPluginWeb() {
-        return _super.call(this, {
-            name: 'Geolocation',
-            platforms: ['web']
-        }) || this;
-    }
-    GeolocationPluginWeb.prototype.getCurrentPosition = function (options) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            return _this.requestPermissions().then(function (_result) {
-                window.navigator.geolocation.getCurrentPosition(function (pos) {
-                    resolve(pos);
-                }, function (err) {
-                    reject(err);
-                }, extend({
-                    enableHighAccuracy: true,
-                    timeout: 10000,
-                    maximumAge: 0
-                }, options));
-            });
-        });
-    };
-    GeolocationPluginWeb.prototype.watchPosition = function (options, callback) {
-        var id = window.navigator.geolocation.watchPosition(function (pos) {
-            callback(pos);
-        }, function (err) {
-            callback(null, err);
-        }, extend({
-            enableHighAccuracy: true,
-            timeout: 10000,
-            maximumAge: 0
-        }, options));
-        return "" + id;
-    };
-    GeolocationPluginWeb.prototype.clearWatch = function (options) {
-        window.navigator.geolocation.clearWatch(parseInt(options.id, 10));
-        return Promise.resolve();
-    };
-    return GeolocationPluginWeb;
-}(web_WebPlugin));
-
-var Geolocation = new GeolocationPluginWeb();
-
-//# sourceMappingURL=geolocation.js.map
-;// CONCATENATED MODULE: ./node_modules/scandit-capacitor-datacapture-core/node_modules/@capacitor/core/dist/esm/web/device.js
-
-
-
-var DevicePluginWeb = /** @class */ (function (_super) {
-    __extends(DevicePluginWeb, _super);
-    function DevicePluginWeb() {
-        return _super.call(this, {
-            name: 'Device',
-            platforms: ['web']
-        }) || this;
-    }
-    DevicePluginWeb.prototype.getInfo = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var ua, uaFields;
-            return __generator(this, function (_a) {
-                ua = navigator.userAgent;
-                uaFields = this.parseUa(ua);
-                return [2 /*return*/, Promise.resolve({
-                        model: uaFields.model,
-                        platform: 'web',
-                        appVersion: '',
-                        appBuild: '',
-                        appId: '',
-                        appName: '',
-                        operatingSystem: uaFields.operatingSystem,
-                        osVersion: uaFields.osVersion,
-                        manufacturer: navigator.vendor,
-                        isVirtual: false,
-                        uuid: this.getUid()
-                    })];
-            });
-        });
-    };
-    DevicePluginWeb.prototype.getBatteryInfo = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var battery, e_1;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        battery = {};
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 3, , 4]);
-                        return [4 /*yield*/, navigator.getBattery()];
-                    case 2:
-                        battery = _a.sent();
-                        return [3 /*break*/, 4];
-                    case 3:
-                        e_1 = _a.sent();
-                        return [3 /*break*/, 4];
-                    case 4: return [2 /*return*/, Promise.resolve({
-                            batteryLevel: battery.level,
-                            isCharging: battery.charging
-                        })];
-                }
-            });
-        });
-    };
-    DevicePluginWeb.prototype.getLanguageCode = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                return [2 /*return*/, {
-                        value: navigator.language
-                    }];
-            });
-        });
-    };
-    DevicePluginWeb.prototype.parseUa = function (_ua) {
-        var uaFields = {};
-        var start = _ua.indexOf('(') + 1;
-        var end = _ua.indexOf(') AppleWebKit');
-        if (_ua.indexOf(') Gecko') !== -1) {
-            end = _ua.indexOf(') Gecko');
-        }
-        var fields = _ua.substring(start, end);
-        if (_ua.indexOf('Android') !== -1) {
-            uaFields.model = fields.replace('; wv', '').split('; ').pop().split(' Build')[0];
-            uaFields.osVersion = fields.split('; ')[1];
-        }
-        else {
-            uaFields.model = fields.split('; ')[0];
-            if (navigator.oscpu) {
-                uaFields.osVersion = navigator.oscpu;
-            }
-            else {
-                if (_ua.indexOf('Windows') !== -1) {
-                    uaFields.osVersion = fields;
-                }
-                else {
-                    var lastParts = fields.split('; ').pop().replace(' like Mac OS X', '').split(' ');
-                    uaFields.osVersion = lastParts[lastParts.length - 1].replace(/_/g, '.');
-                }
-            }
-        }
-        if (/android/i.test(_ua)) {
-            uaFields.operatingSystem = 'android';
-        }
-        else if (/iPad|iPhone|iPod/.test(_ua) && !window.MSStream) {
-            uaFields.operatingSystem = 'ios';
-        }
-        else if (/Win/.test(_ua)) {
-            uaFields.operatingSystem = 'windows';
-        }
-        else if (/Mac/i.test(_ua)) {
-            uaFields.operatingSystem = 'mac';
-        }
-        else {
-            uaFields.operatingSystem = 'unknown';
-        }
-        return uaFields;
-    };
-    DevicePluginWeb.prototype.getUid = function () {
-        var uid = window.localStorage.getItem('_capuid');
-        if (uid) {
-            return uid;
-        }
-        uid = uuid4();
-        window.localStorage.setItem('_capuid', uid);
-        return uid;
-    };
-    return DevicePluginWeb;
-}(web_WebPlugin));
-
-var Device = new DevicePluginWeb();
-
-//# sourceMappingURL=device.js.map
-;// CONCATENATED MODULE: ./node_modules/scandit-capacitor-datacapture-core/node_modules/@capacitor/core/dist/esm/web/local-notifications.js
-
-
-var LocalNotificationsPluginWeb = /** @class */ (function (_super) {
-    __extends(LocalNotificationsPluginWeb, _super);
-    function LocalNotificationsPluginWeb() {
-        var _this = _super.call(this, {
-            name: 'LocalNotifications',
-            platforms: ['web']
-        }) || this;
-        _this.pending = [];
-        return _this;
-    }
-    LocalNotificationsPluginWeb.prototype.createChannel = function (channel) {
-        throw new Error('Feature not available in the browser. ' + channel.id);
-    };
-    LocalNotificationsPluginWeb.prototype.deleteChannel = function (channel) {
-        throw new Error('Feature not available in the browser. ' + channel.id);
-    };
-    LocalNotificationsPluginWeb.prototype.listChannels = function () {
-        throw new Error('Feature not available in the browser');
-    };
-    LocalNotificationsPluginWeb.prototype.sendPending = function () {
-        var _this = this;
-        var toRemove = [];
-        var now = +new Date;
-        this.pending.forEach(function (localNotification) {
-            if (localNotification.schedule && localNotification.schedule.at) {
-                if (+localNotification.schedule.at <= now) {
-                    _this.buildNotification(localNotification);
-                    toRemove.push(localNotification);
-                }
-            }
-        });
-        console.log('Sent pending, removing', toRemove);
-        this.pending = this.pending.filter(function (localNotification) { return !toRemove.find(function (ln) { return ln === localNotification; }); });
-    };
-    LocalNotificationsPluginWeb.prototype.sendNotification = function (localNotification) {
-        var _this = this;
-        var l = localNotification;
-        if (localNotification.schedule && localNotification.schedule.at) {
-            var diff = +localNotification.schedule.at - +new Date;
-            this.pending.push(l);
-            setTimeout(function () {
-                _this.sendPending();
-            }, diff);
+    removeWindowListener(handle) {
+        if (!handle) {
             return;
         }
-        this.buildNotification(localNotification);
-    };
-    LocalNotificationsPluginWeb.prototype.buildNotification = function (localNotification) {
-        var l = localNotification;
-        return new Notification(l.title, {
-            body: l.body
-        });
-    };
-    LocalNotificationsPluginWeb.prototype.schedule = function (options) {
-        var _this = this;
-        var notifications = [];
-        options.notifications.forEach(function (notification) {
-            notifications.push(_this.sendNotification(notification));
-        });
-        return Promise.resolve({
-            notifications: options.notifications.map(function (notification) { return { id: '' + notification.id }; })
-        });
-    };
-    LocalNotificationsPluginWeb.prototype.getPending = function () {
-        return Promise.resolve({
-            notifications: this.pending.map(function (localNotification) {
-                return {
-                    id: '' + localNotification.id
-                };
-            })
-        });
-    };
-    LocalNotificationsPluginWeb.prototype.registerActionTypes = function (_options) {
-        throw new Error('Method not implemented.');
-    };
-    LocalNotificationsPluginWeb.prototype.cancel = function (pending) {
-        console.log('Cancel these', pending);
-        this.pending = this.pending.filter(function (localNotification) { return !pending.notifications.find(function (ln) { return ln.id === '' + localNotification.id; }); });
-        return Promise.resolve();
-    };
-    LocalNotificationsPluginWeb.prototype.areEnabled = function () {
-        return Promise.resolve({
-            value: Notification.permission === 'granted'
-        });
-    };
-    LocalNotificationsPluginWeb.prototype.requestPermission = function () {
-        return new Promise(function (resolve) {
-            Notification.requestPermission(function (result) {
-                var granted = true;
-                if (result === 'denied' || result === 'default') {
-                    granted = false;
-                }
-                resolve({ granted: granted });
-            });
-        });
-    };
-    LocalNotificationsPluginWeb.prototype.requestPermissions = function () {
-        return new Promise(function (resolve, reject) {
-            Notification.requestPermission(function (result) {
-                if (result === 'denied' || result === 'default') {
-                    reject(result);
-                    return;
-                }
-                resolve({
-                    results: [result]
-                });
-            });
-        });
-    };
-    return LocalNotificationsPluginWeb;
-}(web_WebPlugin));
-
-var LocalNotifications = new LocalNotificationsPluginWeb();
-
-//# sourceMappingURL=local-notifications.js.map
-;// CONCATENATED MODULE: ./node_modules/scandit-capacitor-datacapture-core/node_modules/@capacitor/core/dist/esm/web/share.js
-
-
-var SharePluginWeb = /** @class */ (function (_super) {
-    __extends(SharePluginWeb, _super);
-    function SharePluginWeb() {
-        return _super.call(this, {
-            name: 'Share',
-            platforms: ['web']
-        }) || this;
+        window.removeEventListener(handle.windowEventName, handle.handler);
+        handle.registered = false;
     }
-    SharePluginWeb.prototype.share = function (options) {
-        if (!navigator.share) {
-            return Promise.reject('Web Share API not available');
+}
+
+const dist_WebView = /*#__PURE__*/ (/* unused pure expression or super */ null && (dist_registerPlugin('WebView')));
+/******** END WEB VIEW PLUGIN ********/
+/******** COOKIES PLUGIN ********/
+/**
+ * Safely web encode a string value (inspired by js-cookie)
+ * @param str The string value to encode
+ */
+const encode = (str) => encodeURIComponent(str)
+    .replace(/%(2[346B]|5E|60|7C)/g, decodeURIComponent)
+    .replace(/[()]/g, escape);
+class CapacitorCookiesPluginWeb extends dist_WebPlugin {
+    async setCookie(options) {
+        try {
+            // Safely Encoded Key/Value
+            const encodedKey = encode(options.key);
+            const encodedValue = encode(options.value);
+            // Clean & sanitize options
+            const expires = `; expires=${(options.expires || '').replace('expires=', '')}`; // Default is "; expires="
+            const path = (options.path || '/').replace('path=', ''); // Default is "path=/"
+            document.cookie = `${encodedKey}=${encodedValue || ''}${expires}; path=${path}`;
         }
-        return navigator.share({
-            title: options.title,
-            text: options.text,
-            url: options.url
-        });
-    };
-    return SharePluginWeb;
-}(web_WebPlugin));
-
-var Share = new SharePluginWeb();
-
-//# sourceMappingURL=share.js.map
-;// CONCATENATED MODULE: ./node_modules/scandit-capacitor-datacapture-core/node_modules/@capacitor/core/dist/esm/web/modals.js
-
-
-var ModalsPluginWeb = /** @class */ (function (_super) {
-    __extends(ModalsPluginWeb, _super);
-    function ModalsPluginWeb() {
-        return _super.call(this, {
-            name: 'Modals',
-            platforms: ['web']
-        }) || this;
+        catch (error) {
+            return Promise.reject(error);
+        }
     }
-    ModalsPluginWeb.prototype.alert = function (options) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                window.alert(options.message);
-                return [2 /*return*/, Promise.resolve()];
-            });
-        });
-    };
-    ModalsPluginWeb.prototype.prompt = function (options) {
-        return __awaiter(this, void 0, void 0, function () {
-            var val;
-            return __generator(this, function (_a) {
-                val = window.prompt(options.message, options.inputText || '');
-                return [2 /*return*/, Promise.resolve({
-                        value: val,
-                        cancelled: val === null
-                    })];
-            });
-        });
-    };
-    ModalsPluginWeb.prototype.confirm = function (options) {
-        return __awaiter(this, void 0, void 0, function () {
-            var val;
-            return __generator(this, function (_a) {
-                val = window.confirm(options.message);
-                return [2 /*return*/, Promise.resolve({
-                        value: val
-                    })];
-            });
-        });
-    };
-    ModalsPluginWeb.prototype.showActions = function (options) {
-        return __awaiter(this, void 0, void 0, function () {
-            var _this = this;
-            return __generator(this, function (_a) {
-                return [2 /*return*/, new Promise(function (resolve, _reject) { return __awaiter(_this, void 0, void 0, function () {
-                        var actionSheet;
-                        var _this = this;
-                        return __generator(this, function (_a) {
-                            actionSheet = document.querySelector('pwa-action-sheet');
-                            if (!actionSheet) {
-                                actionSheet = document.createElement('pwa-action-sheet');
-                                document.body.appendChild(actionSheet);
-                            }
-                            actionSheet.header = options.title;
-                            actionSheet.cancelable = false;
-                            actionSheet.options = options.options;
-                            actionSheet.addEventListener('onSelection', function (e) { return __awaiter(_this, void 0, void 0, function () {
-                                var selection;
-                                return __generator(this, function (_a) {
-                                    selection = e.detail;
-                                    resolve({
-                                        index: selection
-                                    });
-                                    return [2 /*return*/];
-                                });
-                            }); });
-                            return [2 /*return*/];
-                        });
-                    }); })];
-            });
-        });
-    };
-    return ModalsPluginWeb;
-}(web_WebPlugin));
-
-var Modals = new ModalsPluginWeb();
-
-//# sourceMappingURL=modals.js.map
-;// CONCATENATED MODULE: ./node_modules/scandit-capacitor-datacapture-core/node_modules/@capacitor/core/dist/esm/web/motion.js
-
-
-var MotionPluginWeb = /** @class */ (function (_super) {
-    __extends(MotionPluginWeb, _super);
-    function MotionPluginWeb() {
-        var _this = _super.call(this, {
-            name: 'Motion'
-        }) || this;
-        _this.registerWindowListener('devicemotion', 'accel');
-        _this.registerWindowListener('deviceorientation', 'orientation');
-        return _this;
+    async deleteCookie(options) {
+        try {
+            document.cookie = `${options.key}=; Max-Age=0`;
+        }
+        catch (error) {
+            return Promise.reject(error);
+        }
     }
-    return MotionPluginWeb;
-}(web_WebPlugin));
-
-var Motion = new MotionPluginWeb();
-
-//# sourceMappingURL=motion.js.map
-;// CONCATENATED MODULE: ./node_modules/scandit-capacitor-datacapture-core/node_modules/@capacitor/core/dist/esm/web/network.js
-
-
-var NetworkPluginWeb = /** @class */ (function (_super) {
-    __extends(NetworkPluginWeb, _super);
-    function NetworkPluginWeb() {
-        var _this = _super.call(this, {
-            name: 'Network',
-            platforms: ['web']
-        }) || this;
-        _this.listenerFunction = null;
-        return _this;
-    }
-    NetworkPluginWeb.prototype.getStatus = function () {
-        return new Promise(function (resolve, reject) {
-            if (!window.navigator) {
-                reject('Network info not available');
-                return;
+    async clearCookies() {
+        try {
+            const cookies = document.cookie.split(';') || [];
+            for (const cookie of cookies) {
+                document.cookie = cookie
+                    .replace(/^ +/, '')
+                    .replace(/=.*/, `=;expires=${new Date().toUTCString()};path=/`);
             }
-            var connected = window.navigator.onLine;
-            var connection = window.navigator.connection || window.navigator.mozConnection || window.navigator.webkitConnection;
-            var connectionType = connection ? (connection.type || connection.effectiveType) : 'wifi';
-            resolve({
-                connected: connected,
-                connectionType: connected ? connectionType : 'none'
-            });
-        });
-    };
-    NetworkPluginWeb.prototype.addListener = function (eventName, listenerFunc) {
-        var thisRef = this;
-        var connection = window.navigator.connection || window.navigator.mozConnection || window.navigator.webkitConnection;
-        var connectionType = connection ? (connection.type || connection.effectiveType) : 'wifi';
-        var onlineBindFunc = listenerFunc.bind(thisRef, { connected: true, connectionType: connectionType });
-        var offlineBindFunc = listenerFunc.bind(thisRef, { connected: false, connectionType: 'none' });
-        if (eventName.localeCompare('networkStatusChange') === 0) {
-            window.addEventListener('online', onlineBindFunc);
-            window.addEventListener('offline', offlineBindFunc);
-            return {
-                remove: function () {
-                    window.removeEventListener('online', onlineBindFunc);
-                    window.removeEventListener('offline', offlineBindFunc);
-                }
-            };
         }
-    };
-    return NetworkPluginWeb;
-}(web_WebPlugin));
-
-var Network = new NetworkPluginWeb();
-
-//# sourceMappingURL=network.js.map
-;// CONCATENATED MODULE: ./node_modules/scandit-capacitor-datacapture-core/node_modules/@capacitor/core/dist/esm/web/permissions.js
-
-
-
-var PermissionsPluginWeb = /** @class */ (function (_super) {
-    __extends(PermissionsPluginWeb, _super);
-    function PermissionsPluginWeb() {
-        return _super.call(this, {
-            name: 'Permissions'
-        }) || this;
+        catch (error) {
+            return Promise.reject(error);
+        }
     }
-    PermissionsPluginWeb.prototype.query = function (options) {
-        return __awaiter(this, void 0, void 0, function () {
-            var navigator, name, ret;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        navigator = window.navigator;
-                        if (!navigator.permissions) {
-                            return [2 /*return*/, Promise.reject('This browser does not support the Permissions API')];
-                        }
-                        name = options.name === PermissionType.Photos ? 'camera' : options.name;
-                        return [4 /*yield*/, navigator.permissions.query({ name: name })];
-                    case 1:
-                        ret = _a.sent();
-                        return [2 /*return*/, {
-                                state: ret.state
-                            }];
-                }
-            });
-        });
-    };
-    return PermissionsPluginWeb;
-}(web_WebPlugin));
-
-var Permissions = new PermissionsPluginWeb();
-
-//# sourceMappingURL=permissions.js.map
-;// CONCATENATED MODULE: ./node_modules/scandit-capacitor-datacapture-core/node_modules/@capacitor/core/dist/esm/web/splash-screen.js
-
-
-var SplashScreenPluginWeb = /** @class */ (function (_super) {
-    __extends(SplashScreenPluginWeb, _super);
-    function SplashScreenPluginWeb() {
-        return _super.call(this, {
-            name: 'SplashScreen',
-            platforms: ['web']
-        }) || this;
+    async clearAllCookies() {
+        try {
+            await this.clearCookies();
+        }
+        catch (error) {
+            return Promise.reject(error);
+        }
     }
-    SplashScreenPluginWeb.prototype.show = function (_options, _callback) {
-        return Promise.resolve();
+}
+const CapacitorCookies = dist_registerPlugin('CapacitorCookies', {
+    web: () => new CapacitorCookiesPluginWeb(),
+});
+// UTILITY FUNCTIONS
+/**
+ * Read in a Blob value and return it as a base64 string
+ * @param blob The blob value to convert to a base64 string
+ */
+const readBlobAsBase64 = async (blob) => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+        const base64String = reader.result;
+        // remove prefix "data:application/pdf;base64,"
+        resolve(base64String.indexOf(',') >= 0
+            ? base64String.split(',')[1]
+            : base64String);
     };
-    SplashScreenPluginWeb.prototype.hide = function (_options, _callback) {
-        return Promise.resolve();
-    };
-    return SplashScreenPluginWeb;
-}(web_WebPlugin));
-
-var SplashScreen = new SplashScreenPluginWeb();
-
-//# sourceMappingURL=splash-screen.js.map
-;// CONCATENATED MODULE: ./node_modules/scandit-capacitor-datacapture-core/node_modules/@capacitor/core/dist/esm/web/storage.js
-
-
-var StoragePluginWeb = /** @class */ (function (_super) {
-    __extends(StoragePluginWeb, _super);
-    function StoragePluginWeb() {
-        var _this = _super.call(this, {
-            name: 'Storage',
-            platforms: ['web']
-        }) || this;
-        _this.KEY_PREFIX = '_cap_';
-        return _this;
-    }
-    StoragePluginWeb.prototype.get = function (options) {
-        var _this = this;
-        return new Promise(function (resolve, _reject) {
-            resolve({
-                value: window.localStorage.getItem(_this.makeKey(options.key))
-            });
-        });
-    };
-    StoragePluginWeb.prototype.set = function (options) {
-        var _this = this;
-        return new Promise(function (resolve, _reject) {
-            window.localStorage.setItem(_this.makeKey(options.key), options.value);
-            resolve();
-        });
-    };
-    StoragePluginWeb.prototype.remove = function (options) {
-        var _this = this;
-        return new Promise(function (resolve, _reject) {
-            window.localStorage.removeItem(_this.makeKey(options.key));
-            resolve();
-        });
-    };
-    StoragePluginWeb.prototype.keys = function () {
-        var _this = this;
-        return new Promise(function (resolve, _reject) {
-            resolve({
-                keys: Object.keys(localStorage).filter(function (k) { return _this.isKey(k); }).map(function (k) { return _this.getKey(k); })
-            });
-        });
-    };
-    StoragePluginWeb.prototype.clear = function () {
-        var _this = this;
-        return new Promise(function (resolve, _reject) {
-            Object.keys(localStorage)
-                .filter(function (k) { return _this.isKey(k); })
-                .forEach(function (k) { return window.localStorage.removeItem(k); });
-            resolve();
-        });
-    };
-    StoragePluginWeb.prototype.makeKey = function (key) {
-        return this.KEY_PREFIX + key;
-    };
-    StoragePluginWeb.prototype.isKey = function (key) {
-        return key.indexOf(this.KEY_PREFIX) === 0;
-    };
-    StoragePluginWeb.prototype.getKey = function (key) {
-        return key.substr(this.KEY_PREFIX.length);
-    };
-    return StoragePluginWeb;
-}(web_WebPlugin));
-
-var Storage = new StoragePluginWeb();
-
-//# sourceMappingURL=storage.js.map
-;// CONCATENATED MODULE: ./node_modules/scandit-capacitor-datacapture-core/node_modules/@capacitor/core/dist/esm/web/toast.js
-
-
-var ToastPluginWeb = /** @class */ (function (_super) {
-    __extends(ToastPluginWeb, _super);
-    function ToastPluginWeb() {
-        return _super.call(this, {
-            name: 'Toast',
-            platforms: ['web']
-        }) || this;
-    }
-    ToastPluginWeb.prototype.show = function (options) {
-        return __awaiter(this, void 0, void 0, function () {
-            var duration, toast;
-            return __generator(this, function (_a) {
-                duration = 2000;
-                if (options.duration) {
-                    duration = options.duration === 'long' ? 3500 : 2000;
-                }
-                toast = document.createElement('pwa-toast');
-                toast.duration = duration;
-                toast.message = options.text;
-                document.body.appendChild(toast);
-                return [2 /*return*/];
-            });
-        });
-    };
-    return ToastPluginWeb;
-}(web_WebPlugin));
-
-var Toast = new ToastPluginWeb();
-
-//# sourceMappingURL=toast.js.map
-;// CONCATENATED MODULE: ./node_modules/scandit-capacitor-datacapture-core/node_modules/@capacitor/core/dist/esm/web-plugins.js
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-mergeWebPlugins(global_Plugins);
-var web_plugins_registerWebPlugin = function (plugin) {
-    mergeWebPlugin(global_Plugins, plugin);
+    reader.onerror = (error) => reject(error);
+    reader.readAsDataURL(blob);
+});
+/**
+ * Normalize an HttpHeaders map by lowercasing all of the values
+ * @param headers The HttpHeaders object to normalize
+ */
+const normalizeHttpHeaders = (headers = {}) => {
+    const originalKeys = Object.keys(headers);
+    const loweredKeys = Object.keys(headers).map(k => k.toLocaleLowerCase());
+    const normalized = loweredKeys.reduce((acc, key, index) => {
+        acc[key] = headers[originalKeys[index]];
+        return acc;
+    }, {});
+    return normalized;
 };
-//# sourceMappingURL=web-plugins.js.map
-;// CONCATENATED MODULE: ./node_modules/scandit-capacitor-datacapture-core/node_modules/@capacitor/core/dist/esm/index.js
-
-
+/**
+ * Builds a string of url parameters that
+ * @param params A map of url parameters
+ * @param shouldEncode true if you should encodeURIComponent() the values (true by default)
+ */
+const buildUrlParams = (params, shouldEncode = true) => {
+    if (!params)
+        return null;
+    const output = Object.entries(params).reduce((accumulator, entry) => {
+        const [key, value] = entry;
+        let encodedValue;
+        let item;
+        if (Array.isArray(value)) {
+            item = '';
+            value.forEach(str => {
+                encodedValue = shouldEncode ? encodeURIComponent(str) : str;
+                item += `${key}=${encodedValue}&`;
+            });
+            // last character will always be "&" so slice it off
+            item.slice(0, -1);
+        }
+        else {
+            encodedValue = shouldEncode ? encodeURIComponent(value) : value;
+            item = `${key}=${encodedValue}`;
+        }
+        return `${accumulator}&${item}`;
+    }, '');
+    // Remove initial "&" from the reduce
+    return output.substr(1);
+};
+/**
+ * Build the RequestInit object based on the options passed into the initial request
+ * @param options The Http plugin options
+ * @param extra Any extra RequestInit values
+ */
+const buildRequestInit = (options, extra = {}) => {
+    const output = Object.assign({ method: options.method || 'GET', headers: options.headers }, extra);
+    // Get the content-type
+    const headers = normalizeHttpHeaders(options.headers);
+    const type = headers['content-type'] || '';
+    // If body is already a string, then pass it through as-is.
+    if (typeof options.data === 'string') {
+        output.body = options.data;
+    }
+    // Build request initializers based off of content-type
+    else if (type.includes('application/x-www-form-urlencoded')) {
+        const params = new URLSearchParams();
+        for (const [key, value] of Object.entries(options.data || {})) {
+            params.set(key, value);
+        }
+        output.body = params.toString();
+    }
+    else if (type.includes('multipart/form-data')) {
+        const form = new FormData();
+        if (options.data instanceof FormData) {
+            options.data.forEach((value, key) => {
+                form.append(key, value);
+            });
+        }
+        else {
+            for (const key of Object.keys(options.data)) {
+                form.append(key, options.data[key]);
+            }
+        }
+        output.body = form;
+        const headers = new Headers(output.headers);
+        headers.delete('content-type'); // content-type will be set by `window.fetch` to includy boundary
+        output.headers = headers;
+    }
+    else if (type.includes('application/json') ||
+        typeof options.data === 'object') {
+        output.body = JSON.stringify(options.data);
+    }
+    return output;
+};
+// WEB IMPLEMENTATION
+class CapacitorHttpPluginWeb extends dist_WebPlugin {
+    /**
+     * Perform an Http request given a set of options
+     * @param options Options to build the HTTP request
+     */
+    async request(options) {
+        const requestInit = buildRequestInit(options, options.webFetchExtra);
+        const urlParams = buildUrlParams(options.params, options.shouldEncodeUrlParams);
+        const url = urlParams ? `${options.url}?${urlParams}` : options.url;
+        const response = await fetch(url, requestInit);
+        const contentType = response.headers.get('content-type') || '';
+        // Default to 'text' responseType so no parsing happens
+        let { responseType = 'text' } = response.ok ? options : {};
+        // If the response content-type is json, force the response to be json
+        if (contentType.includes('application/json')) {
+            responseType = 'json';
+        }
+        let data;
+        let blob;
+        switch (responseType) {
+            case 'arraybuffer':
+            case 'blob':
+                blob = await response.blob();
+                data = await readBlobAsBase64(blob);
+                break;
+            case 'json':
+                data = await response.json();
+                break;
+            case 'document':
+            case 'text':
+            default:
+                data = await response.text();
+        }
+        // Convert fetch headers to Capacitor HttpHeaders
+        const headers = {};
+        response.headers.forEach((value, key) => {
+            headers[key] = value;
+        });
+        return {
+            data,
+            headers,
+            status: response.status,
+            url: response.url,
+        };
+    }
+    /**
+     * Perform an Http GET request given a set of options
+     * @param options Options to build the HTTP request
+     */
+    async get(options) {
+        return this.request(Object.assign(Object.assign({}, options), { method: 'GET' }));
+    }
+    /**
+     * Perform an Http POST request given a set of options
+     * @param options Options to build the HTTP request
+     */
+    async post(options) {
+        return this.request(Object.assign(Object.assign({}, options), { method: 'POST' }));
+    }
+    /**
+     * Perform an Http PUT request given a set of options
+     * @param options Options to build the HTTP request
+     */
+    async put(options) {
+        return this.request(Object.assign(Object.assign({}, options), { method: 'PUT' }));
+    }
+    /**
+     * Perform an Http PATCH request given a set of options
+     * @param options Options to build the HTTP request
+     */
+    async patch(options) {
+        return this.request(Object.assign(Object.assign({}, options), { method: 'PATCH' }));
+    }
+    /**
+     * Perform an Http DELETE request given a set of options
+     * @param options Options to build the HTTP request
+     */
+    async delete(options) {
+        return this.request(Object.assign(Object.assign({}, options), { method: 'DELETE' }));
+    }
+}
+const CapacitorHttp = dist_registerPlugin('CapacitorHttp', {
+    web: () => new CapacitorHttpPluginWeb(),
+});
+/******** END HTTP PLUGIN ********/
 
 
 //# sourceMappingURL=index.js.map
+
 ;// CONCATENATED MODULE: ./node_modules/scandit-capacitor-datacapture-core/dist/esm/ts/Capacitor/CommonCapacitor.js
 
 class CapacitorError {
@@ -2902,7 +1166,7 @@ const capacitorExec = (successCallback, errorCallback, pluginName, functionName,
                 // tslint:disable-next-line:no-console
                 console.log(`[SCANDIT WARNING] Took ${callbackDuration}ms to execute callback that's blocking native execution. You should keep this duration short, for more information, take a look at the documentation.`);
             }
-            global_Plugins[pluginName].finishCallback([{
+            core_dist_Plugins[pluginName].finishCallback([{
                     finishCallbackID,
                     result: callbackResult,
                 }]);
@@ -2917,14 +1181,14 @@ const capacitorExec = (successCallback, errorCallback, pluginName, functionName,
             errorCallback(error);
         }
     };
-    global_Plugins[pluginName][functionName](args).then(extendedSuccessCallback, extendedErrorCallback);
+    core_dist_Plugins[pluginName][functionName](args).then(extendedSuccessCallback, extendedErrorCallback);
 };
 const doReturnWithFinish = (finishCallbackID, result) => {
-    if (global_Plugins.ScanditBarcodeNative) {
-        global_Plugins.ScanditBarcodeNative.finishCallback({ result: Object.assign({ finishCallbackID }, result) });
+    if (core_dist_Plugins.ScanditBarcodeNative) {
+        core_dist_Plugins.ScanditBarcodeNative.finishCallback({ result: Object.assign({ finishCallbackID }, result) });
     }
-    else if (global_Plugins.ScanditIdNative) {
-        global_Plugins.ScanditIdNative.finishCallback({ result: Object.assign({ finishCallbackID }, result) });
+    else if (core_dist_Plugins.ScanditIdNative) {
+        core_dist_Plugins.ScanditIdNative.finishCallback({ result: Object.assign({ finishCallbackID }, result) });
     }
     return result;
 };
@@ -2998,7 +1262,7 @@ class Serializeable_DefaultSerializeable {
 }
 //# sourceMappingURL=Serializeable.js.map
 ;// CONCATENATED MODULE: ./node_modules/scandit-capacitor-datacapture-core/dist/esm/ts/Common.js
-var Common_decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -3021,10 +1285,10 @@ class Point extends Serializeable_DefaultSerializeable {
         return new Point(json.x, json.y);
     }
 }
-Common_decorate([
+__decorate([
     nameForSerialization('x')
 ], Point.prototype, "_x", void 0);
-Common_decorate([
+__decorate([
     nameForSerialization('y')
 ], Point.prototype, "_y", void 0);
 class Quadrilateral extends Serializeable_DefaultSerializeable {
@@ -3051,16 +1315,16 @@ class Quadrilateral extends Serializeable_DefaultSerializeable {
         return new Quadrilateral(Point.fromJSON(json.topLeft), Point.fromJSON(json.topRight), Point.fromJSON(json.bottomRight), Point.fromJSON(json.bottomLeft));
     }
 }
-Common_decorate([
+__decorate([
     nameForSerialization('topLeft')
 ], Quadrilateral.prototype, "_topLeft", void 0);
-Common_decorate([
+__decorate([
     nameForSerialization('topRight')
 ], Quadrilateral.prototype, "_topRight", void 0);
-Common_decorate([
+__decorate([
     nameForSerialization('bottomRight')
 ], Quadrilateral.prototype, "_bottomRight", void 0);
-Common_decorate([
+__decorate([
     nameForSerialization('bottomLeft')
 ], Quadrilateral.prototype, "_bottomLeft", void 0);
 var MeasureUnit;
@@ -3085,10 +1349,10 @@ class NumberWithUnit extends Serializeable_DefaultSerializeable {
         return new NumberWithUnit(json.value, json.unit);
     }
 }
-Common_decorate([
+__decorate([
     nameForSerialization('value')
 ], NumberWithUnit.prototype, "_value", void 0);
-Common_decorate([
+__decorate([
     nameForSerialization('unit')
 ], NumberWithUnit.prototype, "_unit", void 0);
 class PointWithUnit extends Serializeable_DefaultSerializeable {
@@ -3110,10 +1374,10 @@ class PointWithUnit extends Serializeable_DefaultSerializeable {
         return new PointWithUnit(new NumberWithUnit(0, MeasureUnit.Pixel), new NumberWithUnit(0, MeasureUnit.Pixel));
     }
 }
-Common_decorate([
+__decorate([
     nameForSerialization('x')
 ], PointWithUnit.prototype, "_x", void 0);
-Common_decorate([
+__decorate([
     nameForSerialization('y')
 ], PointWithUnit.prototype, "_y", void 0);
 class Rect extends Serializeable_DefaultSerializeable {
@@ -3129,10 +1393,10 @@ class Rect extends Serializeable_DefaultSerializeable {
         return this._size;
     }
 }
-Common_decorate([
+__decorate([
     nameForSerialization('origin')
 ], Rect.prototype, "_origin", void 0);
-Common_decorate([
+__decorate([
     nameForSerialization('size')
 ], Rect.prototype, "_size", void 0);
 class RectWithUnit extends Serializeable_DefaultSerializeable {
@@ -3148,10 +1412,10 @@ class RectWithUnit extends Serializeable_DefaultSerializeable {
         return this._size;
     }
 }
-Common_decorate([
+__decorate([
     nameForSerialization('origin')
 ], RectWithUnit.prototype, "_origin", void 0);
-Common_decorate([
+__decorate([
     nameForSerialization('size')
 ], RectWithUnit.prototype, "_size", void 0);
 class SizeWithUnit extends Serializeable_DefaultSerializeable {
@@ -3167,10 +1431,10 @@ class SizeWithUnit extends Serializeable_DefaultSerializeable {
         return this._height;
     }
 }
-Common_decorate([
+__decorate([
     nameForSerialization('width')
 ], SizeWithUnit.prototype, "_width", void 0);
-Common_decorate([
+__decorate([
     nameForSerialization('height')
 ], SizeWithUnit.prototype, "_height", void 0);
 class Size extends Serializeable_DefaultSerializeable {
@@ -3189,10 +1453,10 @@ class Size extends Serializeable_DefaultSerializeable {
         return new Size(json.width, json.height);
     }
 }
-Common_decorate([
+__decorate([
     nameForSerialization('width')
 ], Size.prototype, "_width", void 0);
-Common_decorate([
+__decorate([
     nameForSerialization('height')
 ], Size.prototype, "_height", void 0);
 class SizeWithAspect {
@@ -3207,10 +1471,10 @@ class SizeWithAspect {
         return this._aspect;
     }
 }
-Common_decorate([
+__decorate([
     nameForSerialization('size')
 ], SizeWithAspect.prototype, "_size", void 0);
-Common_decorate([
+__decorate([
     nameForSerialization('aspect')
 ], SizeWithAspect.prototype, "_aspect", void 0);
 var SizingMode;
@@ -3313,16 +1577,16 @@ class SizeWithUnitAndAspect {
         }
     }
 }
-Common_decorate([
+__decorate([
     nameForSerialization('widthAndHeight')
 ], SizeWithUnitAndAspect.prototype, "_widthAndHeight", void 0);
-Common_decorate([
+__decorate([
     nameForSerialization('widthAndAspectRatio')
 ], SizeWithUnitAndAspect.prototype, "_widthAndAspectRatio", void 0);
-Common_decorate([
+__decorate([
     nameForSerialization('heightAndAspectRatio')
 ], SizeWithUnitAndAspect.prototype, "_heightAndAspectRatio", void 0);
-Common_decorate([
+__decorate([
     nameForSerialization('shorterDimensionAndAspectRatio')
 ], SizeWithUnitAndAspect.prototype, "_shorterDimensionAndAspectRatio", void 0);
 class MarginsWithUnit extends Serializeable_DefaultSerializeable {
@@ -3352,16 +1616,16 @@ class MarginsWithUnit extends Serializeable_DefaultSerializeable {
         return new MarginsWithUnit(new NumberWithUnit(0, MeasureUnit.Pixel), new NumberWithUnit(0, MeasureUnit.Pixel), new NumberWithUnit(0, MeasureUnit.Pixel), new NumberWithUnit(0, MeasureUnit.Pixel));
     }
 }
-Common_decorate([
+__decorate([
     nameForSerialization('left')
 ], MarginsWithUnit.prototype, "_left", void 0);
-Common_decorate([
+__decorate([
     nameForSerialization('right')
 ], MarginsWithUnit.prototype, "_right", void 0);
-Common_decorate([
+__decorate([
     nameForSerialization('top')
 ], MarginsWithUnit.prototype, "_top", void 0);
-Common_decorate([
+__decorate([
     nameForSerialization('bottom')
 ], MarginsWithUnit.prototype, "_bottom", void 0);
 class Color {
@@ -3648,7 +1912,7 @@ const Capacitor_Capacitor = {
     defaults: {},
     exec: (success, error, functionName, args) => capacitorExec(success, error, pluginName, functionName, args),
 };
-const getDefaults = new Promise((resolve, reject) => global_Plugins[Capacitor_Capacitor.pluginName][CapacitorFunction.GetDefaults]().then((defaultsJSON) => {
+const getDefaults = new Promise((resolve, reject) => core_dist_Plugins[Capacitor_Capacitor.pluginName][CapacitorFunction.GetDefaults]().then((defaultsJSON) => {
     const defaults = defaultsFromJSON(defaultsJSON);
     Capacitor_Capacitor.defaults = defaults;
     resolve(defaults);
@@ -3958,7 +2222,7 @@ class FeedbackProxy {
         return proxy;
     }
     emit() {
-        global_Plugins[Capacitor_Capacitor.pluginName][CapacitorFunction.EmitFeedback]({ feedback: this.feedback.toJSON() });
+        core_dist_Plugins[Capacitor_Capacitor.pluginName][CapacitorFunction.EmitFeedback]({ feedback: this.feedback.toJSON() });
     }
 }
 //# sourceMappingURL=FeedbackProxy.js.map
@@ -4067,10 +2331,10 @@ class CameraProxy {
         return proxy;
     }
     getCurrentState() {
-        return new Promise((resolve, reject) => global_Plugins[Capacitor_Capacitor.pluginName][CapacitorFunction.GetCurrentCameraState]().then(resolve, reject));
+        return new Promise((resolve, reject) => core_dist_Plugins[Capacitor_Capacitor.pluginName][CapacitorFunction.GetCurrentCameraState]().then(resolve, reject));
     }
     getIsTorchAvailable() {
-        return new Promise((resolve, reject) => global_Plugins[Capacitor_Capacitor.pluginName][CapacitorFunction.GetIsTorchAvailable]({
+        return new Promise((resolve, reject) => core_dist_Plugins[Capacitor_Capacitor.pluginName][CapacitorFunction.GetIsTorchAvailable]({
             position: this.camera.position,
         }).then(resolve, reject));
     }
@@ -4087,7 +2351,7 @@ var Camera_decorate = (undefined && undefined.__decorate) || function (decorator
 
 
 
-class Camera_Camera extends Serializeable_DefaultSerializeable {
+class Camera extends Serializeable_DefaultSerializeable {
     constructor() {
         super(...arguments);
         this.type = 'camera';
@@ -4105,7 +2369,7 @@ class Camera_Camera extends Serializeable_DefaultSerializeable {
     }
     static get default() {
         if (Capacitor_Capacitor.defaults.Camera.defaultPosition) {
-            const camera = new Camera_Camera();
+            const camera = new Camera();
             camera.position = Capacitor_Capacitor.defaults.Camera.defaultPosition;
             return camera;
         }
@@ -4115,7 +2379,7 @@ class Camera_Camera extends Serializeable_DefaultSerializeable {
     }
     static atPosition(cameraPosition) {
         if (Capacitor_Capacitor.defaults.Camera.availablePositions.includes(cameraPosition)) {
-            const camera = new Camera_Camera();
+            const camera = new Camera();
             camera.position = cameraPosition;
             return camera;
         }
@@ -4182,22 +2446,22 @@ class Camera_Camera extends Serializeable_DefaultSerializeable {
 }
 Camera_decorate([
     serializationDefault({})
-], Camera_Camera.prototype, "settings", void 0);
+], Camera.prototype, "settings", void 0);
 Camera_decorate([
     nameForSerialization('desiredTorchState')
-], Camera_Camera.prototype, "_desiredTorchState", void 0);
+], Camera.prototype, "_desiredTorchState", void 0);
 Camera_decorate([
     nameForSerialization('desiredState')
-], Camera_Camera.prototype, "_desiredState", void 0);
+], Camera.prototype, "_desiredState", void 0);
 Camera_decorate([
     ignoreFromSerialization
-], Camera_Camera.prototype, "listeners", void 0);
+], Camera.prototype, "listeners", void 0);
 Camera_decorate([
     ignoreFromSerialization
-], Camera_Camera.prototype, "context", void 0);
+], Camera.prototype, "context", void 0);
 Camera_decorate([
     ignoreFromSerialization
-], Camera_Camera.prototype, "_proxy", void 0);
+], Camera.prototype, "_proxy", void 0);
 //# sourceMappingURL=Camera.js.map
 ;// CONCATENATED MODULE: ./node_modules/scandit-capacitor-datacapture-core/dist/esm/ts/DataCaptureContext+Related.js
 class ContextStatus {
@@ -4242,12 +2506,12 @@ class DataCaptureContextProxy {
         return contextProxy;
     }
     updateContextFromJSON() {
-        return new Promise((resolve, reject) => global_Plugins[Capacitor_Capacitor.pluginName][CapacitorFunction.UpdateContextFromJSON]({
+        return new Promise((resolve, reject) => core_dist_Plugins[Capacitor_Capacitor.pluginName][CapacitorFunction.UpdateContextFromJSON]({
             context: JSON.stringify(this.context.toJSON()),
         }).then(resolve.bind(this), reject.bind(this)));
     }
     dispose() {
-        global_Plugins[Capacitor_Capacitor.pluginName][CapacitorFunction.DisposeContext]();
+        core_dist_Plugins[Capacitor_Capacitor.pluginName][CapacitorFunction.DisposeContext]();
     }
     initialize() {
         this.subscribeListener();
@@ -4256,15 +2520,15 @@ class DataCaptureContextProxy {
         this.initializeContextFromJSON();
     }
     initializeContextFromJSON() {
-        return new Promise((resolve, reject) => global_Plugins[Capacitor_Capacitor.pluginName][CapacitorFunction.ContextFromJSON]({
+        return new Promise((resolve, reject) => core_dist_Plugins[Capacitor_Capacitor.pluginName][CapacitorFunction.ContextFromJSON]({
             context: JSON.stringify(this.context.toJSON()),
         }).then(resolve.bind(this), reject.bind(this)));
     }
     subscribeListener() {
-        global_Plugins[Capacitor_Capacitor.pluginName][CapacitorFunction.SubscribeContextListener]();
-        global_Plugins[Capacitor_Capacitor.pluginName]
+        core_dist_Plugins[Capacitor_Capacitor.pluginName][CapacitorFunction.SubscribeContextListener]();
+        core_dist_Plugins[Capacitor_Capacitor.pluginName]
             .addListener(DataCaptureContextListenerEvent.DidChangeContextStatus, this.notifyListeners.bind(this));
-        global_Plugins[Capacitor_Capacitor.pluginName]
+        core_dist_Plugins[Capacitor_Capacitor.pluginName]
             .addListener(DataCaptureContextListenerEvent.DidStartObservingContext, this.notifyListeners.bind(this));
     }
     // TODO: adjust when readding framedata to the api https://jira.scandit.com/browse/SDC-1159
@@ -4470,29 +2734,29 @@ class DataCaptureViewProxy {
         return viewProxy;
     }
     setPositionAndSize(top, left, width, height, shouldBeUnderWebView) {
-        return new Promise((resolve, reject) => global_Plugins[Capacitor_Capacitor.pluginName][CapacitorFunction.SetViewPositionAndSize]({
+        return new Promise((resolve, reject) => core_dist_Plugins[Capacitor_Capacitor.pluginName][CapacitorFunction.SetViewPositionAndSize]({
             position: { top, left, width, height, shouldBeUnderWebView },
         }).then(resolve.bind(this), reject.bind(this)));
     }
     show() {
-        return global_Plugins[Capacitor_Capacitor.pluginName][CapacitorFunction.ShowView]();
+        return core_dist_Plugins[Capacitor_Capacitor.pluginName][CapacitorFunction.ShowView]();
     }
     hide() {
-        return global_Plugins[Capacitor_Capacitor.pluginName][CapacitorFunction.HideView]();
+        return core_dist_Plugins[Capacitor_Capacitor.pluginName][CapacitorFunction.HideView]();
     }
     viewPointForFramePoint(point) {
-        return new Promise((resolve, reject) => global_Plugins[Capacitor_Capacitor.pluginName][CapacitorFunction.ViewPointForFramePoint]({
+        return new Promise((resolve, reject) => core_dist_Plugins[Capacitor_Capacitor.pluginName][CapacitorFunction.ViewPointForFramePoint]({
             point: point.toJSON(),
         }).then((convertedPoint) => resolve(Point.fromJSON(convertedPoint)), reject.bind(this)));
     }
     viewQuadrilateralForFrameQuadrilateral(quadrilateral) {
-        return new Promise((resolve, reject) => global_Plugins[Capacitor_Capacitor.pluginName][CapacitorFunction.ViewQuadrilateralForFrameQuadrilateral]({
+        return new Promise((resolve, reject) => core_dist_Plugins[Capacitor_Capacitor.pluginName][CapacitorFunction.ViewQuadrilateralForFrameQuadrilateral]({
             point: quadrilateral.toJSON(),
         }).then((convertedQuadrilateral) => resolve(Quadrilateral.fromJSON(convertedQuadrilateral)), reject.bind(this)));
     }
     subscribeListener() {
-        global_Plugins[Capacitor_Capacitor.pluginName][CapacitorFunction.SubscribeViewListener]();
-        global_Plugins[Capacitor_Capacitor.pluginName]
+        core_dist_Plugins[Capacitor_Capacitor.pluginName][CapacitorFunction.SubscribeViewListener]();
+        core_dist_Plugins[Capacitor_Capacitor.pluginName]
             .addListener(DataCaptureViewListenerEvent.DidChangeSizeOrientation, this.notifyListeners.bind(this));
     }
     notifyListeners(event) {
@@ -4875,7 +3139,7 @@ DataCaptureView_decorate([
 ;// CONCATENATED MODULE: ./node_modules/scandit-capacitor-datacapture-core/dist/esm/ts/DataCaptureVersion.js
 class DataCaptureVersion {
     static get pluginVersion() {
-        return '6.14.0-beta.1.snapshot';
+        return '6.15.0-beta.1.snapshot';
     }
 }
 //# sourceMappingURL=DataCaptureVersion.js.map
@@ -4898,7 +3162,7 @@ class VolumeButtonObserverProxy {
         this.unsubscribe();
     }
     subscribe() {
-        this.subscriber = global_Plugins[Capacitor_Capacitor.pluginName]
+        this.subscriber = core_dist_Plugins[Capacitor_Capacitor.pluginName]
             .addListener(VolumeButtonObserverEvent.DidChangeVolume, this.notifyListeners.bind(this));
     }
     unsubscribe() {
@@ -4940,7 +3204,7 @@ class VolumeButtonObserver {
 }
 //# sourceMappingURL=VolumeButtonObserver.js.map
 ;// CONCATENATED MODULE: ./node_modules/scandit-capacitor-datacapture-core/dist/esm/web.js
-var web_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -4965,7 +3229,7 @@ var web_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argu
 
 
 const corePluginName = 'ScanditCaptureCorePlugin';
-class ScanditCaptureCorePlugin extends web_WebPlugin {
+class ScanditCaptureCorePlugin extends dist_WebPlugin {
     constructor() {
         super({
             name: corePluginName,
@@ -4973,10 +3237,10 @@ class ScanditCaptureCorePlugin extends web_WebPlugin {
         });
     }
     initializePlugins() {
-        return web_awaiter(this, void 0, void 0, function* () {
+        return __awaiter(this, void 0, void 0, function* () {
             let api = {
                 Feedback: Feedback,
-                Camera: Camera_Camera,
+                Camera: Camera,
                 Color: Color,
                 DataCaptureContext: DataCaptureContext,
                 DataCaptureContextSettings: DataCaptureContextSettings,
@@ -5041,14 +3305,14 @@ class ScanditCaptureCorePlugin extends web_WebPlugin {
 const scanditCaptureCore = new ScanditCaptureCorePlugin();
 
 
-web_plugins_registerWebPlugin(scanditCaptureCore);
+dist_registerWebPlugin(scanditCaptureCore);
 //# sourceMappingURL=web.js.map
 ;// CONCATENATED MODULE: ./node_modules/scandit-capacitor-datacapture-core/dist/esm/index.js
 
 //# sourceMappingURL=index.js.map
 ;// CONCATENATED MODULE: ./node_modules/scandit-capacitor-datacapture-id/node_modules/@capacitor/core/dist/index.js
 /*! Capacitor: https://capacitorjs.com/ - MIT License */
-const dist_createCapacitorPlatforms = (win) => {
+const core_dist_createCapacitorPlatforms = (win) => {
     const defaultPlatformMap = new Map();
     defaultPlatformMap.set('web', { name: 'web' });
     const capPlatforms = win.CapacitorPlatforms || {
@@ -5067,11 +3331,11 @@ const dist_createCapacitorPlatforms = (win) => {
     capPlatforms.setPlatform = setPlatform;
     return capPlatforms;
 };
-const dist_initPlatforms = (win) => (win.CapacitorPlatforms = dist_createCapacitorPlatforms(win));
+const core_dist_initPlatforms = (win) => (win.CapacitorPlatforms = core_dist_createCapacitorPlatforms(win));
 /**
  * @deprecated Set `CapacitorCustomPlatform` on the window object prior to runtime executing in the web app instead
  */
-const dist_CapacitorPlatforms = /*#__PURE__*/ dist_initPlatforms((typeof globalThis !== 'undefined'
+const core_dist_CapacitorPlatforms = /*#__PURE__*/ core_dist_initPlatforms((typeof globalThis !== 'undefined'
     ? globalThis
     : typeof self !== 'undefined'
         ? self
@@ -5083,13 +3347,13 @@ const dist_CapacitorPlatforms = /*#__PURE__*/ dist_initPlatforms((typeof globalT
 /**
  * @deprecated Set `CapacitorCustomPlatform` on the window object prior to runtime executing in the web app instead
  */
-const dist_addPlatform = dist_CapacitorPlatforms.addPlatform;
+const core_dist_addPlatform = core_dist_CapacitorPlatforms.addPlatform;
 /**
  * @deprecated Set `CapacitorCustomPlatform` on the window object prior to runtime executing in the web app instead
  */
-const dist_setPlatform = dist_CapacitorPlatforms.setPlatform;
+const core_dist_setPlatform = core_dist_CapacitorPlatforms.setPlatform;
 
-const dist_legacyRegisterWebPlugin = (cap, webPlugin) => {
+const core_dist_legacyRegisterWebPlugin = (cap, webPlugin) => {
     var _a;
     const config = webPlugin.config;
     const Plugins = cap.Plugins;
@@ -5111,7 +3375,7 @@ const dist_legacyRegisterWebPlugin = (cap, webPlugin) => {
     }
 };
 
-var dist_ExceptionCode;
+var core_dist_ExceptionCode;
 (function (ExceptionCode) {
     /**
      * API is not implemented.
@@ -5128,15 +3392,15 @@ var dist_ExceptionCode;
      *   - it requires a particular platform or browser version
      */
     ExceptionCode["Unavailable"] = "UNAVAILABLE";
-})(dist_ExceptionCode || (dist_ExceptionCode = {}));
-class dist_CapacitorException extends Error {
+})(core_dist_ExceptionCode || (core_dist_ExceptionCode = {}));
+class core_dist_CapacitorException extends Error {
     constructor(message, code) {
         super(message);
         this.message = message;
         this.code = code;
     }
 }
-const dist_getPlatformId = (win) => {
+const core_dist_getPlatformId = (win) => {
     var _a, _b;
     if (win === null || win === void 0 ? void 0 : win.androidBridge) {
         return 'android';
@@ -5149,7 +3413,7 @@ const dist_getPlatformId = (win) => {
     }
 };
 
-const dist_createCapacitor = (win) => {
+const core_dist_createCapacitor = (win) => {
     var _a, _b, _c, _d, _e;
     const capCustomPlatform = win.CapacitorCustomPlatform || null;
     const cap = win.Capacitor || {};
@@ -5161,7 +3425,7 @@ const dist_createCapacitor = (win) => {
     const defaultGetPlatform = () => {
         return capCustomPlatform !== null
             ? capCustomPlatform.name
-            : dist_getPlatformId(win);
+            : core_dist_getPlatformId(win);
     };
     const getPlatform = ((_a = capPlatforms === null || capPlatforms === void 0 ? void 0 : capPlatforms.currentPlatform) === null || _a === void 0 ? void 0 : _a.getPlatform) || defaultGetPlatform;
     const defaultIsNativePlatform = () => getPlatform() !== 'web';
@@ -5233,7 +3497,7 @@ const dist_createCapacitor = (win) => {
                 return (_b = impl[prop]) === null || _b === void 0 ? void 0 : _b.bind(impl);
             }
             else {
-                throw new dist_CapacitorException(`"${pluginName}" plugin is not implemented on ${platform}`, dist_ExceptionCode.Unimplemented);
+                throw new core_dist_CapacitorException(`"${pluginName}" plugin is not implemented on ${platform}`, core_dist_ExceptionCode.Unimplemented);
             }
         };
         const createPluginMethodWrapper = (prop) => {
@@ -5247,7 +3511,7 @@ const dist_createCapacitor = (win) => {
                         return p;
                     }
                     else {
-                        throw new dist_CapacitorException(`"${pluginName}.${prop}()" is not implemented on ${platform}`, dist_ExceptionCode.Unimplemented);
+                        throw new core_dist_CapacitorException(`"${pluginName}.${prop}()" is not implemented on ${platform}`, core_dist_ExceptionCode.Unimplemented);
                     }
                 });
                 if (prop === 'addListener') {
@@ -5321,7 +3585,7 @@ const dist_createCapacitor = (win) => {
     cap.isPluginAvailable = isPluginAvailable;
     cap.pluginMethodNoop = pluginMethodNoop;
     cap.registerPlugin = registerPlugin;
-    cap.Exception = dist_CapacitorException;
+    cap.Exception = core_dist_CapacitorException;
     cap.DEBUG = !!cap.DEBUG;
     cap.isLoggingEnabled = !!cap.isLoggingEnabled;
     // Deprecated props
@@ -5329,9 +3593,9 @@ const dist_createCapacitor = (win) => {
     cap.isNative = cap.isNativePlatform();
     return cap;
 };
-const dist_initCapacitorGlobal = (win) => (win.Capacitor = dist_createCapacitor(win));
+const core_dist_initCapacitorGlobal = (win) => (win.Capacitor = core_dist_createCapacitor(win));
 
-const core_dist_Capacitor = /*#__PURE__*/ dist_initCapacitorGlobal(typeof globalThis !== 'undefined'
+const _capacitor_core_dist_Capacitor = /*#__PURE__*/ core_dist_initCapacitorGlobal(typeof globalThis !== 'undefined'
     ? globalThis
     : typeof self !== 'undefined'
         ? self
@@ -5340,13 +3604,13 @@ const core_dist_Capacitor = /*#__PURE__*/ dist_initCapacitorGlobal(typeof global
             : typeof __webpack_require__.g !== 'undefined'
                 ? __webpack_require__.g
                 : {});
-const dist_registerPlugin = core_dist_Capacitor.registerPlugin;
+const core_dist_registerPlugin = _capacitor_core_dist_Capacitor.registerPlugin;
 /**
  * @deprecated Provided for backwards compatibility for Capacitor v2 plugins.
  * Capacitor v3 plugins should import the plugin directly. This "Plugins"
  * export is deprecated in v3, and will be removed in v4.
  */
-const core_dist_Plugins = core_dist_Capacitor.Plugins;
+const _capacitor_core_dist_Plugins = _capacitor_core_dist_Capacitor.Plugins;
 /**
  * Provided for backwards compatibility. Use the registerPlugin() API
  * instead, and provide the web plugin as the "web" implmenetation.
@@ -5358,12 +3622,12 @@ const core_dist_Plugins = core_dist_Capacitor.Plugins;
  *
  * @deprecated Deprecated in v3, will be removed from v4.
  */
-const dist_registerWebPlugin = (plugin) => dist_legacyRegisterWebPlugin(core_dist_Capacitor, plugin);
+const core_dist_registerWebPlugin = (plugin) => core_dist_legacyRegisterWebPlugin(_capacitor_core_dist_Capacitor, plugin);
 
 /**
  * Base class web plugins should extend.
  */
-class dist_WebPlugin {
+class core_dist_WebPlugin {
     constructor(config) {
         this.listeners = {};
         this.windowListeners = {};
@@ -5422,10 +3686,10 @@ class dist_WebPlugin {
         };
     }
     unimplemented(msg = 'not implemented') {
-        return new core_dist_Capacitor.Exception(msg, dist_ExceptionCode.Unimplemented);
+        return new _capacitor_core_dist_Capacitor.Exception(msg, core_dist_ExceptionCode.Unimplemented);
     }
     unavailable(msg = 'not available') {
-        return new core_dist_Capacitor.Exception(msg, dist_ExceptionCode.Unavailable);
+        return new _capacitor_core_dist_Capacitor.Exception(msg, core_dist_ExceptionCode.Unavailable);
     }
     async removeListener(eventName, listenerFunc) {
         const listeners = this.listeners[eventName];
@@ -5453,7 +3717,7 @@ class dist_WebPlugin {
     }
 }
 
-const dist_WebView = /*#__PURE__*/ (/* unused pure expression or super */ null && (dist_registerPlugin('WebView')));
+const core_dist_WebView = /*#__PURE__*/ (/* unused pure expression or super */ null && (core_dist_registerPlugin('WebView')));
 
 
 //# sourceMappingURL=index.js.map
@@ -5494,7 +3758,7 @@ const CommonCapacitor_capacitorExec = (successCallback, errorCallback, pluginNam
                 // tslint:disable-next-line:no-console
                 console.log(`[SCANDIT WARNING] Took ${callbackDuration}ms to execute callback that's blocking native execution. You should keep this duration short, for more information, take a look at the documentation.`);
             }
-            core_dist_Plugins[pluginName].finishCallback([{
+            _capacitor_core_dist_Plugins[pluginName].finishCallback([{
                     finishCallbackID,
                     result: callbackResult,
                 }]);
@@ -5509,7 +3773,7 @@ const CommonCapacitor_capacitorExec = (successCallback, errorCallback, pluginNam
             errorCallback(error);
         }
     };
-    core_dist_Plugins[pluginName][functionName](args).then(extendedSuccessCallback, extendedErrorCallback);
+    _capacitor_core_dist_Plugins[pluginName][functionName](args).then(extendedSuccessCallback, extendedErrorCallback);
 };
 const CommonCapacitor_doReturnWithFinish = (finishCallbackID, result) => {
     if (Plugins.ScanditBarcodeNative) {
@@ -5590,7 +3854,7 @@ class ts_Serializeable_DefaultSerializeable {
 }
 //# sourceMappingURL=Serializeable.js.map
 ;// CONCATENATED MODULE: ./node_modules/scandit-capacitor-datacapture-id/dist/esm/scandit-capacitor-datacapture-core/src/ts/Common.js
-var ts_Common_decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
+var Common_decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
@@ -5613,10 +3877,10 @@ class Common_Point extends ts_Serializeable_DefaultSerializeable {
         return new Common_Point(json.x, json.y);
     }
 }
-ts_Common_decorate([
+Common_decorate([
     Serializeable_nameForSerialization('x')
 ], Common_Point.prototype, "_x", void 0);
-ts_Common_decorate([
+Common_decorate([
     Serializeable_nameForSerialization('y')
 ], Common_Point.prototype, "_y", void 0);
 class Common_Quadrilateral extends ts_Serializeable_DefaultSerializeable {
@@ -5643,16 +3907,16 @@ class Common_Quadrilateral extends ts_Serializeable_DefaultSerializeable {
         return new Common_Quadrilateral(Common_Point.fromJSON(json.topLeft), Common_Point.fromJSON(json.topRight), Common_Point.fromJSON(json.bottomRight), Common_Point.fromJSON(json.bottomLeft));
     }
 }
-ts_Common_decorate([
+Common_decorate([
     Serializeable_nameForSerialization('topLeft')
 ], Common_Quadrilateral.prototype, "_topLeft", void 0);
-ts_Common_decorate([
+Common_decorate([
     Serializeable_nameForSerialization('topRight')
 ], Common_Quadrilateral.prototype, "_topRight", void 0);
-ts_Common_decorate([
+Common_decorate([
     Serializeable_nameForSerialization('bottomRight')
 ], Common_Quadrilateral.prototype, "_bottomRight", void 0);
-ts_Common_decorate([
+Common_decorate([
     Serializeable_nameForSerialization('bottomLeft')
 ], Common_Quadrilateral.prototype, "_bottomLeft", void 0);
 var Common_MeasureUnit;
@@ -5677,10 +3941,10 @@ class Common_NumberWithUnit extends ts_Serializeable_DefaultSerializeable {
         return new Common_NumberWithUnit(json.value, json.unit);
     }
 }
-ts_Common_decorate([
+Common_decorate([
     Serializeable_nameForSerialization('value')
 ], Common_NumberWithUnit.prototype, "_value", void 0);
-ts_Common_decorate([
+Common_decorate([
     Serializeable_nameForSerialization('unit')
 ], Common_NumberWithUnit.prototype, "_unit", void 0);
 class Common_PointWithUnit extends ts_Serializeable_DefaultSerializeable {
@@ -5702,10 +3966,10 @@ class Common_PointWithUnit extends ts_Serializeable_DefaultSerializeable {
         return new Common_PointWithUnit(new Common_NumberWithUnit(0, Common_MeasureUnit.Pixel), new Common_NumberWithUnit(0, Common_MeasureUnit.Pixel));
     }
 }
-ts_Common_decorate([
+Common_decorate([
     Serializeable_nameForSerialization('x')
 ], Common_PointWithUnit.prototype, "_x", void 0);
-ts_Common_decorate([
+Common_decorate([
     Serializeable_nameForSerialization('y')
 ], Common_PointWithUnit.prototype, "_y", void 0);
 class Common_Rect extends ts_Serializeable_DefaultSerializeable {
@@ -5721,10 +3985,10 @@ class Common_Rect extends ts_Serializeable_DefaultSerializeable {
         return this._size;
     }
 }
-ts_Common_decorate([
+Common_decorate([
     Serializeable_nameForSerialization('origin')
 ], Common_Rect.prototype, "_origin", void 0);
-ts_Common_decorate([
+Common_decorate([
     Serializeable_nameForSerialization('size')
 ], Common_Rect.prototype, "_size", void 0);
 class Common_RectWithUnit extends ts_Serializeable_DefaultSerializeable {
@@ -5740,10 +4004,10 @@ class Common_RectWithUnit extends ts_Serializeable_DefaultSerializeable {
         return this._size;
     }
 }
-ts_Common_decorate([
+Common_decorate([
     Serializeable_nameForSerialization('origin')
 ], Common_RectWithUnit.prototype, "_origin", void 0);
-ts_Common_decorate([
+Common_decorate([
     Serializeable_nameForSerialization('size')
 ], Common_RectWithUnit.prototype, "_size", void 0);
 class Common_SizeWithUnit extends ts_Serializeable_DefaultSerializeable {
@@ -5759,10 +4023,10 @@ class Common_SizeWithUnit extends ts_Serializeable_DefaultSerializeable {
         return this._height;
     }
 }
-ts_Common_decorate([
+Common_decorate([
     Serializeable_nameForSerialization('width')
 ], Common_SizeWithUnit.prototype, "_width", void 0);
-ts_Common_decorate([
+Common_decorate([
     Serializeable_nameForSerialization('height')
 ], Common_SizeWithUnit.prototype, "_height", void 0);
 class Common_Size extends ts_Serializeable_DefaultSerializeable {
@@ -5781,10 +4045,10 @@ class Common_Size extends ts_Serializeable_DefaultSerializeable {
         return new Common_Size(json.width, json.height);
     }
 }
-ts_Common_decorate([
+Common_decorate([
     Serializeable_nameForSerialization('width')
 ], Common_Size.prototype, "_width", void 0);
-ts_Common_decorate([
+Common_decorate([
     Serializeable_nameForSerialization('height')
 ], Common_Size.prototype, "_height", void 0);
 class Common_SizeWithAspect {
@@ -5799,10 +4063,10 @@ class Common_SizeWithAspect {
         return this._aspect;
     }
 }
-ts_Common_decorate([
+Common_decorate([
     Serializeable_nameForSerialization('size')
 ], Common_SizeWithAspect.prototype, "_size", void 0);
-ts_Common_decorate([
+Common_decorate([
     Serializeable_nameForSerialization('aspect')
 ], Common_SizeWithAspect.prototype, "_aspect", void 0);
 var Common_SizingMode;
@@ -5905,16 +4169,16 @@ class Common_SizeWithUnitAndAspect {
         }
     }
 }
-ts_Common_decorate([
+Common_decorate([
     Serializeable_nameForSerialization('widthAndHeight')
 ], Common_SizeWithUnitAndAspect.prototype, "_widthAndHeight", void 0);
-ts_Common_decorate([
+Common_decorate([
     Serializeable_nameForSerialization('widthAndAspectRatio')
 ], Common_SizeWithUnitAndAspect.prototype, "_widthAndAspectRatio", void 0);
-ts_Common_decorate([
+Common_decorate([
     Serializeable_nameForSerialization('heightAndAspectRatio')
 ], Common_SizeWithUnitAndAspect.prototype, "_heightAndAspectRatio", void 0);
-ts_Common_decorate([
+Common_decorate([
     Serializeable_nameForSerialization('shorterDimensionAndAspectRatio')
 ], Common_SizeWithUnitAndAspect.prototype, "_shorterDimensionAndAspectRatio", void 0);
 class Common_MarginsWithUnit extends ts_Serializeable_DefaultSerializeable {
@@ -5944,16 +4208,16 @@ class Common_MarginsWithUnit extends ts_Serializeable_DefaultSerializeable {
         return new Common_MarginsWithUnit(new Common_NumberWithUnit(0, Common_MeasureUnit.Pixel), new Common_NumberWithUnit(0, Common_MeasureUnit.Pixel), new Common_NumberWithUnit(0, Common_MeasureUnit.Pixel), new Common_NumberWithUnit(0, Common_MeasureUnit.Pixel));
     }
 }
-ts_Common_decorate([
+Common_decorate([
     Serializeable_nameForSerialization('left')
 ], Common_MarginsWithUnit.prototype, "_left", void 0);
-ts_Common_decorate([
+Common_decorate([
     Serializeable_nameForSerialization('right')
 ], Common_MarginsWithUnit.prototype, "_right", void 0);
-ts_Common_decorate([
+Common_decorate([
     Serializeable_nameForSerialization('top')
 ], Common_MarginsWithUnit.prototype, "_top", void 0);
-ts_Common_decorate([
+Common_decorate([
     Serializeable_nameForSerialization('bottom')
 ], Common_MarginsWithUnit.prototype, "_bottom", void 0);
 class Common_Color {
@@ -6240,7 +4504,7 @@ const Capacitor_Capacitor_Capacitor = {
     defaults: {},
     exec: (success, error, functionName, args) => CommonCapacitor_capacitorExec(success, error, Capacitor_pluginName, functionName, args),
 };
-const Capacitor_getDefaults = new Promise((resolve, reject) => core_dist_Plugins[Capacitor_Capacitor_Capacitor.pluginName][Capacitor_CapacitorFunction.GetDefaults]().then((defaultsJSON) => {
+const Capacitor_getDefaults = new Promise((resolve, reject) => _capacitor_core_dist_Plugins[Capacitor_Capacitor_Capacitor.pluginName][Capacitor_CapacitorFunction.GetDefaults]().then((defaultsJSON) => {
     const defaults = Defaults_defaultsFromJSON(defaultsJSON);
     Capacitor_Capacitor_Capacitor.defaults = defaults;
     resolve(defaults);
@@ -6400,13 +4664,14 @@ var Capacitor_Capacitor_CapacitorFunction;
     CapacitorFunction["ResetIdCapture"] = "resetIdCapture";
     CapacitorFunction["VerifyCapturedId"] = "verifyCapturedId";
 })(Capacitor_Capacitor_CapacitorFunction || (Capacitor_Capacitor_CapacitorFunction = {}));
-const Capacitor_Capacitor_getDefaults = new Promise((resolve, reject) => core_dist_Plugins[ts_Capacitor_Capacitor_Capacitor.pluginName][Capacitor_Capacitor_CapacitorFunction.GetDefaults]().then((defaultsJSON) => {
+const Capacitor_Capacitor_getDefaults = new Promise((resolve, reject) => _capacitor_core_dist_Plugins[ts_Capacitor_Capacitor_Capacitor.pluginName][Capacitor_Capacitor_CapacitorFunction.GetDefaults]().then((defaultsJSON) => {
     const defaults = Capacitor_Defaults_defaultsFromJSON(defaultsJSON);
     ts_Capacitor_Capacitor_Capacitor.defaults = defaults;
     resolve(defaults);
 }, reject));
 //# sourceMappingURL=Capacitor.js.map
 ;// CONCATENATED MODULE: ./node_modules/scandit-capacitor-datacapture-id/dist/esm/scandit-capacitor-datacapture-id/src/ts/Capacitor/IdCaptureProxy.js
+
 
 class IdCaptureProxy {
     static forIdCapture(idCapture) {
@@ -6420,10 +4685,11 @@ class IdCaptureProxy {
         });
     }
     verifyCapturedId(capturedId) {
-        return new Promise((resolve, reject) => {
-            IdCaptureProxy.cordovaExec(resolve, reject, Capacitor_Capacitor_CapacitorFunction.VerifyCapturedId, [
-                capturedId,
-            ]);
+        // Necessary for not exposing internal API on CapturedId, while only passing the private "json" property
+        // to native iOS and Android.
+        const capturedIdJsonData = JSON.parse(capturedId).json;
+        return _capacitor_core_dist_Plugins[ts_Capacitor_Capacitor_Capacitor.pluginName][Capacitor_Capacitor_CapacitorFunction.VerifyCapturedId]({
+            capturedId: JSON.stringify(capturedIdJsonData),
         });
     }
 }
@@ -6894,7 +5160,7 @@ class AamvaVizBarcodeComparisonVerifier {
                 }
                 else {
                     resolve(AamvaVizBarcodeComparisonResult
-                        .fromJSON(JSON.parse(json)));
+                        .fromJSON(JSON.parse(json.result)));
                 }
             }, reject);
         });
@@ -7020,9 +5286,9 @@ var IdLayoutLineStyle;
 })(IdLayoutLineStyle || (IdLayoutLineStyle = {}));
 var ComparisonCheckResult;
 (function (ComparisonCheckResult) {
-    ComparisonCheckResult["Passed"] = "Passed";
-    ComparisonCheckResult["Skipped"] = "Skipped";
-    ComparisonCheckResult["Failed"] = "Failed";
+    ComparisonCheckResult["Passed"] = "passed";
+    ComparisonCheckResult["Skipped"] = "skipped";
+    ComparisonCheckResult["Failed"] = "failed";
 })(ComparisonCheckResult || (ComparisonCheckResult = {}));
 //# sourceMappingURL=Enums.js.map
 ;// CONCATENATED MODULE: ./node_modules/scandit-capacitor-datacapture-id/dist/esm/scandit-capacitor-datacapture-core/src/ts/Viewfinder.js
@@ -7332,16 +5598,16 @@ class IdCaptureListenerProxy {
         this.subscribeListener();
     }
     subscribeListener() {
-        core_dist_Plugins[ts_Capacitor_Capacitor_Capacitor.pluginName][Capacitor_Capacitor_CapacitorFunction.SubscribeIdCaptureListener]();
-        core_dist_Plugins[ts_Capacitor_Capacitor_Capacitor.pluginName].addListener(IdCaptureListenerEvent.DidCapture, this.notifyListeners.bind(this));
-        core_dist_Plugins[ts_Capacitor_Capacitor_Capacitor.pluginName].addListener(IdCaptureListenerEvent.DidFail, this.notifyListeners.bind(this));
-        core_dist_Plugins[ts_Capacitor_Capacitor_Capacitor.pluginName].addListener(IdCaptureListenerEvent.DidLocalize, this.notifyListeners.bind(this));
-        core_dist_Plugins[ts_Capacitor_Capacitor_Capacitor.pluginName].addListener(IdCaptureListenerEvent.DidReject, this.notifyListeners.bind(this));
+        _capacitor_core_dist_Plugins[ts_Capacitor_Capacitor_Capacitor.pluginName][Capacitor_Capacitor_CapacitorFunction.SubscribeIdCaptureListener]();
+        _capacitor_core_dist_Plugins[ts_Capacitor_Capacitor_Capacitor.pluginName].addListener(IdCaptureListenerEvent.DidCapture, this.notifyListeners.bind(this));
+        _capacitor_core_dist_Plugins[ts_Capacitor_Capacitor_Capacitor.pluginName].addListener(IdCaptureListenerEvent.DidFail, this.notifyListeners.bind(this));
+        _capacitor_core_dist_Plugins[ts_Capacitor_Capacitor_Capacitor.pluginName].addListener(IdCaptureListenerEvent.DidLocalize, this.notifyListeners.bind(this));
+        _capacitor_core_dist_Plugins[ts_Capacitor_Capacitor_Capacitor.pluginName].addListener(IdCaptureListenerEvent.DidReject, this.notifyListeners.bind(this));
     }
     notifyListeners(event) {
         const done = () => {
             this.idCapture.isInListenerCallback = false;
-            core_dist_Plugins[ts_Capacitor_Capacitor_Capacitor.pluginName].finishCallback({
+            _capacitor_core_dist_Plugins[ts_Capacitor_Capacitor_Capacitor.pluginName].finishCallback({
                 result: {
                     enabled: this.idCapture.isEnabled,
                     finishCallbackID: event.name,
@@ -7510,7 +5776,7 @@ class IdCaptureSettings extends ts_Serializeable_DefaultSerializeable {
 
 
 
-class ScanditIdPlugin extends dist_WebPlugin {
+class ScanditIdPlugin extends core_dist_WebPlugin {
     constructor() {
         super({
             name: 'ScanditIdPlugin',
@@ -7552,9 +5818,9 @@ class ScanditIdPlugin extends dist_WebPlugin {
         }, reject));
     }
 }
-const scanditText = new ScanditIdPlugin();
+const scanditId = new ScanditIdPlugin();
 
-dist_registerWebPlugin(scanditText);
+core_dist_registerWebPlugin(scanditId);
 //# sourceMappingURL=web.js.map
 ;// CONCATENATED MODULE: ./node_modules/scandit-capacitor-datacapture-id/dist/esm/scandit-capacitor-datacapture-id/src/index.js
 
@@ -7572,9 +5838,7 @@ async function runApp() {
     const Scandit = await app_ScanditCaptureCorePlugin.initializePlugins();
 
     // Create data capture context using your license key.
-    // const context = Scandit.DataCaptureContext.forLicenseKey('-- ENTER YOUR SCANDIT LICENSE KEY HERE --');
-    const context = Scandit.DataCaptureContext.forLicenseKey('ARNBEimuCGzbEFujZRaBQ94sXhF6A9okiEzKEnZemWhlOLT8Wlzi69ptYIY5BCeQvgQ2QCltKd+uenCoBR3zl9d7LtBJJh4Gahf10eNzBuJ8bYalYg/Iulsm2zRNM72Zhw7nlU5rOEGUfsJAb2gTtSlvr+srd9IvKnueRjptOT4BeB5XXnZReGRo6pr1PTVa2k8tAyVHOhaDd/xhOCkWvDgwCDv3fuD9L0n33KgBq3UKbDfxI3xGYrl9cYlBNymgYwCw/ccAGsbze9Qo4GHIPrVaozmXXOqY41QwrbUG9Xm5dH/ikHyC4L5/G6X4T/nHlVTVr4JHSpj6bq0L1GE8i/FqrDsMUKEKIz95fN99nWjRblOpPmmSWjlLi8qnWV6Q5F77ZM5Yocxhd3Fxfl6ck451+GeecgbwvlsJ6o9vU3pgbndHIkanXsNpQOY7KKH6L3pusqZ/3UJQKOR2NDlZ3EZee8ktH31HHh5mgGw55/+0cRH3+lLRaOtR9EN7ct5cP2Ig42x+LwDyQAIKRzJciINxjidmMQ+7pBLS0PUeDrAY3fmygASP0/FtvZ9WSwGJjbPOtISjn96AAfRZeRwIm60eSUpiWwe8Ba9vvejtM1RaCHLrcMBHbJb1Pcti/Lhwf4IcqnUDRrOiSztMGX079EZKG/yVZGclIQlQqMhBdlRYN8zMh4wh6MWniQyHzJtzOUQNeVYPQ8DQ021W+fsG1q+EX7m2+q/Lgvau6BJsauxj1e+boYR6ZiuNDqS/d4alVv4EAZX9oz4oiQC8XWbWdrHrfZA3CkwuKxQMMb5SXyvvihyD8gYpdS6maSWhoMuEp6MT2IA04BSNNfYiL3Iu899u9HwEpqGbNGqb6squu/EiMnQcByc0YArSejrWBwTAUeK76nm0tSgsOBG6xqedK+qmA/TUaTjV6WBPKbgSz7xYdSJriQso27NvYcNaPHG734VluEuRKgNMeKh4nGUJSfD2V28x7T6YUNEH8cP/ix7gX2f58nNISN0nvZlZNRC9qcQAHNBfTqaHrMm1DD0OHjALhrbEGEzG0Uz09yJI0omYHZ5WbtqD2plaoQs9Jrsn20cDzjgw199Mb1k7ok60SBVbCIyWyCvyV4KKgHwDdRTzHIy1yGlwJjlugs7wxAebD6O1EJTMNQXI3qn71WxlaUFRO9uE5SWa/2iZjydZMqsqyDOUR5Rhm2EDMp+MBoRp4Q5Ks+44q76LbA==');
-    // const context = Scandit.DataCaptureContext.forLicenseKey('AZqxfgyuLdxmFnaC4jS2CtUjhV8fE69KcVLDfOpAdUHTJuJt+lCig0xD9rEMHr7ct0BMwgRSXtstZDI7z0kEt2Ns9fkZIp4jz2qQts97+pfKZjAuxWxPgwgAuKIQJJBNsizCmzpU3MMkfxbEkUsNS+MzBenpb7D+PGUV1WNBlFHfD7OzOinxbjhve2jMbsOVu2/t0ptvMhb6FLat6kVTlkhD0Cjjc7iZ52L95lFVHfa6QrMQ5FWPVq5P7WujQcRiAUuWOBtOmI93fmltjk5tmz5qdYZ/MCC91UPZVSZVqhzEXtAId0VjHcsox7RccQs9uAKq34ZbF7K5fhnHYUhNrtd3gSMvYubCBUvUL69barYgQn5VTgmSUwVOn0mmfrIpimxMs2h7s/R7cz0KilNN7ux3Rob3XuAxy0LA+HhDJCMjeAbL6kdVsRBZZqEZdPafqEwaNNV75NV4K0zOm1Fn1eJKbeJVUk3/3XAlI9J0jHXxbUHd0nKF19VjZ+4bSdWtWm9/pJ12VEIMUM0gDTDFFeZ3O5EqaNMEYkN/Bnj4CR88zhWkSy5Y+A//7U7sp6rbymbMnmsGpZGCD9e1yfOZv7DXDyksXZy0gYrtij0uDdo/Eb/PpEWft3HC8DkfdMkPuRHpUxCTnV2wbRuK06uXq2yNYlEQkyX1Udgx+koKxPKhqdW8u31liWvo/DDEWOfD0B/1tvJKZOw55EVWkTcG8GM0p2g8p2xJwnv5/ob5mke56F0bbzRGmrn+aEGBg9l/nykuinluH8uo5UYLCoc9VRPI97aVkqk6Ne177ko8ZuH/HXeREP+++szatAXGHOa/G9pLW1azfrCxa5R8Y4UkAI+Jsyf0VtoAjiy3XNTlVI/Yjqbz0XS+xqt1jZl5LyMxGfstMBCRIbgDeMErnXQOeA2CXJY9aVaVUr2/4VcEeO4Diops4YoPuXCSwuZzHvtYCzhE5IZILD68piWt4Cu+LKheQFoCze/ROZ+rt4w6VUt1V/kKVIaZsN8zSNSfwPdzL2e+3d/wwJI28W15MGjfKPnghc9zoJsu97jdikpJoVNCYMAdb/PSbngKRZfOMrwDZAh2p8euGm+cCfmXCZZR95bIPt7IBYBPGEXfOMfK4pJQ0fRsVTcie7eN+d6/6gdVLz0J7JSyuOaKsd7vUI3Qw4t4tScec0zTBMNq0/1wMP6AzVJpjWdI4EEV9SD2ejFsZCqxO9Exz/djqg==');
+    const context = Scandit.DataCaptureContext.forLicenseKey('AQlh0ScbBfWsIjzCWEvsElk16WDBGZEY01LBW9ZSKTJ2LIcHaXEhDd1Xd/G3KLXhDhuJ/dZw93W1V+YaFV95EKpmyDX5dc4q6CB3FM19iDXEfF6crzCFfAIxkngzItO7HiF+1+Fy5xTKbAh+yH+UV69kuYxWdS8DaH/RULpnDQNUK+huIlHaBHlEC+n4VbsI70vZCepIb3nqTB18klL36yY2mWOMaGzyfk9tY4ZT4bUkMJdsVhzfgmYrc5xXbBCBom7tkXN2kEP+WFbzE3RCjFZwXs97CeTix25qHWxMZg/pYjZIFHXMhe87l4m1XbFHhHxZOudRllo+SBDWQURNuTFtwM8Ff1S6n1VYTzl+NUT3at6880bfikoPC8nbQEtFaX1pQlp53KoZSEB4IgWLUjgiabMtI5+BZWo4T0lZQkf7e8ARUFwycEdve6YGdlRC83yokSdp8qytTwIuJlq9u3B0B1Lke7el5zBJxPdaOlG2XFvtHmBv/KBqLXQXT0aigGcNj9J161ytTdRbQ2vOwyl/QC0KLhP49HQf2kaFCdam0XWn+m31GoIj9zWWIe5I85GNi0she4ZArrc/HkCGjjzN4C2yz5IMtd3AT1hPHaZ6FxW+KeNRYTd3vrx+UFlGIUMktIk5Dpikc9jAhFCbWmFkdOhqAqS2uc+dx+EU+Q1C4KmNxBFsuE3mWlEphvINUnIPg9L1zi24pkRD1SBQ78ibczD/sRWK5mFCNVaeQysUPsZEnC7ae6YL7IiYEzCcIQQ4t5BU9RnvD2ozmInJ1qBnlNgFTX/Td/biFK80Ipvk5EpZEPLyAijxsotJd5YuSBs0nMDMyRl4LnGpW7iOQ413zUCIaUKccxqmnFLU/PCKL82Je73ki0FxUUOMso88p/SWwIQjMpaaRtD7aUuBBb1qsaEo9d6oyR812+ULSgeLQr2fAr/jo533m5ij7Ja0bFhkR9soVBv7ZQR0grpXcetZeMAoY/76Ywjx3C9B7FEFikc266yl3zLt6ROXWgNrpE+/I0dAN4yCK9+qnayyfT0Lh90fHXIRp28lM4w1Q9U4k7xz746J94ebAq1+wj4Hi+yHJ9cE/uwFcDg3+wHK+OnMfrYg0TX5ewpgf/DuctNJuRYoSwUcN1ll0KZCGnVJghHjlyKbzDeYSTowL+wL9HHIp1ouSmNGrbiFs2eNt6TQlxQz0RY8/ORVlVpvOQbGEIA8BQl5');
 
     // Use the world-facing (back) camera and set it as the frame source of the context. The camera is off by
     // default and must be turned on to start streaming frames to the data capture context for recognition.

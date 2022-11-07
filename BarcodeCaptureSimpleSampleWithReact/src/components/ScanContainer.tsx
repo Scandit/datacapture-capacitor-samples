@@ -3,12 +3,11 @@ import './ScanContainer.css';
 import React, { useRef, useEffect } from 'react';
 import { useIonAlert } from '@ionic/react';
 
-import { Plugins } from '@capacitor/core';
 import 'scandit-capacitor-datacapture-core';
 import 'scandit-capacitor-datacapture-barcode';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
-const { ScanditCaptureCorePlugin } = Plugins;
+import { ScanditCaptureCorePlugin } from 'scandit-capacitor-datacapture-core';
 
 interface ContainerProps { }
 
