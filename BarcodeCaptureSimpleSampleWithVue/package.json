@@ -19,8 +19,8 @@
         "@ionic/vue": "6.0.5",
         "@ionic/vue-router": "6.0.5",
         "core-js": "3.25.2",
-        "scandit-capacitor-datacapture-barcode": "6.15.1",
-        "scandit-capacitor-datacapture-core": "6.15.1",
+        "scandit-capacitor-datacapture-barcode": "6.16.0",
+        "scandit-capacitor-datacapture-core": "6.16.0",
         "vue": "3.2.29",
         "vue-router": "4.0.12"
     },
