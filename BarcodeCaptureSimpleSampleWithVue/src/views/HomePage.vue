@@ -77,7 +77,7 @@ export default defineComponent({
 
       // Register a listener to get informed whenever a new barcode got recognized.
       barcodeCapture.addListener({
-        didScan: (barcodeCapture: any, session: any) => {
+        didScan: (mode: any, session: any) => {
           const barcode = session.newlyRecognizedBarcodes[0];
           const symbology = new Scandit.SymbologyDescription(barcode.symbology);
 
@@ -87,8 +87,8 @@ export default defineComponent({
           // BarcodeCaptureListener callbacks for longer periods of time. See the documentation to learn
           // more about this.
 
-          barcodeCapture.isEnabled = false;
-          showResult(`Scanned: ${barcode.data} (${symbology.readableName})`, barcodeCapture);
+          mode.isEnabled = false;
+          showResult(`Scanned: ${barcode.data} (${symbology.readableName})`, mode);
         }
       });
 

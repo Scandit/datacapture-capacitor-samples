@@ -54,7 +54,7 @@ const initializeApp = async (present: any) => {
 
     // Register a listener to get informed whenever a new barcode got recognized.
     barcodeCapture.addListener({
-        didScan: (barcodeCapture: any, session: any, _: any) => {
+        didScan: (mode: any, session: any, _: any) => {
             const barcode = session.newlyRecognizedBarcodes[0];
             const symbology = new Scandit.SymbologyDescription(barcode.symbology);
 
@@ -64,8 +64,8 @@ const initializeApp = async (present: any) => {
             // BarcodeCaptureListener callbacks for longer periods of time. See the documentation to learn
             // more about this.
 
-            barcodeCapture.isEnabled = false;
-            showResult(`Scanned: ${barcode.data} (${symbology.readableName})`, barcodeCapture, present);
+            mode.isEnabled = false;
+            showResult(`Scanned: ${barcode.data} (${symbology.readableName})`, mode, present);
         }
     });
 

@@ -45,7 +45,7 @@ async function runApp() {
 
     // Register a listener to get informed whenever a new barcode got recognized.
     barcodeSelection.addListener({
-        didUpdateSelection: (barcodeSelection, session, _) => {
+        didUpdateSelection: (mode, session, _) => {
             const barcode = session.newlySelectedBarcodes[0];
 
             if (!barcode) { return }
@@ -67,7 +67,7 @@ async function runApp() {
 
     // Add a barcode selection overlay to the data capture view to render the location of captured barcodes on top of
     // the video preview. This is optional, but recommended for better visual feedback.
-    const overlay = Scandit.BarcodeSelectionBasicOverlay.withBarcodeSelectionForView(barcodeSelection, view);
+    Scandit.BarcodeSelectionBasicOverlay.withBarcodeSelectionForView(barcodeSelection, view);
 
     window.toggleBarcodeSelectionType(true);
     // Switch camera on to start streaming frames and enable the barcode selection mode.

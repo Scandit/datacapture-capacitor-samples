@@ -57,7 +57,7 @@ async function runApp() {
     // Register a listener to get informed of tracked barcodes.
     window.barcodeTracking.addListener({
         // This function is called whenever objects are updated and it's the right place to react to the tracking results.
-        didUpdateSession: (barcodeTracking, session) => {
+        didUpdateSession: (mode, session) => {
             // Remove information about tracked barcodes that are no longer tracked.
             session.removedTrackedBarcodes.forEach(identifier => {
                 isViewShowingAlternateContent[identifier] = null;
@@ -93,7 +93,7 @@ async function runApp() {
     // Add a barcode tracking overlay to the data capture view to render the tracked barcodes on top of the video
     // preview. This is optional, but recommended for better visual feedback. The overlay is automatically added
     // to the view.
-    const basicOverlay = Scandit.BarcodeTrackingBasicOverlay.withBarcodeTrackingForViewWithStyle(
+    Scandit.BarcodeTrackingBasicOverlay.withBarcodeTrackingForViewWithStyle(
         barcodeTracking,
         window.view,
         Scandit.BarcodeTrackingBasicOverlayStyle.Dot

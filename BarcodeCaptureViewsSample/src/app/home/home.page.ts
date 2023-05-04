@@ -21,6 +21,6 @@ export class HomePage {
     const modal = await this.modalController.create({
       component: ModalPage,
     });
-    return await modal.present();
+    return modal.present();
   }
 }

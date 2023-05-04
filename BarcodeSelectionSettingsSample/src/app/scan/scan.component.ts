@@ -75,12 +75,12 @@ export class ScanComponent implements AfterViewInit {
     await this.barcodeSelection.applySettings(this.getBarcodeSelectionSettings());
     this.barcodeSelection.addListener(this.listener);
 
-    await this.applyBarcodeSelectionPointOfInterest();
-    await this.applyFeedbackSettings();
-    await this.applyCodeDuplicateFilterSettings();
+    this.applyBarcodeSelectionPointOfInterest();
+    this.applyFeedbackSettings();
+    this.applyCodeDuplicateFilterSettings();
 
     await this.applyCameraSettings();
-    await this.applyViewSettings();
+    this.applyViewSettings();
 
     this.barcodeSelection.isEnabled = true;
   }
@@ -145,7 +145,8 @@ export class ScanComponent implements AfterViewInit {
   }
 
   public applyBarcodeSelectionPointOfInterest() {
-    const { BS_POINT_OF_INTEREST_ENABLED, BS_POINT_OF_INTEREST_X, BS_POINT_OF_INTEREST_Y } = this.settingsService.barcodeSelectionPointOfInterestForm.value;
+    const { BS_POINT_OF_INTEREST_ENABLED, BS_POINT_OF_INTEREST_X, BS_POINT_OF_INTEREST_Y } =
+      this.settingsService.barcodeSelectionPointOfInterestForm.value;
 
     if (BS_POINT_OF_INTEREST_ENABLED) {
       const pointOfInterestX = this.getNumberWithUnit(BS_POINT_OF_INTEREST_X);
@@ -283,7 +284,7 @@ export class ScanComponent implements AfterViewInit {
       SHOULD_SHOW_HINTS
     } = this.settingsService.overlayForm.value;
 
-    view.overlays.forEach(overlay => view.removeOverlay(overlay))
+    view.overlays.forEach(viewOverlay => view.removeOverlay(viewOverlay));
 
     const overlay = Scandit.BarcodeSelectionBasicOverlay.withBarcodeSelectionForViewWithStyle(
       this.barcodeSelection,
@@ -294,10 +295,14 @@ export class ScanComponent implements AfterViewInit {
     overlay.shouldShowScanAreaGuides = SCAN_AREA_GUIDES;
     overlay.shouldShowHints = SHOULD_SHOW_HINTS;
 
-    overlay.trackedBrush = TRACKED_BRUSH == Brush.Default ? overlay.trackedBrush : new Scandit.Brush(this.getColor(TRACKED_BRUSH), this.getColor(TRACKED_BRUSH), 1);
-    overlay.aimedBrush = AIMED_BRUSH == Brush.Default ? overlay.aimedBrush : new Scandit.Brush(this.getColor(AIMED_BRUSH), this.getColor(AIMED_BRUSH), 1);
-    overlay.selectingBrush = SELECTING_BRUSH == Brush.Default ? overlay.selectingBrush: new Scandit.Brush(this.getColor(SELECTING_BRUSH), this.getColor(SELECTING_BRUSH), 1);
-    overlay.selectedBrush = SELECTED_BRUSH == Brush.Default ? overlay.selectedBrush: new Scandit.Brush(this.getColor(SELECTED_BRUSH), this.getColor(SELECTED_BRUSH), 1);
+    overlay.trackedBrush = TRACKED_BRUSH === Brush.Default ?
+      overlay.trackedBrush : new Scandit.Brush(this.getColor(TRACKED_BRUSH), this.getColor(TRACKED_BRUSH), 1);
+    overlay.aimedBrush = AIMED_BRUSH === Brush.Default ?
+      overlay.aimedBrush : new Scandit.Brush(this.getColor(AIMED_BRUSH), this.getColor(AIMED_BRUSH), 1);
+    overlay.selectingBrush = SELECTING_BRUSH === Brush.Default ?
+      overlay.selectingBrush: new Scandit.Brush(this.getColor(SELECTING_BRUSH), this.getColor(SELECTING_BRUSH), 1);
+    overlay.selectedBrush = SELECTED_BRUSH === Brush.Default ?
+      overlay.selectedBrush: new Scandit.Brush(this.getColor(SELECTED_BRUSH), this.getColor(SELECTED_BRUSH), 1);
 
     this.applyViewfinderSettings(overlay);
   }

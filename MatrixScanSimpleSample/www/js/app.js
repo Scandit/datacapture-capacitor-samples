@@ -55,7 +55,7 @@ async function runApp() {
 
     // Add a barcode tracking overlay to the data capture view to render the location of captured barcodes on top of
     // the video preview. This is optional, but recommended for better visual feedback.
-    const overlay = Scandit.BarcodeTrackingBasicOverlay.withBarcodeTrackingForViewWithStyle(
+    Scandit.BarcodeTrackingBasicOverlay.withBarcodeTrackingForViewWithStyle(
         barcodeTracking,
         view,
         Scandit.BarcodeTrackingBasicOverlayStyle.Frame
