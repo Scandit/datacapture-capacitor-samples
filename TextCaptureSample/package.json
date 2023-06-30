@@ -15,9 +15,9 @@
         "@capacitor/cli": "4.3.0",
         "@capacitor/core": "4.3.0",
         "@capacitor/ios": "4.3.0",
-        "scandit-capacitor-datacapture-core": "6.17.2",
-        "scandit-capacitor-datacapture-text": "6.17.2",
-        "scandit-capacitor-datacapture-parser": "6.17.2"
+        "scandit-capacitor-datacapture-core": "6.18.0",
+        "scandit-capacitor-datacapture-text": "6.18.0",
+        "scandit-capacitor-datacapture-parser": "6.18.0"
     },
     "devDependencies": {
         "clean-webpack-plugin": "4.0.0",

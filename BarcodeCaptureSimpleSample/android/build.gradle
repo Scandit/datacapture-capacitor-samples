@@ -4,12 +4,12 @@ buildscript {
     ext {
         agp_version = "7.2.1"
     }
-    
+
     repositories {
         google()
         mavenCentral()
     }
-    
+
     dependencies {
         classpath "com.android.tools.build:gradle:$agp_version"
     }
@@ -17,14 +17,14 @@ buildscript {
 
 apply from: "variables.gradle"
 
-def parentFile = project.projectDir.parentFile
 allprojects {
-    repositories {
-        maven { url "file://${parentFile}/../../.m2/repository" }
-        mavenLocal()
-        google()
-        mavenCentral()
+    def frameworksGradle = "$rootDir/frameworks.gradle"
+    if (file(frameworksGradle).exists()) {
+        apply from: frameworksGradle
+    } else {
+        apply from: "$rootDir/../../../../common/frameworks.gradle"
     }
+    repositories repos
 }
 
 task clean(type: Delete) {

@@ -16,24 +16,6 @@ div.result {
   border-radius: 8px;
 }
 
-div.notification {
-  position: absolute;
-  top: 15%;
-  left: 50%;
-  transform: translate(-50%, 50%);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: 50%;
-  background: #FFFE;
-  border-radius: 8px;
-}
-
-.notification p {
-  text-align: center;
-  font-family: Helvetica;
-}
-
 .result p {
   text-align: center;
   font-family: Helvetica;

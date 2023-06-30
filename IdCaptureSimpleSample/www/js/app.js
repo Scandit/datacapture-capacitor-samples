@@ -7,7 +7,7 @@ async function runApp() {
     // Initialize the plugins.
     const Scandit = await ScanditCaptureCorePlugin.initializePlugins();
 
-    // Create data capture context using your license key.
+	// Create data capture context using your license key.
     const context = Scandit.DataCaptureContext.forLicenseKey('-- ENTER YOUR SCANDIT LICENSE KEY HERE --');
 
     // Use the world-facing (back) camera and set it as the frame source of the context. The camera is off by
@@ -103,12 +103,20 @@ window.descriptionForVizResult = (result) => {
 }
 
 window.descriptionForCapturedId = (result) => {
+    function getDateAsString(dateObject) {
+        return `${(dateObject && new Date(Date.UTC(
+            dateObject.year,
+            dateObject.month - 1,
+            dateObject.day
+        )).toLocaleDateString("en-GB", {timeZone: "UTC"})) || "empty"}`
+    }
+
     return `
   Name: ${result.firstName || "empty"}<br>
   Last Name: ${result.lastName || "empty"}<br>
   Full Name: ${result.fullName}<br>
   Sex: ${result.sex || "empty"}<br>
-  Date of Birth: ${result.dateOfBirth && new Date(result.dateOfBirth.year, result.dateOfBirth.month, result.dateOfBirth.day).toLocaleDateString() || "empty"}<br>
+  Date of Birth: ${getDateAsString(result.dateOfBirth)}<br>
   Nationality: ${result.nationality || "empty"}<br>
   Address: ${result.address || "empty"}<br>
   Document Type: ${result.documentType}<br>
@@ -116,8 +124,8 @@ window.descriptionForCapturedId = (result) => {
   Issuing Country: ${result.issuingCountry || "empty"}<br>
   Issuing Country ISO: ${result.issuingCountryIso || "empty"}<br>
   Document Number: ${result.documentNumber || "empty"}<br>
-  Date of Expiry: ${result.dateOfExpiry && new Date(result.dateOfExpiry.year, result.dateOfExpiry.month, result.dateOfExpiry.day).toLocaleDateString() || "empty"}<br>
-  Date of Issue: ${result.dateOfIssue && new Date(result.dateOfIssue.year, result.dateOfIssue.month, result.dateOfIssue.day).toLocaleDateString() || "empty"}<br>
+  Date of Expiry: ${getDateAsString(result.dateOfExpiry)}<br>
+  Date of Issue: ${getDateAsString(result.dateOfIssue)}<br>
   `
 }
 

@@ -7,7 +7,7 @@ async function runApp() {
     // Initialize the plugins.
     const Scandit = await ScanditCaptureCorePlugin.initializePlugins();
 
-    // Create data capture context using your license key.
+	// Create data capture context using your license key.
     const context = Scandit.DataCaptureContext.forLicenseKey('-- ENTER YOUR SCANDIT LICENSE KEY HERE --');
 
     // Use the world-facing (back) camera and set it as the frame source of the context. The camera is off by
@@ -58,7 +58,6 @@ async function runApp() {
 
                 if (!window.isScanningBackside === true) {
                     // Scan the back side of the document.
-                    window.showNotification('Align back of document');
                     window.isScanningBackside = true;
                     window.idCapture.isEnabled = true;
                 } else {
@@ -68,7 +67,6 @@ async function runApp() {
                         .create()
                         .verify(session.newlyCapturedId)
                         .then(result => {
-                            window.showNotification(null);
                             window.showResult(
                                 window.descriptionForCapturedId(
                                     session.newlyCapturedId,
@@ -84,12 +82,10 @@ async function runApp() {
                 }
 
             } else {
-                window.showNotification(null);
                 window.showResult('Document is not a US driver’s license.');
             }
         },
         didFailWithError: (_, error, session) => {
-            window.showNotification(null);
             window.showResult(error.message);
         }
     });
@@ -98,8 +94,6 @@ async function runApp() {
     window.idCaptureOverlay.idLayoutStyle = Scandit.IdLayoutStyle.Square;
 
     window.idCapture.isEnabled = true;
-
-    window.showNotification('Align front of document');
 }
 
 window.showResult = result => {
@@ -120,33 +114,22 @@ window.continueScanning = () => {
                 .parentElement
                 .removeChild(document.querySelector('#result'));
 
-            window.showNotification('Align front of document');
             window.isScanningBackside = false;
             window.idCapture.isEnabled = true;
         });
 }
 
-window.showNotification = notificationText => {
-    const existingNotificationElement = document.querySelector('#notification');
-
-    if (existingNotificationElement) {
-        existingNotificationElement
-            .parentElement
-            .removeChild(existingNotificationElement);
-    }
-
-    if (!notificationText) return;
-
-    const notificationElement = document.createElement('div');
-    notificationElement.id = "notification";
-    notificationElement.classList = "notification";
-    notificationElement.innerHTML = `<p>${notificationText}</p>`;
-    document.querySelector('#data-capture-view').appendChild(notificationElement);
-}
-
 // === //
 
 window.descriptionForCapturedId = (capturedId, passedExpiryCheck, passedChecks) => {
+    function getDateAsString(dateObject) {
+        return `${(dateObject && new Date(Date.UTC(
+            dateObject.year,
+            dateObject.month - 1,
+            dateObject.day
+        )).toLocaleDateString("en-GB", {timeZone: "UTC"})) || "empty"}`
+    }
+
     return `
   ${passedExpiryCheck ? "<span class='green'>Document is not expired.</span>" : "<span class='red'>Document is expired.</span>"}<br>
   ${passedChecks ? "<span class='green'>Information on front and back match.</span>" : "<span class='red'>Information on front and back do not match.</span>"}<br>
@@ -155,7 +138,7 @@ window.descriptionForCapturedId = (capturedId, passedExpiryCheck, passedChecks) 
   Last Name: ${capturedId.lastName || "empty"}<br>
   Full Name: ${capturedId.fullName}<br>
   Sex: ${capturedId.sex || "empty"}<br>
-  Date of Birth: ${capturedId.dateOfBirth && new Date(capturedId.dateOfBirth.year, capturedId.dateOfBirth.month, capturedId.dateOfBirth.day).toLocaleDateString() || "empty"}<br>
+  Date of Birth: ${getDateAsString(capturedId.dateOfBirth)}<br>
   Nationality: ${capturedId.nationality || "empty"}<br>
   Address: ${capturedId.address || "empty"}<br>
   Document Type: ${capturedId.documentType}<br>
@@ -163,8 +146,8 @@ window.descriptionForCapturedId = (capturedId, passedExpiryCheck, passedChecks) 
   Issuing Country: ${capturedId.issuingCountry || "empty"}<br>
   Issuing Country ISO: ${capturedId.issuingCountryIso || "empty"}<br>
   Document Number: ${capturedId.documentNumber || "empty"}<br>
-  Date of Expiry: ${capturedId.dateOfExpiry && new Date(capturedId.dateOfExpiry.year, capturedId.dateOfExpiry.month, capturedId.dateOfExpiry.day).toLocaleDateString() || "empty"}<br>
-  Date of Issue: ${capturedId.dateOfIssue && new Date(capturedId.dateOfIssue.year, capturedId.dateOfIssue.month, capturedId.dateOfIssue.day).toLocaleDateString() || "empty"}<br>
+  Date of Expiry: ${getDateAsString(capturedId.dateOfExpiry)}<br>
+  Date of Issue: ${getDateAsString(capturedId.dateOfIssue)}<br>
   `
 }
 
