@@ -17,14 +17,30 @@ buildscript {
 
 apply from: "variables.gradle"
 
+def custom_config_scripts = [
+        "$rootDir/frameworks.gradle",
+        "$rootDir/../../../../common/frameworks.gradle"
+]
+
 allprojects {
-    def frameworksGradle = "$rootDir/frameworks.gradle"
-    if (file(frameworksGradle).exists()) {
-        apply from: frameworksGradle
-    } else {
-        apply from: "$rootDir/../../../../common/frameworks.gradle"
+    def customConfigApplied = false
+    custom_config_scripts.each { location ->
+        def file = file(location)
+        if (file.exists()) {
+            apply from: file
+            repositories repos
+            customConfigApplied = true
+            return
+        }
     }
-    repositories repos
+
+    if (!customConfigApplied) {
+        repositories {
+            mavenCentral()
+            google()
+            maven { url 'https://jitpack.io' }
+        }
+    }
 }
 
 task clean(type: Delete) {
