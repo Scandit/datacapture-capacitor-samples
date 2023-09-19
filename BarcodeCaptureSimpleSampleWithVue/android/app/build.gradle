@@ -1,7 +1,8 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
+    namespace "com.scandit.barcodecapturesimplesamplewithvue"
+    compileSdkVersion rootProject.ext.compileSdkVersion    
     defaultConfig {
         applicationId "com.scandit.barcodecapturesimplesamplewithvue"
         minSdkVersion rootProject.ext.minSdkVersion

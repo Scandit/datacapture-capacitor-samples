@@ -2,7 +2,8 @@
 
 buildscript {
     ext {
-      agp_version = "7.2.1"
+        agp_version = "8.0.1"
+        kotlin_version = "1.8.20"
     }
 
     repositories {
@@ -12,6 +13,7 @@ buildscript {
 
     dependencies {
         classpath "com.android.tools.build:gradle:$agp_version"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 

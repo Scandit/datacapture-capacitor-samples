@@ -36,12 +36,12 @@ ext {
                 header(HttpHeaderAuthentication)
             }
         }
-        google()
         mavenCentral()
+        google()
         maven { url 'https://jitpack.io' }
     }
 
-    global_sdk_version = "6.18.2"
+    global_sdk_version = "6.19.0"
 
     if (System.getenv("SDC_FETCH_LIBS_SOURCE") != null) {
         fetch = System.getenv("SDC_FETCH_LIBS_SOURCE")
@@ -54,6 +54,4 @@ ext {
             }
         }
     }
-
-    println("Global version of the native sdk used in this build: $global_sdk_version")
 }
