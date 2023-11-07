@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { SplashScreen } from '@capacitor/splash-screen';
+import { StatusBar, Style } from '@capacitor/status-bar';
 import { Platform } from '@ionic/angular';
 
 import 'scandit-capacitor-datacapture-core';
@@ -17,8 +17,6 @@ import { ScanditCaptureCorePlugin } from 'scandit-capacitor-datacapture-core';
 export class AppComponent {
   constructor(
     private platform: Platform,
-    private splashScreen: SplashScreen,
-    private statusBar: StatusBar
   ) {
     this.initializeApp();
   }
@@ -29,8 +27,8 @@ export class AppComponent {
       // @ts-ignore
       window.Scandit = await ScanditCaptureCorePlugin.initializePlugins();
 
-      this.statusBar.styleLightContent();
-      this.splashScreen.hide();
+      StatusBar.setStyle({ style: Style.Light });
+      SplashScreen.hide();
     });
   }
 }
