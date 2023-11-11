@@ -11,8 +11,8 @@
 </ion-header>
 
 <ion-content>
-  <div #captureView (click)="resetScanTimeout()" [ngClass]="{'connected': isCaptureViewConnected, 'paused': !barcodeCapture.isEnabled}">
-    <p *ngIf="!barcodeCapture.isEnabled">Tap to continue</p>
+  <div #captureView (click)="this.resetScanTimeout()" [ngClass]="{'connected': this.isCaptureViewConnected, 'paused': !this.barcodeCapture.isEnabled}">
+    <p *ngIf="!this.barcodeCapture.isEnabled">Tap to continue</p>
   </div>
   <ion-list slot="fixed">
     <ion-item *ngFor="let result of results">

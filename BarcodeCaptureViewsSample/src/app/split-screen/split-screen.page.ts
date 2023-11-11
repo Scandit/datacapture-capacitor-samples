@@ -20,7 +20,6 @@ export class SplitScreenPage implements AfterViewInit, ViewDidEnter, ViewWillLea
 
   private settings = new Scandit.BarcodeCaptureSettings();
   private barcodeCapture = Scandit.BarcodeCapture.forContext(this.context, this.settings);
-  private barcodeCaptureListener: { didScan: (barcodeCapture: any, session: any) => Promise<void>; };
 
   private captureView = Scandit.DataCaptureView.forContext(this.context);
   @ViewChild('captureView') captureViewElement: ElementRef<HTMLDivElement>;
@@ -55,7 +54,7 @@ export class SplitScreenPage implements AfterViewInit, ViewDidEnter, ViewWillLea
     );
     this.barcodeCapture.applySettings(this.settings);
 
-    this.barcodeCaptureListener = {
+    this.barcodeCapture.addListener({
       didScan: async (barcodeCapture, session) => {
         const barcode = session.newlyRecognizedBarcodes[0];
         const symbology = new Scandit.SymbologyDescription(barcode.symbology);
@@ -65,9 +64,8 @@ export class SplitScreenPage implements AfterViewInit, ViewDidEnter, ViewWillLea
 
         this.resetScanTimeout();
       }
-    };
+    });
 
-    this.barcodeCapture.addListener(this.barcodeCaptureListener);
     this.context.setFrameSource(this.camera);
     this.camera.switchToDesiredState(Scandit.FrameSourceState.On);
   }
@@ -87,7 +85,6 @@ export class SplitScreenPage implements AfterViewInit, ViewDidEnter, ViewWillLea
 
     this.camera.switchToDesiredState(Scandit.FrameSourceState.Off);
     this.barcodeCapture.isEnabled = false;
-    this.barcodeCapture.removeListener(this.barcodeCaptureListener);
   }
 
   ngOnDestroy() {

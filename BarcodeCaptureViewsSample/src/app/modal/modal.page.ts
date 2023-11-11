@@ -15,7 +15,6 @@ export class ModalPage implements AfterViewInit, ViewDidEnter, ViewWillLeave, On
 
   private settings = new Scandit.BarcodeCaptureSettings();
   private barcodeCapture = Scandit.BarcodeCapture.forContext(this.context, this.settings);
-  private barcodeCaptureListener: { didScan: (barcodeCapture: any, session: any) => Promise<void>; };
 
   private captureView = Scandit.DataCaptureView.forContext(this.context);
   @ViewChild('captureView') captureViewElement: ElementRef<HTMLDivElement>;
@@ -40,13 +39,13 @@ export class ModalPage implements AfterViewInit, ViewDidEnter, ViewWillLeave, On
     this.settings.codeDuplicateFilter = 1000;
     this.barcodeCapture.applySettings(this.settings);
 
-    this.barcodeCaptureListener = {
+    this.barcodeCapture.addListener({
       didScan: async (barcodeCapture, session) => {
-        this.barcodeCapture.isEnabled = false;
         const barcode = session.newlyRecognizedBarcodes[0];
         const symbology = new Scandit.SymbologyDescription(barcode.symbology);
 
         this.captureViewElement.nativeElement.style.zIndex = '-1';
+        this.barcodeCapture.isEnabled = false;
 
         const alert = await this.alertController.create({
           header: 'Scanned',
@@ -55,15 +54,14 @@ export class ModalPage implements AfterViewInit, ViewDidEnter, ViewWillLeave, On
           buttons: [{ text: 'Ok' }]
         });
         alert.onDidDismiss().then(() => {
-          this.captureViewElement.nativeElement.style.zIndex = '0';
+          this.captureViewElement.nativeElement.style.zIndex = '1';
           this.barcodeCapture.isEnabled = true;
         });
-
+  
         alert.present();
       }
-    };
+    });
 
-    this.barcodeCapture.addListener(this.barcodeCaptureListener);
     this.context.setFrameSource(this.camera);
     this.camera.switchToDesiredState(Scandit.FrameSourceState.On);
   }
@@ -76,7 +74,6 @@ export class ModalPage implements AfterViewInit, ViewDidEnter, ViewWillLeave, On
   ionViewWillLeave(): void {
     this.camera.switchToDesiredState(Scandit.FrameSourceState.Off);
     this.barcodeCapture.isEnabled = false;
-    this.barcodeCapture.removeListener(this.barcodeCaptureListener);
     this.captureView.detachFromElement();
   }
 
