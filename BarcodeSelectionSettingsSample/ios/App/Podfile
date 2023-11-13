@@ -30,7 +30,6 @@ def capacitor_pods
   pod 'CordovaPlugins', :path => '../capacitor-cordova-ios-plugins'
 end
 
-
 target 'App' do
   capacitor_pods
   # Add your Pods here

@@ -70,6 +70,18 @@ async function runApp() {
             Object.values(session.trackedBarcodes).forEach(trackedBarcode =>
                 window.view.viewQuadrilateralForFrameQuadrilateral(trackedBarcode.location)
                     .then(location => updateView(trackedBarcode, location, isViewShowingAlternateContent[trackedBarcode.identifier])));
+
+            session.addedTrackedBarcodes.forEach(trackedBarcode => {
+                // The offset of our overlay will be calculated from the top center anchoring point.
+                window.advancedOverlay.setAnchorForTrackedBarcode(Scandit.Anchor.TopCenter, trackedBarcode).catch(console.warn);
+                // We set the offset's height to be equal of the 100 percent of our overlay.
+                // The minus sign means that the overlay will be above the barcode.
+                window.advancedOverlay.setOffsetForTrackedBarcode(
+                    new Scandit.PointWithUnit(
+                        new Scandit.NumberWithUnit(0, Scandit.MeasureUnit.Fraction),
+                        new Scandit.NumberWithUnit(-1, Scandit.MeasureUnit.Fraction)
+                    ), trackedBarcode).catch(console.warn);
+            });
         }
     });
 
@@ -97,18 +109,6 @@ async function runApp() {
             window.view.viewQuadrilateralForFrameQuadrilateral(trackedBarcode.location)
                 .then(location => updateView(trackedBarcode, location, !isViewShowingAlternateContent[trackedBarcode.identifier]));
         },
-        anchorForTrackedBarcode: (overlay, trackedBarcode) => {
-            // The offset of our overlay will be calculated from the top center anchoring point.
-            return Scandit.Anchor.TopCenter;
-        },
-        offsetForTrackedBarcode: (overlay, trackedBarcode) => {
-            // We set the offset's height to be equal of the 100 percent of our overlay.
-            // The minus sign means that the overlay will be above the barcode.
-            return new Scandit.PointWithUnit(
-                new Scandit.NumberWithUnit(0, Scandit.MeasureUnit.Fraction),
-                new Scandit.NumberWithUnit(-1, Scandit.MeasureUnit.Fraction)
-            );
-        }
     }
 
     // Switch camera on to start streaming frames and enable the barcode tracking mode.

@@ -36,22 +36,24 @@ ext {
                 header(HttpHeaderAuthentication)
             }
         }
-        mavenCentral()
         google()
+        mavenCentral()
         maven { url 'https://jitpack.io' }
     }
 
-    global_sdk_version = "6.19.6"
+    global_sdk_version = "6.18.3"
 
     if (System.getenv("SDC_FETCH_LIBS_SOURCE") != null) {
         fetch = System.getenv("SDC_FETCH_LIBS_SOURCE")
 
         if (fetch == "local" && System.getenv("CI_MERGE_REQUEST_ID") != null) {
             if (global_sdk_version.contains("SNAPSHOT")) {
-                global_sdk_version = global_sdk_version.replace("SNAPSHOT", System.getenv("CI_MERGE_REQUEST_ID") + "-SNAPSHOT")
+                global_sdk_version = global_sdk_version.replace("SNAPSHOT", System.getenv("CI_MERGE_REQUEST_ID"))
             } else if (System.getenv("CI_MERGE_REQUEST_ID") != null) {
-                 global_sdk_version = global_sdk_version + "-" +  System.getenv("CI_MERGE_REQUEST_ID") + "-SNAPSHOT"
+                 global_sdk_version = global_sdk_version + "-" +  System.getenv("CI_MERGE_REQUEST_ID")
             }
         }
     }
+
+    println("Global version of the native sdk used in this build: $global_sdk_version")
 }

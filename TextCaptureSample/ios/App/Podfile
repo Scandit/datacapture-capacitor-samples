@@ -28,7 +28,6 @@ def capacitor_pods
   # Do not delete
 end
 
-
 target 'App' do
   capacitor_pods
   # Add your Pods here

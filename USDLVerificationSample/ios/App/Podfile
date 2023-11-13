@@ -26,7 +26,6 @@ def capacitor_pods
   pod 'ScanditCapacitorDatacaptureCore', :path => '../../node_modules/scandit-capacitor-datacapture-core'
 end
 
-
 target 'App' do
   capacitor_pods
   # Add your Pods here
