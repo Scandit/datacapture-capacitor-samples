@@ -1,6 +1,5 @@
 {
 	"appId": "com.scandit.barcodeselectionsettingssample",
 	"appName": "BarcodeSelectionSettingsSample",
-	"webDir": "www",
-	"bundledWebRuntime": false
+	"webDir": "www"
 }

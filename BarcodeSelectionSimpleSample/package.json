@@ -9,18 +9,21 @@
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "dependencies": {
-        "@capacitor/android": "4.3.0",
-        "@capacitor/cli": "4.3.0",
-        "@capacitor/core": "4.3.0",
-        "@capacitor/ios": "4.3.0",
-        "scandit-capacitor-datacapture-barcode": "6.18.3",
-        "scandit-capacitor-datacapture-core": "6.18.3"
+        "@capacitor/android": "5.0.0",
+        "@capacitor/cli": "5.0.0",
+        "@capacitor/core": "5.0.0",
+        "@capacitor/ios": "5.0.0",
+        "scandit-capacitor-datacapture-barcode": "6.19.7",
+        "scandit-capacitor-datacapture-core": "6.19.7"
     },
     "devDependencies": {
         "clean-webpack-plugin": "4.0.0",
         "copy-webpack-plugin": "10.2.4",
-        "html-webpack-plugin": "5.5.0",
-        "webpack": "5.70.0",
-        "webpack-cli": "4.9.2"
+        "html-webpack-plugin": "5.5.3",
+        "webpack": "5.87.0",
+        "webpack-cli": "5.1.4"
+    },
+    "resolutions": {
+        "@yarnpkg/parsers": "3.0.0-rc.48.1"
     }
 }

@@ -5,8 +5,6 @@ project(':capacitor-cordova-android-plugins').projectDir = new File('./capacitor
 apply from: 'capacitor.settings.gradle'
 
 if (file("../../../../common/libs.versions.toml").exists()) {
-    enableFeaturePreview("VERSION_CATALOGS")
-
     dependencyResolutionManagement {
         versionCatalogs {
             libs {
