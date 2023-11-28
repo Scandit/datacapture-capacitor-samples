@@ -8,6 +8,11 @@ Consider also the **pre-built component** designed for ergonomic high-speed sing
 
 **ReceivingSample** ([iOS](https://github.com/Scandit/datacapture-ios-samples/tree/master/ReceivingSample), [Android](https://github.com/Scandit/datacapture-android-samples/tree/master/ReceivingSample))
 
+## Installation
+
+- Clone this repo locally.
+- Build and run this sample on your mobile device.
+
 ## Documentation
 
 BarcodeCapture is a fully-flexible API of the Scandit Data Capture SDK.  Our SDK is supported on most popular frameworks.
@@ -25,20 +30,3 @@ Our support engineers can be reached at [support@scandit.com](mailto:support@sca
 ## License
 
 [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0)
-
-## Created with Capacitor Create
-
-This app was created using the `npx @capacitor/cli create` command, and comes with a very
-minimal shell for building an app.
-
-Note: unless you know what you're doing, we don't recommend using the `create` way of building an app. Instead, you'll
-likely want to create an app using your framework's tooling (such as `create-react-app`), and then *add* capacitor
-to *that* project (using `npx @capacitor/cli init`).
-
-### Running this example
-
-To run the provided example, can use serve command:
-
-```bash
-npx cap serve
-```

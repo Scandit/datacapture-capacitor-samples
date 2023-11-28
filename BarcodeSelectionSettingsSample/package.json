@@ -29,8 +29,8 @@
         "@ionic/angular": "6",
         "nan": "2.14.2",
         "rxjs": "6.6.0",
-        "scandit-capacitor-datacapture-barcode": "6.19.8",
-        "scandit-capacitor-datacapture-core": "6.19.8",
+        "scandit-capacitor-datacapture-barcode": "6.20.1",
+        "scandit-capacitor-datacapture-core": "6.20.1",
         "tslib": "^2.0.0",
         "zone.js": "^0.13.0"
     },
