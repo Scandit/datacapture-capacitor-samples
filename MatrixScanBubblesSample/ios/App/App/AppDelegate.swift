@@ -16,7 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                    open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
     // Called when the app was launched with a url. Feel free to add additional processing here,
     // but if you want the App API to support tracking app url opens, make sure to keep this call
-      return ApplicationDelegateProxy.shared.application(app, open: url, options: options)
+    return CAPBridge.handleOpenUrl(url, options)
   }
 
   func application(_ application: UIApplication,
@@ -25,17 +25,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // Called when the app was launched with an activity, including Universal Links.
     // Feel free to add additional processing here, but if you want the App API to support
     // tracking app url opens, make sure to keep this call
-      return ApplicationDelegateProxy.shared.application(application, continue: userActivity, restorationHandler: restorationHandler)
+    return CAPBridge.handleContinueActivity(userActivity, restorationHandler)
   }
 
   override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
     super.touchesBegan(touches, with: event)
 
-    if let touchPoint = event?.allTouches?.first?.location(in: self.window),
-       let statusBarFrame = self.window?.windowScene?.statusBarManager?.statusBarFrame {
-        if statusBarFrame.contains(touchPoint) {
-            NotificationCenter.default.post(name: .capacitorStatusBarTapped, object: nil)
-        }
+    let statusBarRect = UIApplication.shared.statusBarFrame
+    guard let touchPoint = event?.allTouches?.first?.location(in: self.window) else { return }
+
+    if statusBarRect.contains(touchPoint) {
+      NotificationCenter.default.post(CAPBridge.statusBarTappedNotification)
     }
   }
 
@@ -43,13 +43,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
   func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
     NotificationCenter.default.post(
-        name: Notification.Name.capacitorDidRegisterForRemoteNotifications,
+        name: Notification.Name(CAPNotifications.DidRegisterForRemoteNotificationsWithDeviceToken.name()),
         object: deviceToken)
   }
 
   func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
     NotificationCenter.default.post(
-        name: Notification.Name.capacitorDidFailToRegisterForRemoteNotifications,
+        name: Notification.Name(CAPNotifications.DidFailToRegisterForRemoteNotificationsWithError.name()),
         object: error)
   }
 #endif

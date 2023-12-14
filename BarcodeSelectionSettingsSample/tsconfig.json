@@ -17,8 +17,7 @@
       "dom"
     ],
     "jsx": "react-jsx",
-    "useDefineForClassFields": false,
-    "allowSyntheticDefaultImports": true
+    "useDefineForClassFields": false
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,

@@ -7,7 +7,7 @@ async function runApp() {
     // Initialize the plugins.
     const Scandit = await ScanditCaptureCorePlugin.initializePlugins();
 
-    // Create data capture context using your license key.
+	// Create data capture context using your license key.
     const context = Scandit.DataCaptureContext.forLicenseKey('-- ENTER YOUR SCANDIT LICENSE KEY HERE --');
 
     // Use the world-facing (back) camera and set it as the frame source of the context. The camera is off by
@@ -62,56 +62,31 @@ async function runApp() {
                     window.idCapture.isEnabled = true;
                 } else {
                     // Front and back were scanned; perform a verification of the captured ID.
-                    Scandit.AamvaVizBarcodeComparisonVerifier
+                    Scandit
+                        .AamvaVizBarcodeComparisonVerifier
                         .create()
                         .verify(session.newlyCapturedId)
                         .then(result => {
-                            if (!result.checksPassed) {
-                                window.showResult(
-                                    window.descriptionForCapturedId(
-                                        session.newlyCapturedId,
-                                        result.datesOfExpiryMatch.checkResult === Scandit.ComparisonCheckResult.Passed,
-                                        result.checksPassed,
-                                        false
-                                    )
-                                );
-                                return;
-                            }
-
-                            // If front and back match AND ID is not expired, run verification
-                            if (!session.newlyCapturedId.isExpired && result.checksPassed) {
-                                Scandit.AamvaBarcodeVerifier.create(context)
-                                    .then(verifier => {
-                                        verifier.verify(session.newlyCapturedId).then(verificationResult => {
-                                            window.showResult(
-                                                window.descriptionForCapturedId(
-                                                    session.newlyCapturedId,
-                                                    result.datesOfExpiryMatch.checkResult === Scandit.ComparisonCheckResult.Passed,
-                                                    result.checksPassed,
-                                                    verificationResult?.allChecksPassed == true
-                                                )
-                                            );
-                                        });
-                                    });
-                            } else {
-                                window.showResult(!result.checksPassed ? 'Front & back do not match.' : 'ID is expired.');
-                            }
+                            window.showResult(
+                                window.descriptionForCapturedId(
+                                    session.newlyCapturedId,
+                                    new Date(
+                                        session.newlyCapturedId.dateOfExpiry.year,
+                                        session.newlyCapturedId.dateOfExpiry.month,
+                                        session.newlyCapturedId.dateOfExpiry.day
+                                    ) >= new Date(),
+                                    result.checksPassed
+                                )
+                            );
                         })
-                        .catch(reason => {
-                            window.showResult(reason);
-                        });
                 }
 
             } else {
                 window.showResult('Document is not a US driver’s license.');
             }
         },
-        didRejectId: (_, session) => {
-            if (session.newlyRejectedId == null) {
-                return;
-            }
-
-            window.showResult('Document is not a US driver’s license.');
+        didFailWithError: (_, error, session) => {
+            window.showResult(error.message);
         }
     });
 
@@ -146,19 +121,18 @@ window.continueScanning = () => {
 
 // === //
 
-window.descriptionForCapturedId = (capturedId, passedExpiryCheck, passedChecks, verificationAllChecksPassed) => {
+window.descriptionForCapturedId = (capturedId, passedExpiryCheck, passedChecks) => {
     function getDateAsString(dateObject) {
         return `${(dateObject && new Date(Date.UTC(
             dateObject.year,
             dateObject.month - 1,
             dateObject.day
-        )).toLocaleDateString("en-GB", { timeZone: "UTC" })) || "empty"}`
+        )).toLocaleDateString("en-GB", {timeZone: "UTC"})) || "empty"}`
     }
 
     return `
   ${passedExpiryCheck ? "<span class='green'>Document is not expired.</span>" : "<span class='red'>Document is expired.</span>"}<br>
   ${passedChecks ? "<span class='green'>Information on front and back match.</span>" : "<span class='red'>Information on front and back do not match.</span>"}<br>
-  ${verificationAllChecksPassed ? "<span class='green'>Verification checks passed.</span>" : "<span class='red'>Verification checks failed.</span>"}<br>
   <br>
   Name: ${capturedId.firstName || "empty"}<br>
   Last Name: ${capturedId.lastName || "empty"}<br>
