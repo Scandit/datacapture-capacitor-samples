@@ -1,8 +1,8 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { ViewDidEnter, ViewWillLeave } from '@ionic/angular';
-import { environment } from 'src/environments/environment';
-
-declare var Scandit;
+import { BarcodeCaptureSettings, BarcodeCapture, BarcodeCaptureOverlay, Symbology, SymbologyDescription } from 'scandit-capacitor-datacapture-barcode';
+import { DataCaptureContext, Camera, DataCaptureView, LaserlineViewfinder, LaserlineViewfinderStyle, RadiusLocationSelection, NumberWithUnit, MeasureUnit, FrameSourceState } from 'scandit-capacitor-datacapture-core';
+import { environment } from '../../environments/environment';
 
 interface Result {
   data: string;
@@ -15,16 +15,15 @@ interface Result {
   styleUrls: ['./split-screen.page.scss'],
 })
 export class SplitScreenPage implements AfterViewInit, ViewDidEnter, ViewWillLeave, OnDestroy {
-  private context = Scandit.DataCaptureContext.forLicenseKey(environment.scanditLicenseKey);
-  private camera = Scandit.Camera.default;
+  private context = DataCaptureContext.forLicenseKey(environment.scanditLicenseKey);
+  private camera = Camera.default;
 
-  private settings = new Scandit.BarcodeCaptureSettings();
-  private barcodeCapture = Scandit.BarcodeCapture.forContext(this.context, this.settings);
-  private barcodeCaptureListener: { didScan: (barcodeCapture: any, session: any) => Promise<void>; };
+  private settings = new BarcodeCaptureSettings();
+  private barcodeCapture = BarcodeCapture.forContext(this.context, this.settings);
 
-  private captureView = Scandit.DataCaptureView.forContext(this.context);
+  private captureView = DataCaptureView.forContext(this.context);
   @ViewChild('captureView') captureViewElement: ElementRef<HTMLDivElement>;
-  private overlay = Scandit.BarcodeCaptureOverlay.withBarcodeCaptureForView(this.barcodeCapture, this.captureView);
+  private overlay = BarcodeCaptureOverlay.withBarcodeCaptureForView(this.barcodeCapture, this.captureView);
 
   public results: Result[] = [];
 
@@ -37,39 +36,38 @@ export class SplitScreenPage implements AfterViewInit, ViewDidEnter, ViewWillLea
   ) { }
 
   ngAfterViewInit() {
-    this.overlay.viewfinder = new Scandit.LaserlineViewfinder(Scandit.LaserlineViewfinderStyle.Animated);
+    this.overlay.viewfinder = new LaserlineViewfinder(LaserlineViewfinderStyle.Animated);
 
     this.settings.enableSymbologies([
-      Scandit.Symbology.EAN13UPCA,
-      Scandit.Symbology.EAN8,
-      Scandit.Symbology.UPCE,
-      Scandit.Symbology.QR,
-      Scandit.Symbology.DataMatrix,
-      Scandit.Symbology.Code39,
-      Scandit.Symbology.Code128,
-      Scandit.Symbology.InterleavedTwoOfFive,
+      Symbology.EAN13UPCA,
+      Symbology.EAN8,
+      Symbology.UPCE,
+      Symbology.QR,
+      Symbology.DataMatrix,
+      Symbology.Code39,
+      Symbology.Code128,
+      Symbology.InterleavedTwoOfFive,
     ]);
     this.settings.codeDuplicateFilter = 1000;
-    this.settings.locationSelection = new Scandit.RadiusLocationSelection(
-      new Scandit.NumberWithUnit(0, Scandit.MeasureUnit.Fraction)
+    this.settings.locationSelection = new RadiusLocationSelection(
+      new NumberWithUnit(0, MeasureUnit.Fraction)
     );
     this.barcodeCapture.applySettings(this.settings);
 
-    this.barcodeCaptureListener = {
+    this.barcodeCapture.addListener({
       didScan: async (barcodeCapture, session) => {
         const barcode = session.newlyRecognizedBarcodes[0];
-        const symbology = new Scandit.SymbologyDescription(barcode.symbology);
+        const symbology = new SymbologyDescription(barcode.symbology);
 
-        this.results.push({ data: barcode.data, symbology: symbology.readableName });
+        this.results.push({ data: barcode.data!, symbology: symbology.readableName });
         this.changeDetection.detectChanges();
 
         this.resetScanTimeout();
       }
-    };
+    });
 
-    this.barcodeCapture.addListener(this.barcodeCaptureListener);
     this.context.setFrameSource(this.camera);
-    this.camera.switchToDesiredState(Scandit.FrameSourceState.On);
+    this.camera?.switchToDesiredState(FrameSourceState.On);
   }
 
   ionViewDidEnter(): void {
@@ -85,9 +83,8 @@ export class SplitScreenPage implements AfterViewInit, ViewDidEnter, ViewWillLea
     this.captureView.detachFromElement();
     this.isCaptureViewConnected = false;
 
-    this.camera.switchToDesiredState(Scandit.FrameSourceState.Off);
+    this.camera?.switchToDesiredState(FrameSourceState.Off);
     this.barcodeCapture.isEnabled = false;
-    this.barcodeCapture.removeListener(this.barcodeCaptureListener);
   }
 
   ngOnDestroy() {

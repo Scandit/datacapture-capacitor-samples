@@ -41,7 +41,7 @@ ext {
         maven { url 'https://jitpack.io' }
     }
 
-    global_sdk_version = "6.20.2"
+    global_sdk_version = "6.21.1"
 
     if (System.getenv("SDC_FETCH_LIBS_SOURCE") != null) {
         fetch = System.getenv("SDC_FETCH_LIBS_SOURCE")
