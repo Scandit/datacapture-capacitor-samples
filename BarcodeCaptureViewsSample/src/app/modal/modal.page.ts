@@ -1,8 +1,8 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { AlertController, ModalController, ViewDidEnter, ViewWillLeave } from '@ionic/angular';
-import { BarcodeCaptureSettings, BarcodeCapture, BarcodeCaptureOverlay, Symbology, SymbologyDescription } from 'scandit-capacitor-datacapture-barcode';
-import { DataCaptureContext, Camera, DataCaptureView, FrameSourceState } from 'scandit-capacitor-datacapture-core';
-import { environment } from '../../environments/environment';
+import { environment } from 'src/environments/environment';
+
+declare var Scandit;
 
 @Component({
   selector: 'app-modal',
@@ -10,15 +10,16 @@ import { environment } from '../../environments/environment';
   styleUrls: ['./modal.page.scss'],
 })
 export class ModalPage implements AfterViewInit, ViewDidEnter, ViewWillLeave, OnDestroy {
-  private context = DataCaptureContext.forLicenseKey(environment.scanditLicenseKey);
-  private camera = Camera.default;
+  private context = Scandit.DataCaptureContext.forLicenseKey(environment.scanditLicenseKey);
+  private camera = Scandit.Camera.default;
 
-  private settings = new BarcodeCaptureSettings();
-  private barcodeCapture = BarcodeCapture.forContext(this.context, this.settings);
+  private settings = new Scandit.BarcodeCaptureSettings();
+  private barcodeCapture = Scandit.BarcodeCapture.forContext(this.context, this.settings);
+  private barcodeCaptureListener: { didScan: (barcodeCapture: any, session: any) => Promise<void>; };
 
-  private captureView = DataCaptureView.forContext(this.context);
+  private captureView = Scandit.DataCaptureView.forContext(this.context);
   @ViewChild('captureView') captureViewElement: ElementRef<HTMLDivElement>;
-  private overlay = BarcodeCaptureOverlay.withBarcodeCaptureForView(this.barcodeCapture, this.captureView);
+  private overlay = Scandit.BarcodeCaptureOverlay.withBarcodeCaptureForView(this.barcodeCapture, this.captureView);
 
   constructor(
     private alertController: AlertController,
@@ -27,23 +28,23 @@ export class ModalPage implements AfterViewInit, ViewDidEnter, ViewWillLeave, On
 
   ngAfterViewInit() {
     this.settings.enableSymbologies([
-      Symbology.EAN13UPCA,
-      Symbology.EAN8,
-      Symbology.UPCE,
-      Symbology.QR,
-      Symbology.DataMatrix,
-      Symbology.Code39,
-      Symbology.Code128,
-      Symbology.InterleavedTwoOfFive,
+      Scandit.Symbology.EAN13UPCA,
+      Scandit.Symbology.EAN8,
+      Scandit.Symbology.UPCE,
+      Scandit.Symbology.QR,
+      Scandit.Symbology.DataMatrix,
+      Scandit.Symbology.Code39,
+      Scandit.Symbology.Code128,
+      Scandit.Symbology.InterleavedTwoOfFive,
     ]);
     this.settings.codeDuplicateFilter = 1000;
     this.barcodeCapture.applySettings(this.settings);
 
-    this.barcodeCapture.addListener({
+    this.barcodeCaptureListener = {
       didScan: async (barcodeCapture, session) => {
         this.barcodeCapture.isEnabled = false;
         const barcode = session.newlyRecognizedBarcodes[0];
-        const symbology = new SymbologyDescription(barcode.symbology);
+        const symbology = new Scandit.SymbologyDescription(barcode.symbology);
 
         this.captureViewElement.nativeElement.style.zIndex = '-1';
 
@@ -54,16 +55,17 @@ export class ModalPage implements AfterViewInit, ViewDidEnter, ViewWillLeave, On
           buttons: [{ text: 'Ok' }]
         });
         alert.onDidDismiss().then(() => {
-          this.captureViewElement.nativeElement.style.zIndex = '1';
+          this.captureViewElement.nativeElement.style.zIndex = '0';
           this.barcodeCapture.isEnabled = true;
         });
 
         alert.present();
       }
-    });
+    };
 
+    this.barcodeCapture.addListener(this.barcodeCaptureListener);
     this.context.setFrameSource(this.camera);
-    this.camera?.switchToDesiredState(FrameSourceState.On);
+    this.camera.switchToDesiredState(Scandit.FrameSourceState.On);
   }
 
   ionViewDidEnter(): void {
@@ -72,8 +74,9 @@ export class ModalPage implements AfterViewInit, ViewDidEnter, ViewWillLeave, On
   }
 
   ionViewWillLeave(): void {
-    this.camera?.switchToDesiredState(FrameSourceState.Off);
+    this.camera.switchToDesiredState(Scandit.FrameSourceState.Off);
     this.barcodeCapture.isEnabled = false;
+    this.barcodeCapture.removeListener(this.barcodeCaptureListener);
     this.captureView.detachFromElement();
   }
 

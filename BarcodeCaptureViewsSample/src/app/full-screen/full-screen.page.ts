@@ -1,8 +1,8 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { AlertController, ViewDidEnter, ViewWillLeave } from '@ionic/angular';
-import { BarcodeCapture, BarcodeCaptureOverlay, BarcodeCaptureSettings, Symbology, SymbologyDescription } from 'scandit-capacitor-datacapture-barcode';
-import { Camera, DataCaptureContext, DataCaptureView, FrameSourceState } from 'scandit-capacitor-datacapture-core';
-import { environment } from '../../environments/environment';
+import { environment } from 'src/environments/environment';
+
+declare var Scandit;
 
 @Component({
   selector: 'app-full-screen',
@@ -10,15 +10,16 @@ import { environment } from '../../environments/environment';
   styleUrls: ['./full-screen.page.scss'],
 })
 export class FullScreenPage implements AfterViewInit, ViewDidEnter, ViewWillLeave, OnDestroy {
-  private context = DataCaptureContext.forLicenseKey(environment.scanditLicenseKey);
-  private camera = Camera.default;
+  private context = Scandit.DataCaptureContext.forLicenseKey(environment.scanditLicenseKey);
+  private camera = Scandit.Camera.default;
 
-  private settings = new BarcodeCaptureSettings();
-  private barcodeCapture = BarcodeCapture.forContext(this.context, this.settings);
+  private settings = new Scandit.BarcodeCaptureSettings();
+  private barcodeCapture = Scandit.BarcodeCapture.forContext(this.context, this.settings);
+  private barcodeCaptureListener: { didScan: (barcodeCapture: any, session: any) => Promise<void>; };
 
-  private captureView = DataCaptureView.forContext(this.context);
+  private captureView = Scandit.DataCaptureView.forContext(this.context);
   @ViewChild('captureView') captureViewElement: ElementRef<HTMLDivElement>;
-  private overlay = BarcodeCaptureOverlay.withBarcodeCaptureForView(this.barcodeCapture, this.captureView);
+  private overlay = Scandit.BarcodeCaptureOverlay.withBarcodeCaptureForView(this.barcodeCapture, this.captureView);
 
   public isCaptureViewConnected = false;
 
@@ -28,44 +29,45 @@ export class FullScreenPage implements AfterViewInit, ViewDidEnter, ViewWillLeav
 
   ngAfterViewInit() {
     this.settings.enableSymbologies([
-      Symbology.EAN13UPCA,
-      Symbology.EAN8,
-      Symbology.UPCE,
-      Symbology.QR,
-      Symbology.DataMatrix,
-      Symbology.Code39,
-      Symbology.Code128,
-      Symbology.InterleavedTwoOfFive,
+      Scandit.Symbology.EAN13UPCA,
+      Scandit.Symbology.EAN8,
+      Scandit.Symbology.UPCE,
+      Scandit.Symbology.QR,
+      Scandit.Symbology.DataMatrix,
+      Scandit.Symbology.Code39,
+      Scandit.Symbology.Code128,
+      Scandit.Symbology.InterleavedTwoOfFive,
     ]);
     this.settings.codeDuplicateFilter = 1000;
     this.barcodeCapture.applySettings(this.settings);
 
-    this.barcodeCapture.addListener({
+    this.barcodeCaptureListener = {
       didScan: async (barcodeCapture, session) => {
         this.barcodeCapture.isEnabled = false;
+        console.log('didScan!');
         const barcode = session.newlyRecognizedBarcodes[0];
-        const symbology = new SymbologyDescription(barcode.symbology);
+        const symbology = new Scandit.SymbologyDescription(barcode.symbology);
 
         this.captureViewElement.nativeElement.style.zIndex = '-1';
 
         const alert = await this.alertController.create({
-          cssClass: 'scandit-alert',
           header: 'Scanned',
           subHeader: `${symbology.readableName}: ${barcode.data}`,
-          message: `Symbol count: ${barcode.symbolCount}`,
-          buttons: [{ text: 'Ok' }]
+          message: `z-index`,
+          buttons: [{ text: 'Ok' }],
         });
         alert.onDidDismiss().then(() => {
-          this.captureViewElement.nativeElement.style.zIndex = '1';
+          this.captureViewElement.nativeElement.style.zIndex = '0';
           this.barcodeCapture.isEnabled = true;
         });
 
         alert.present();
       }
-    });
+    };
 
+    this.barcodeCapture.addListener(this.barcodeCaptureListener);
     this.context.setFrameSource(this.camera);
-    this.camera?.switchToDesiredState(FrameSourceState.On);
+    this.camera.switchToDesiredState(Scandit.FrameSourceState.On);
   }
 
   ionViewDidEnter(): void {
@@ -79,8 +81,9 @@ export class FullScreenPage implements AfterViewInit, ViewDidEnter, ViewWillLeav
     this.captureView.detachFromElement();
     this.isCaptureViewConnected = false;
 
-    this.camera?.switchToDesiredState(FrameSourceState.Off);
+    this.camera.switchToDesiredState(Scandit.FrameSourceState.Off);
     this.barcodeCapture.isEnabled = false;
+    this.barcodeCapture.removeListener(this.barcodeCaptureListener);
   }
 
   ngOnDestroy() {
