@@ -104,11 +104,8 @@ window.descriptionForVizResult = (result) => {
 
 window.descriptionForCapturedId = (result) => {
     function getDateAsString(dateObject) {
-        return `${(dateObject && new Date(Date.UTC(
-            dateObject.year,
-            dateObject.month - 1,
-            dateObject.day
-        )).toLocaleDateString("en-GB", {timeZone: "UTC"})) || "empty"}`
+        return dateObject && dateObject.localDate ? dateObject.localDate
+            .toLocaleDateString("en-GB") : "empty";
     }
 
     return `
