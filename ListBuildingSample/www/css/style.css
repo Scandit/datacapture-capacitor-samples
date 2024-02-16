@@ -1,0 +1,77 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    position: absolute;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+button {
+  width: 90vw;
+  height: 60px;
+  background: #2EC1CE;
+  border: none;
+  color: white;
+  font-size: 1em;
+  font-weight: bold;
+}
+
+.top {
+  position: relative;
+  top: 0;
+
+  width: 100vw;
+  height: 100vh;
+}
+
+.bottom {
+  position: fixed;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 40px);
+
+  width: 100vw;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#results .bottom {
+  z-index: 1;
+}
+
+#list {
+  width: 100vw;
+  height: calc(100vh - env(safe-area-inset-top, 20px) - calc(env(safe-area-inset-bottom, 0px) + 40px) - 20px - 60px);
+  padding-top: env(safe-area-inset-top, 20px);
+  overflow: scroll;
+}
+
+.result {
+  padding: 10px;
+  border-bottom: 1px solid lightgrey;
+}
+
+#results {
+  height: 100vh;
+  width: 100vw;
+  background-color: #ffffff;
+}
+
+.result p {
+  margin: 0;
+}
+
+.symbology {
+  color: #2EC1CE;
+  font-size: 0.9em;
+}
+
+.scan-again {
+  z-index: 1;
+}

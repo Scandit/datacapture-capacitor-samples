@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     namespace "com.scandit.matrixscanbubblessample"
-    ndkVersion "23.1.7779620"
+    ndkVersion "26.1.10909125"
     compileSdk rootProject.ext.compileSdkVersion
 
     defaultConfig {

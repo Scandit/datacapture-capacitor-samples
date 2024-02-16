@@ -14,7 +14,7 @@ var capacitorExports=function(e){"use strict";var t,r,n,i,o,s,a,u,c,l,d,p,h,f;(t
 /************************************************************************/
 /******/ 	// The module cache
 /******/ 	var __webpack_module_cache__ = {};
-/******/ 	
+/******/
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
 /******/ 		// Check if module is in cache
@@ -28,14 +28,14 @@ var capacitorExports=function(e){"use strict";var t,r,n,i,o,s,a,u,c,l,d,p,h,f;(t
 /******/ 			// no module.loaded needed
 /******/ 			exports: {}
 /******/ 		};
-/******/ 	
+/******/
 /******/ 		// Execute the module function
 /******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
-/******/ 	
+/******/
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
-/******/ 	
+/******/
 /************************************************************************/
 /******/ 	/* webpack/runtime/global */
 /******/ 	(() => {
@@ -48,7 +48,7 @@ var capacitorExports=function(e){"use strict";var t,r,n,i,o,s,a,u,c,l,d,p,h,f;(t
 /******/ 			}
 /******/ 		})();
 /******/ 	})();
-/******/ 	
+/******/
 /************************************************************************/
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be in strict mode.
@@ -5127,15 +5127,15 @@ class AamvaVizBarcodeComparisonResult {
     }
     get datesOfBirthMatch() {
         return DateComparisonCheck
-            .fromJSON(this.json.datesOfBirth);
+            .fromJSON(this.json.datesOfBirthMatch);
     }
     get datesOfExpiryMatch() {
         return DateComparisonCheck
-            .fromJSON(this.json.datesOfExpiry);
+            .fromJSON(this.json.datesOfExpiryMatch);
     }
     get datesOfIssueMatch() {
         return DateComparisonCheck
-            .fromJSON(this.json.datesOfIssue);
+            .fromJSON(this.json.datesOfIssueMatch);
     }
     static fromJSON(json) {
         const result = new AamvaVizBarcodeComparisonResult();

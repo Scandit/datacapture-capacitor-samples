@@ -9,8 +9,38 @@ import {
   Brush,
 } from '../models';
 import { SettingsService } from '../services';
+import {
+  BarcodeSelection,
+  BarcodeSelectionAimerSelection,
+  BarcodeSelectionAutoSelectionStrategy,
+  BarcodeSelectionBasicOverlay,
+  BarcodeSelectionFeedback,
+  BarcodeSelectionListener,
+  BarcodeSelectionManualSelectionStrategy,
+  BarcodeSelectionSession,
+  BarcodeSelectionSettings,
+  BarcodeSelectionTapSelection,
+  Symbology,
+  SymbologyDescription
+} from 'scandit-capacitor-datacapture-barcode';
 
-declare var Scandit;
+import {
+  Brush as ScanditBrush,
+  Camera,
+  CameraSettings,
+  Color,
+  DataCaptureContext,
+  DataCaptureView,
+  Feedback,
+  FrameSourceState,
+  MarginsWithUnit,
+  NumberWithUnit,
+  PointWithUnit,
+  Sound,
+  TorchState,
+  Vibration,
+  MeasureUnit
+} from 'scandit-capacitor-datacapture-core';
 
 @Component({
   selector: 'app-scan',
@@ -18,46 +48,17 @@ declare var Scandit;
   styleUrls: ['scan.component.scss'],
 })
 export class ScanComponent implements AfterViewInit {
-  public barcodeSelection;
-  private context;
-  private view;
+  public barcodeSelection: BarcodeSelection;
+  public listener: BarcodeSelectionListener;
+  private context: DataCaptureContext;
+  private view: DataCaptureView;
   @ViewChild('captureView') captureView: ElementRef<HTMLDivElement>;
 
   private isPageActive = false;
 
-  private barcodeSelectionSettings = new Scandit.BarcodeSelectionSettings();
+  private barcodeSelectionSettings = new BarcodeSelectionSettings();
 
-  public listener = {
-    didUpdateSelection: async (barcodeSelection, session) => {
-      if (!this.isPageActive) {
-        return;
-      }
 
-      if (session.newlySelectedBarcodes.length === 0) {
-        return;
-      }
-
-      this.captureView.nativeElement.style.zIndex = '-1';
-
-      const barcode = session.newlySelectedBarcodes[0];
-      const symbology = new Scandit.SymbologyDescription(barcode.symbology);
-      const count = await session.getCount(barcode);
-
-      (await this.toastController.getTop())?.dismiss();
-      const toast = await this.toastController.create({
-        message: `Scan Results\n${symbology.readableName}: ${barcode.data}\nTimes: ${count}`,
-        duration: 500,
-      });
-
-      toast.onDidDismiss().then(() => {
-        if (this.isPageActive) {
-          this.captureView.nativeElement.style.zIndex = '1';
-        }
-      });
-
-      toast.present();
-    }
-  };
 
   constructor(
     private settingsService: SettingsService,
@@ -73,6 +74,43 @@ export class ScanComponent implements AfterViewInit {
     }
 
     await this.barcodeSelection.applySettings(this.getBarcodeSelectionSettings());
+
+    this.listener = {
+    didUpdateSelection: async (_: BarcodeSelection, session: BarcodeSelectionSession) => {
+      if (!this.isPageActive) {
+        return;
+      }
+
+      if (session.newlySelectedBarcodes.length === 0) {
+        return;
+      }
+
+      this.captureView.nativeElement.style.zIndex = '-1';
+
+      const barcode = session.newlySelectedBarcodes[0];
+      const symbology = new SymbologyDescription(barcode.symbology);
+      const count = await session.getCount(barcode);
+
+      (await this.toastController.getTop())?.dismiss();
+      const toast = await this.toastController.create({
+        message: `Scan Results\n${symbology.readableName}: ${barcode.data}\nTimes: ${count}`,
+        duration: 500,
+      });
+
+      toast.onDidDismiss().then(() => {
+        if (this.isPageActive) {
+          this.captureView.nativeElement.style.zIndex = '1';
+        }
+      });
+
+      toast.present();
+    },
+    didUpdateSession: (_: BarcodeSelection, session: BarcodeSelectionSession) => {
+      // Called every frame.
+      console.info(session);
+    }
+  };
+
     this.barcodeSelection.addListener(this.listener);
 
     this.applyBarcodeSelectionPointOfInterest();
@@ -88,12 +126,12 @@ export class ScanComponent implements AfterViewInit {
   public ionViewWillLeave() {
     this.isPageActive = false;
     this.barcodeSelection.isEnabled = false;
-    this.context.frameSource.switchToDesiredState(Scandit.FrameSourceState.Off);
+    this.context.frameSource.switchToDesiredState(FrameSourceState.Off);
   }
 
   public ngAfterViewInit() {
-    this.context = Scandit.DataCaptureContext.forLicenseKey(environment.scanditLicenseKey);
-    this.barcodeSelection = Scandit.BarcodeSelection.forContext(this.context);
+    this.context = DataCaptureContext.forLicenseKey(environment.scanditLicenseKey);
+    this.barcodeSelection = BarcodeSelection.forContext(this.context, null);
     this.barcodeSelection.addListener(this.listener);
   }
 
@@ -110,20 +148,20 @@ export class ScanComponent implements AfterViewInit {
     } = this.settingsService.selectionTypeForm.value;
 
     if (SELECTION_TYPE === BarcodeSelectionTypeName.Tap) {
-      this.barcodeSelectionSettings.selectionType = Scandit.BarcodeSelectionTapSelection
+      this.barcodeSelectionSettings.selectionType = BarcodeSelectionTapSelection
         .withFreezeBehaviorAndTapBehavior(FREEZE_BEHAVIOUR, TAP_BEHAVIOUR);
     } else if (SELECTION_TYPE === BarcodeSelectionTypeName.Aimer) {
-      this.barcodeSelectionSettings.selectionType = Scandit.BarcodeSelectionAimerSelection.aimerSelection;
+      this.barcodeSelectionSettings.selectionType = BarcodeSelectionAimerSelection.aimerSelection;
       if (SELECTION_STRATEGY === BarcodeSelectionStrategyType.Auto) {
-        this.barcodeSelectionSettings.selectionType.selectionStrategy
-          = Scandit.BarcodeSelectionAutoSelectionStrategy.autoSelectionStrategy;
+        this.barcodeSelectionSettings.selectionType
+          = BarcodeSelectionAutoSelectionStrategy.autoSelectionStrategy;
       } else if (SELECTION_STRATEGY === BarcodeSelectionStrategyType.Manual) {
-        this.barcodeSelectionSettings.selectionType.selectionStrategy
-          = Scandit.BarcodeSelectionManualSelectionStrategy.manualSelectionStrategy;
+        this.barcodeSelectionSettings.selectionType
+          = BarcodeSelectionManualSelectionStrategy.manualSelectionStrategy;
       }
     }
 
-    this.barcodeSelectionSettings.enableSymbologies(enabledSymbologiesSettings.map(({ key }) => Scandit.Symbology[key]));
+    this.barcodeSelectionSettings.enableSymbologies(enabledSymbologiesSettings.map(({ key }) => Symbology[key]));
 
     enabledSymbologiesSettings.forEach(settings => this.applySymbologySettings(this.barcodeSelectionSettings, settings));
 
@@ -136,11 +174,11 @@ export class ScanComponent implements AfterViewInit {
   public applyFeedbackSettings() {
     const { FEEDBACK_VIBRATION, FEEDBACK_SOUND } = this.settingsService.feedbackForm.value;
 
-    const vibration = FEEDBACK_VIBRATION ? Scandit.Vibration.defaultVibration : null;
-    const sound = FEEDBACK_SOUND ? Scandit.Sound.defaultSound : null;
+    const vibration = FEEDBACK_VIBRATION ? Vibration.defaultVibration : null;
+    const sound = FEEDBACK_SOUND ? Sound.defaultSound : null;
 
-    const feedback = Scandit.BarcodeSelectionFeedback.default;
-    feedback.selection = new Scandit.Feedback(vibration, sound);
+    const feedback = BarcodeSelectionFeedback.default;
+    feedback.selection = new Feedback(vibration, sound);
     this.barcodeSelection.feedback = feedback;
   }
 
@@ -151,7 +189,7 @@ export class ScanComponent implements AfterViewInit {
     if (BS_POINT_OF_INTEREST_ENABLED) {
       const pointOfInterestX = this.getNumberWithUnit(BS_POINT_OF_INTEREST_X);
       const pointOfInterestY = this.getNumberWithUnit(BS_POINT_OF_INTEREST_Y);
-      this.barcodeSelection.pointOfInterest = new Scandit.PointWithUnit(pointOfInterestX, pointOfInterestY);
+      this.barcodeSelection.pointOfInterest = new PointWithUnit(pointOfInterestX, pointOfInterestY);
     } else {
       this.barcodeSelection.pointOfInterest = null;
     }
@@ -176,24 +214,23 @@ export class ScanComponent implements AfterViewInit {
       FOCUS_RANGE,
     } = this.settingsService.cameraForm.value;
 
-    const cameraSettings = new Scandit.CameraSettings({
-      preferredResolution: PREFERRED_RESOLUTION,
-      zoomFactor: ZOOM_FACTOR,
-      focusRange: FOCUS_RANGE,
-    });
+    const cameraSettings = new CameraSettings();
+    cameraSettings.preferredResolution = PREFERRED_RESOLUTION;
+    cameraSettings.zoomFactor = ZOOM_FACTOR;
+    cameraSettings.focusRange = FOCUS_RANGE;
 
-    const camera = Scandit.Camera.atPosition(CAMERA_POSITION);
+    const camera = Camera.atPosition(CAMERA_POSITION);
 
-    camera.desiredTorchState = DESIRED_TORCH_STATE ? Scandit.TorchState.On : Scandit.TorchState.Off;
+    camera.desiredTorchState = DESIRED_TORCH_STATE ? TorchState.On : TorchState.Off;
 
     const switchToDesiredStatePromise = this.context.frameSource ?
-      this.context.frameSource.switchToDesiredState(Scandit.FrameSourceState.Off) :
+      this.context.frameSource.switchToDesiredState(FrameSourceState.Off) :
       Promise.resolve();
 
     return switchToDesiredStatePromise
       .then(() => camera.applySettings(cameraSettings))
       .then(() => this.context.setFrameSource(camera))
-      .then(() => camera.switchToDesiredState(Scandit.FrameSourceState.On));
+      .then(() => camera.switchToDesiredState(FrameSourceState.On));
   }
 
   public applyViewSettings() {
@@ -201,11 +238,11 @@ export class ScanComponent implements AfterViewInit {
 
     this.captureView.nativeElement.style.zIndex = '1';
     if (!this.view) {
-      this.view = Scandit.DataCaptureView.forContext(this.context);
+      this.view = DataCaptureView.forContext(this.context);
     }
 
-    this.applyPointOfInterestSettings(this.view);
-    this.applyScanAreaSettings(this.view);
+    this.applyPointOfInterestSettings();
+    this.applyScanAreaSettings();
 
     this.view.connectToElement(this.captureView.nativeElement);
 
@@ -218,7 +255,7 @@ export class ScanComponent implements AfterViewInit {
     barcodeSelectionSettings,
     settings: BarcodeSelectionSymbologyFormValue & { key: string },
   ) {
-    const symbologySettings = barcodeSelectionSettings.settingsForSymbology(Scandit.Symbology[settings.key]);
+    const symbologySettings = barcodeSelectionSettings.settingsForSymbology(Symbology[settings.key]);
 
     if (settings.colorInverted !== undefined) {
       symbologySettings.isColorInvertedEnabled = settings.colorInverted;
@@ -238,17 +275,17 @@ export class ScanComponent implements AfterViewInit {
     }
   }
 
-  private applyPointOfInterestSettings(view) {
+  private applyPointOfInterestSettings() {
     const { POINT_OF_INTEREST_X, POINT_OF_INTEREST_Y } = this.settingsService.pointOfInterestForm.value;
 
     const pointOfInterestX = this.getNumberWithUnit(POINT_OF_INTEREST_X);
     const pointOfInterestY = this.getNumberWithUnit(POINT_OF_INTEREST_Y);
-    const pointOfInterest = new Scandit.PointWithUnit(pointOfInterestX, pointOfInterestY);
+    const pointOfInterest = new PointWithUnit(pointOfInterestX, pointOfInterestY);
 
-    view.pointOfInterest = pointOfInterest;
+    this.view.pointOfInterest = pointOfInterest;
   }
 
-  private applyScanAreaSettings(view) {
+  private applyScanAreaSettings() {
     const {
       SCAN_AREA_MARGIN_BOTTOM,
       SCAN_AREA_MARGIN_LEFT,
@@ -261,17 +298,7 @@ export class ScanComponent implements AfterViewInit {
     const scanAreaBottom = this.getNumberWithUnit(SCAN_AREA_MARGIN_BOTTOM);
     const scanAreaLeft = this.getNumberWithUnit(SCAN_AREA_MARGIN_LEFT);
 
-    view.scanAreaMargins = new Scandit.MarginsWithUnit(scanAreaLeft, scanAreaRight, scanAreaTop, scanAreaBottom);
-  }
-
-  private applyViewfinderSettings(overlay) {
-    const {
-      FRAME_COLOR,
-      DOT_COLOR,
-    } = this.settingsService.viewfinderForm.value;
-
-    overlay.viewfinder.frameColor = this.getColor(FRAME_COLOR);
-    overlay.viewfinder.dotColor = this.getColor(DOT_COLOR);
+    this.view.scanAreaMargins = new MarginsWithUnit(scanAreaLeft, scanAreaRight, scanAreaTop, scanAreaBottom);
   }
 
   private applyOverlayStyleSettings(SCAN_AREA_GUIDES, view) {
@@ -284,11 +311,11 @@ export class ScanComponent implements AfterViewInit {
       SHOULD_SHOW_HINTS
     } = this.settingsService.overlayForm.value;
 
-    view.overlays.forEach(viewOverlay => view.removeOverlay(viewOverlay));
+    view.baseDataCaptureView.overlays.forEach((viewOverlay: BarcodeSelectionBasicOverlay) => view.removeOverlay(viewOverlay));
 
-    const overlay = Scandit.BarcodeSelectionBasicOverlay.withBarcodeSelectionForViewWithStyle(
+    const overlay = BarcodeSelectionBasicOverlay.withBarcodeSelectionForViewWithStyle(
       this.barcodeSelection,
-      view,
+      this.view,
       OVERLAY_STYLE,
     );
 
@@ -296,24 +323,23 @@ export class ScanComponent implements AfterViewInit {
     overlay.shouldShowHints = SHOULD_SHOW_HINTS;
 
     overlay.trackedBrush = TRACKED_BRUSH === Brush.Default ?
-      overlay.trackedBrush : new Scandit.Brush(this.getColor(TRACKED_BRUSH), this.getColor(TRACKED_BRUSH), 1);
+      overlay.trackedBrush : new ScanditBrush(this.getColor(TRACKED_BRUSH), this.getColor(TRACKED_BRUSH), 1);
     overlay.aimedBrush = AIMED_BRUSH === Brush.Default ?
-      overlay.aimedBrush : new Scandit.Brush(this.getColor(AIMED_BRUSH), this.getColor(AIMED_BRUSH), 1);
+      overlay.aimedBrush : new ScanditBrush(this.getColor(AIMED_BRUSH), this.getColor(AIMED_BRUSH), 1);
     overlay.selectingBrush = SELECTING_BRUSH === Brush.Default ?
-      overlay.selectingBrush: new Scandit.Brush(this.getColor(SELECTING_BRUSH), this.getColor(SELECTING_BRUSH), 1);
+      overlay.selectingBrush: new ScanditBrush(this.getColor(SELECTING_BRUSH), this.getColor(SELECTING_BRUSH), 1);
     overlay.selectedBrush = SELECTED_BRUSH === Brush.Default ?
-      overlay.selectedBrush: new Scandit.Brush(this.getColor(SELECTED_BRUSH), this.getColor(SELECTED_BRUSH), 1);
-
-    this.applyViewfinderSettings(overlay);
+      overlay.selectedBrush: new ScanditBrush(this.getColor(SELECTED_BRUSH), this.getColor(SELECTED_BRUSH), 1);
   }
 
   private getColor(rgbaString: string) {
     const parts = rgbaString.replace('rgba(', '').replace(')', '').split(',');
-    return Scandit.Color.fromRGBA(...parts);
+    // @ts-ignore
+    return Color.fromRGBA(...parts);
   }
 
-  private getNumberWithUnit({ value, unit }: { value: number; unit: string }) {
-    return new Scandit.NumberWithUnit(value, unit);
+  private getNumberWithUnit({ value, unit }: { value: number; unit: MeasureUnit }) {
+    return new NumberWithUnit(value, unit);
   }
 
 }

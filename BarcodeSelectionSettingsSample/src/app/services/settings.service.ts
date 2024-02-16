@@ -20,8 +20,11 @@ import {
   ViewViewfinderForm,
 } from '../models';
 import { isArray, isObject } from '../shared/utils';
-
-declare var Scandit;
+import {
+  BarcodeSelectionSettings,
+  Symbology,
+  SymbologyDescription
+} from 'scandit-capacitor-datacapture-barcode';
 
 @Injectable({
   providedIn: 'root'
@@ -34,17 +37,17 @@ export class SettingsService {
 
   constructor(private formBuilder: UntypedFormBuilder) {
 
-    const barcodeSelectionSettings = new Scandit.BarcodeSelectionSettings();
-    this.symbologies = fieldsStructure(Scandit).barcodeSelection.symbologies
+    const barcodeSelectionSettings = new BarcodeSelectionSettings();
+    this.symbologies = fieldsStructure().barcodeSelection.symbologies
       .reduce((symbologies, symbology) => ({
         ...symbologies,
         [symbology]: {
-          settings: barcodeSelectionSettings.settingsForSymbology(Scandit.Symbology[symbology]),
-          description: new Scandit.SymbologyDescription(Scandit.Symbology[symbology]),
+          settings: barcodeSelectionSettings.settingsForSymbology(Symbology[symbology]),
+          description: new SymbologyDescription(Symbology[symbology]),
         },
       }), {});
 
-    this.settingsForm = this.buildFormPart(fieldsStructure(Scandit)) as SettingsForm;
+    this.settingsForm = this.buildFormPart(fieldsStructure()) as SettingsForm;
   }
 
   public get barcodeSelectionForm() {
@@ -123,7 +126,7 @@ export class SettingsService {
   }
 
   private getFieldConfig(field: SettingsFieldName) {
-    if (Scandit.Symbology[field]) {
+    if (Symbology[field]) {
       const { description, settings: symbology } = this.symbologies[field];
 
       const enabled = { enabled: this.formBuilder.control(symbology.isEnabled) };
@@ -149,7 +152,7 @@ export class SettingsService {
       });
     }
 
-    return this.formBuilder.control(settingsFields(Scandit)[field].defaultValue);
+    return this.formBuilder.control(settingsFields()[field].defaultValue);
   }
 
 }

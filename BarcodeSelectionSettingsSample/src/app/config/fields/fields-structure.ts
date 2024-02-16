@@ -1,9 +1,10 @@
 import { SettingsFieldName } from './fields-name';
+import { Symbology } from 'scandit-capacitor-datacapture-barcode';
 
-export const fieldsStructure = Scandit => ({
+export const fieldsStructure = () => ({
   barcodeSelection: {
     symbologies: [
-      ...Object.keys(Scandit.Symbology),
+      ...Object.keys(Symbology),
     ],
     selectionType: [
       SettingsFieldName.SELECTION_TYPE,

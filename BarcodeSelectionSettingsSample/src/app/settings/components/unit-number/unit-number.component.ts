@@ -9,6 +9,7 @@ import { SettingsField, SettingsFieldOption } from '../../../config';
 import { SettingsBase } from '../settings-base';
 import { SettingsService } from 'src/app/services';
 import { UnitNumber } from 'src/app/models/unit-number.model';
+import { MeasureUnit } from 'scandit-capacitor-datacapture-core';
 
 declare var Scandit;
 
@@ -24,9 +25,9 @@ export class UnitNumberComponent extends SettingsBase implements OnInit {
   public field: SettingsField;
 
   public units: SettingsFieldOption<string>[] = [
-    { label: Scandit.MeasureUnit.DIP.toUpperCase(), value: Scandit.MeasureUnit.DIP },
-    { label: Scandit.MeasureUnit.Fraction.toUpperCase(), value: Scandit.MeasureUnit.Fraction },
-    { label: Scandit.MeasureUnit.Pixel.toUpperCase(), value: Scandit.MeasureUnit.Pixel },
+    { label: MeasureUnit.DIP.toUpperCase(), value: MeasureUnit.DIP },
+    { label: MeasureUnit.Fraction.toUpperCase(), value: MeasureUnit.Fraction },
+    { label: MeasureUnit.Pixel.toUpperCase(), value: MeasureUnit.Pixel },
   ];
 
   constructor(

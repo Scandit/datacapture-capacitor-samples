@@ -11,8 +11,6 @@ import { ControlValueAccessor } from '@angular/forms';
 type OnTouchFn = () => void;
 type OnChangeFn = (value: any) => void;
 
-declare var Scandit;
-
 @Directive()
 export class ControlBase<Type> implements OnInit, ControlValueAccessor {
 
@@ -45,7 +43,7 @@ export class ControlBase<Type> implements OnInit, ControlValueAccessor {
   }
 
   public getField(field: SettingsFieldName) {
-    return settingsFields(Scandit)[field];
+    return settingsFields()[field];
   }
 
   public registerOnChange(fn: OnChangeFn) {

@@ -3,7 +3,7 @@ import { ModalController } from '@ionic/angular';
 
 import { ModalPage } from '../modal/modal.page';
 
-declare var Scandit;
+import { ScanditCaptureCorePlugin, DataCaptureVersion } from 'scandit-capacitor-datacapture-core';
 
 @Component({
   selector: 'app-home',
@@ -11,11 +11,17 @@ declare var Scandit;
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
-  public version = Scandit.DataCaptureVersion.pluginVersion;
+  public version = DataCaptureVersion.pluginVersion;
 
   constructor(
     public modalController: ModalController,
   ) { }
+
+  async ngAfterViewInit() {
+      // Initialize the plugins.
+      // @ts-ignore
+      await ScanditCaptureCorePlugin.initializePlugins();
+  }
 
   public async presentModal() {
     const modal = await this.modalController.create({

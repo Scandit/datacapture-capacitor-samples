@@ -14,15 +14,13 @@ import {
   SettingsField,
 } from '../../config';
 
-declare var Scandit;
-
 @Directive()
 export class SettingsBase implements OnInit, OnDestroy {
 
   protected destroyed$ = new Subject<boolean>();
 
   public items$: Observable<NavigationItem[]>;
-  public fields = settingsFields(Scandit);
+  public fields = settingsFields();
   public fieldName = SettingsFieldName;
   public fieldTypes = SettingsFieldType;
 

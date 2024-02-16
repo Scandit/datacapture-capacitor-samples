@@ -1,46 +1,57 @@
-import 'scandit-capacitor-datacapture-core';
-import 'scandit-capacitor-datacapture-id';
+import {
+    Camera,
+    DataCaptureContext,
+    DataCaptureView,
+    FrameSourceState,
+    ScanditCaptureCorePlugin
+} from 'scandit-capacitor-datacapture-core';
 
-import { ScanditCaptureCorePlugin } from 'scandit-capacitor-datacapture-core';
+import {
+    IdDocumentType,
+    IdCapture,
+    IdCaptureOverlay,
+    IdCaptureSettings,
+    IdLayoutStyle
+} from 'scandit-capacitor-datacapture-id';
 
 async function runApp() {
     // Initialize the plugins.
-    const Scandit = await ScanditCaptureCorePlugin.initializePlugins();
+    await ScanditCaptureCorePlugin.initializePlugins();
 
-	// Create data capture context using your license key.
-    const context = Scandit.DataCaptureContext.forLicenseKey('-- ENTER YOUR SCANDIT LICENSE KEY HERE --');
+    // Create data capture context using your license key.
+    const context = DataCaptureContext.forLicenseKey('-- ENTER YOUR SCANDIT LICENSE KEY HERE --');
 
     // Use the world-facing (back) camera and set it as the frame source of the context. The camera is off by
     // default and must be turned on to start streaming frames to the data capture context for recognition.
-    const camera = Scandit.Camera.default;
+    const camera = Camera.default;
     context.setFrameSource(camera);
 
     // Use the recommended camera settings for the IdCapture mode.
-    camera.applySettings(Scandit.IdCapture.recommendedCameraSettings);
+    camera.applySettings(IdCapture.recommendedCameraSettings);
 
     // The ID capturing process is configured through ID capture settings
     // and are then applied to the ID capture instance that manages id recognition.
-    const settings = new Scandit.IdCaptureSettings();
+    const settings = new IdCaptureSettings();
 
     // We are interested in the front side of national Id Cards.
     settings.supportedDocuments = [
-        Scandit.IdDocumentType.IdCardVIZ,
-        Scandit.IdDocumentType.DLVIZ,
+        IdDocumentType.IdCardVIZ,
+        IdDocumentType.DLVIZ,
     ]
 
     // To visualize the on-going id capturing process on screen, setup a data capture view that renders the
     // camera preview. The view must be connected to the data capture context.
-    const view = Scandit.DataCaptureView.forContext(context);
+    const view = DataCaptureView.forContext(context);
 
     // Connect the data capture view to the HTML element, so it can fill up its size and follow its position.
     view.connectToElement(document.getElementById('data-capture-view'));
 
     // Switch camera on to start streaming frames and enable the id capture mode.
     // The camera is started asynchronously and will take some time to completely turn on.
-    camera.switchToDesiredState(Scandit.FrameSourceState.On);
+    camera.switchToDesiredState(FrameSourceState.On);
 
     // Create new id capture mode with the settings from above.
-    window.idCapture = Scandit.IdCapture.forContext(context, settings);
+    window.idCapture = IdCapture.forContext(context, settings);
 
     // Register a listener to get informed whenever a new id got recognized.
     window.idCapture.addListener({
@@ -62,8 +73,8 @@ async function runApp() {
         }
     });
 
-    window.idCaptureOverlay = Scandit.IdCaptureOverlay.withIdCaptureForView(window.idCapture, view);
-    window.idCaptureOverlay.idLayoutStyle = Scandit.IdLayoutStyle.Square;
+    window.idCaptureOverlay = IdCaptureOverlay.withIdCaptureForView(window.idCapture, view);
+    window.idCaptureOverlay.idLayoutStyle = IdLayoutStyle.Square;
 
     window.idCapture.isEnabled = true;
 }

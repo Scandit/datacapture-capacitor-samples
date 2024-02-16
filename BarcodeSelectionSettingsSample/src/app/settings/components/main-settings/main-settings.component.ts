@@ -8,8 +8,7 @@ import { UiService } from 'src/app/services/ui.service';
 
 import { NavigationItem } from '../../../config';
 import { SettingsBase } from '../settings-base';
-
-declare var Scandit;
+import { DataCaptureVersion } from 'scandit-capacitor-datacapture-core';
 
 @Component({
   selector: 'app-main-settings',
@@ -35,6 +34,6 @@ export class MainSettingsComponent extends SettingsBase implements OnInit {
     super.ngOnInit();
     this.items$ = this.route.data.pipe(map(data => data?.items));
     this.settingsService.reset = false;
-    this.version = Scandit.DataCaptureVersion.pluginVersion;
+    this.version = DataCaptureVersion.pluginVersion;
   }
 }

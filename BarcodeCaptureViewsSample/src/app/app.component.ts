@@ -3,9 +3,6 @@ import { SplashScreen } from '@capacitor/splash-screen';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { Platform } from '@ionic/angular';
 
-import 'scandit-capacitor-datacapture-core';
-import 'scandit-capacitor-datacapture-barcode';
-
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import { ScanditCaptureCorePlugin } from 'scandit-capacitor-datacapture-core';
 
@@ -23,10 +20,6 @@ export class AppComponent {
 
   initializeApp() {
     this.platform.ready().then(async () => {
-      // Initialize the plugins.
-      // @ts-ignore
-      window.Scandit = await ScanditCaptureCorePlugin.initializePlugins();
-
       StatusBar.setStyle({ style: Style.Light });
       SplashScreen.hide();
     });

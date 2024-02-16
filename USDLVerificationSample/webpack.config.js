@@ -10,7 +10,7 @@ module.exports = {
     plugins: [
         new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({
-            title: 'USDLVerificationSample',
+            title: 'ListBuildingSample',
             template: path.resolve(__dirname, 'www/index.html'),
         }),
         new CopyPlugin({

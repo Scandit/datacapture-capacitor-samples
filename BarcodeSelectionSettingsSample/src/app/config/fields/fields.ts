@@ -17,6 +17,7 @@ import { EnumDictionary } from 'src/app/models/utils.model';
 import { NavigationRoute } from '../routes.config';
 import { SettingsFieldName } from './fields-name';
 import { SettingsFieldType } from './fields-type';
+import { CameraPosition, VideoResolution, FocusRange } from 'scandit-capacitor-datacapture-core';
 
 
 export interface SettingsFieldOption<T = string> {
@@ -37,7 +38,7 @@ export interface SettingsField<V = any> {
 
 export type SettingsFields = EnumDictionary<SettingsFieldName, SettingsField>;
 
-export const settingsFields = (Scandit): SettingsFields => ({
+export const settingsFields = (): SettingsFields => ({
 
   // barcode selection
   // barcode selection - selection type
@@ -123,7 +124,7 @@ export const settingsFields = (Scandit): SettingsFields => ({
     label: 'X',
     type: SettingsFieldType.UNIT_NUMBER,
     key: SettingsFieldName.BS_POINT_OF_INTEREST_X,
-    defaultValue: DEFAULT_UNIT_NUMBER_VALUE_FRACTION_HALF(Scandit),
+    defaultValue: DEFAULT_UNIT_NUMBER_VALUE_FRACTION_HALF(),
     path: NavigationRoute.BS_POINT_OF_INTEREST_X,
     min: 0,
   } as SettingsField<UnitNumber>,
@@ -131,7 +132,7 @@ export const settingsFields = (Scandit): SettingsFields => ({
     label: 'Y',
     type: SettingsFieldType.UNIT_NUMBER,
     key: SettingsFieldName.BS_POINT_OF_INTEREST_Y,
-    defaultValue: DEFAULT_UNIT_NUMBER_VALUE_FRACTION_HALF(Scandit),
+    defaultValue: DEFAULT_UNIT_NUMBER_VALUE_FRACTION_HALF(),
     path: NavigationRoute.BS_POINT_OF_INTEREST_Y,
     min: 0,
   } as SettingsField<UnitNumber>,
@@ -141,10 +142,10 @@ export const settingsFields = (Scandit): SettingsFields => ({
     label: 'Camera Position',
     type: SettingsFieldType.FLAT_SELECT,
     key: SettingsFieldName.CAMERA_POSITION,
-    defaultValue: Scandit.CameraPosition.WorldFacing,
+    defaultValue: CameraPosition.WorldFacing,
     options: [
-      { label: 'World Facing', value: Scandit.CameraPosition.WorldFacing },
-      { label: 'User Facing', value: Scandit.CameraPosition.UserFacing },
+      { label: 'World Facing', value: CameraPosition.WorldFacing },
+      { label: 'User Facing', value: CameraPosition.UserFacing },
     ],
   } as SettingsField<string>,
   [SettingsFieldName.DESIRED_TORCH_STATE]: {
@@ -157,11 +158,11 @@ export const settingsFields = (Scandit): SettingsFields => ({
     label: 'Preferred Resolution',
     type: SettingsFieldType.SELECT,
     key: SettingsFieldName.PREFERRED_RESOLUTION,
-    defaultValue: Scandit.VideoResolution.Auto,
+    defaultValue: VideoResolution.Auto,
     options: [
-      { label: 'HD', value: Scandit.VideoResolution.HD },
-      { label: 'Full HD', value: Scandit.VideoResolution.FullHD },
-      { label: 'Auto', value: Scandit.VideoResolution.Auto },
+      { label: 'HD', value: VideoResolution.HD },
+      { label: 'Full HD', value: VideoResolution.FullHD },
+      { label: 'Auto', value: VideoResolution.Auto },
     ],
   } as SettingsField<string>,
   [SettingsFieldName.ZOOM_FACTOR]: {
@@ -176,11 +177,11 @@ export const settingsFields = (Scandit): SettingsFields => ({
     label: 'Focus Range',
     type: SettingsFieldType.SELECT,
     key: SettingsFieldName.FOCUS_RANGE,
-    defaultValue: Scandit.FocusRange.Far,
+    defaultValue: FocusRange.Far,
     options: [
-      { label: 'Full', value: Scandit.FocusRange.Full },
-      { label: 'Far', value: Scandit.FocusRange.Far },
-      { label: 'Near', value: Scandit.FocusRange.Near },
+      { label: 'Full', value: FocusRange.Full },
+      { label: 'Far', value: FocusRange.Far },
+      { label: 'Near', value: FocusRange.Near },
     ],
   } as SettingsField<string>,
 
@@ -190,7 +191,7 @@ export const settingsFields = (Scandit): SettingsFields => ({
     label: 'Top',
     type: SettingsFieldType.UNIT_NUMBER,
     key: SettingsFieldName.SCAN_AREA_MARGIN_TOP,
-    defaultValue: DEFAULT_UNIT_NUMBER_VALUE_FRACTION(Scandit),
+    defaultValue: DEFAULT_UNIT_NUMBER_VALUE_FRACTION(),
     path: NavigationRoute.SCAN_AREA_MARGIN_TOP,
     min: 0,
   } as SettingsField<UnitNumber>,
@@ -198,7 +199,7 @@ export const settingsFields = (Scandit): SettingsFields => ({
     label: 'Right',
     type: SettingsFieldType.UNIT_NUMBER,
     key: SettingsFieldName.SCAN_AREA_MARGIN_RIGHT,
-    defaultValue: DEFAULT_UNIT_NUMBER_VALUE_FRACTION(Scandit),
+    defaultValue: DEFAULT_UNIT_NUMBER_VALUE_FRACTION(),
     path: NavigationRoute.SCAN_AREA_MARGIN_RIGHT,
     min: 0,
   } as SettingsField<UnitNumber>,
@@ -206,7 +207,7 @@ export const settingsFields = (Scandit): SettingsFields => ({
     label: 'Bottom',
     type: SettingsFieldType.UNIT_NUMBER,
     key: SettingsFieldName.SCAN_AREA_MARGIN_BOTTOM,
-    defaultValue: DEFAULT_UNIT_NUMBER_VALUE_FRACTION(Scandit),
+    defaultValue: DEFAULT_UNIT_NUMBER_VALUE_FRACTION(),
     path: NavigationRoute.SCAN_AREA_MARGIN_BOTTOM,
     min: 0,
   } as SettingsField<UnitNumber>,
@@ -214,7 +215,7 @@ export const settingsFields = (Scandit): SettingsFields => ({
     label: 'Left',
     type: SettingsFieldType.UNIT_NUMBER,
     key: SettingsFieldName.SCAN_AREA_MARGIN_LEFT,
-    defaultValue: DEFAULT_UNIT_NUMBER_VALUE_FRACTION(Scandit),
+    defaultValue: DEFAULT_UNIT_NUMBER_VALUE_FRACTION(),
     path: NavigationRoute.SCAN_AREA_MARGIN_LEFT,
     min: 0,
   } as SettingsField<UnitNumber>,
@@ -230,7 +231,7 @@ export const settingsFields = (Scandit): SettingsFields => ({
     label: 'X',
     type: SettingsFieldType.UNIT_NUMBER,
     key: SettingsFieldName.POINT_OF_INTEREST_X,
-    defaultValue: DEFAULT_UNIT_NUMBER_VALUE_FRACTION_HALF(Scandit),
+    defaultValue: DEFAULT_UNIT_NUMBER_VALUE_FRACTION_HALF(),
     path: NavigationRoute.POINT_OF_INTEREST_X,
     min: 0,
   } as SettingsField<UnitNumber>,
@@ -238,7 +239,7 @@ export const settingsFields = (Scandit): SettingsFields => ({
     label: 'Y',
     type: SettingsFieldType.UNIT_NUMBER,
     key: SettingsFieldName.POINT_OF_INTEREST_Y,
-    defaultValue: DEFAULT_UNIT_NUMBER_VALUE_FRACTION_HALF(Scandit),
+    defaultValue: DEFAULT_UNIT_NUMBER_VALUE_FRACTION_HALF(),
     path: NavigationRoute.POINT_OF_INTEREST_Y,
     min: 0,
   } as SettingsField<UnitNumber>,
