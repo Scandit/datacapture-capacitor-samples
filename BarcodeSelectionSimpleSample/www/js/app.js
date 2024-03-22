@@ -30,12 +30,9 @@ async function runApp() {
 
     // Use the world-facing (back) camera and set it as the frame source of the context. The camera is off by
     // default and must be turned on to start streaming frames to the data capture context for recognition.
-    const camera = Camera.default;
-    context.setFrameSource(camera);
-
     // Use the recommended camera settings for the BarcodeSelection mode as default settings.
-    const cameraSettings = BarcodeSelection.recommendedCameraSettings;
-    camera.applySettings(cameraSettings).catch(console.warn);
+    const camera = Camera.withSettings(BarcodeSelection.recommendedCameraSettings);
+    context.setFrameSource(camera);
 
     // The barcode selection process is configured through barcode selection settings
     // and are then applied to the barcode selection instance that manages barcode recognition.

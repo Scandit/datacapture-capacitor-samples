@@ -1,15 +1,17 @@
 import {
   DataCaptureContext,
   ScanditCaptureCorePlugin,
+  Color,
+  Brush
 } from 'scandit-capacitor-datacapture-core';
 
 import {
   SparkScan,
   SparkScanSettings,
-  SparkScanViewErrorFeedback,
-  SparkScanViewSuccessFeedback,
   SparkScanView,
-  Symbology
+  Symbology,
+  SparkScanBarcodeSuccessFeedback,
+  SparkScanBarcodeErrorFeedback
 } from 'scandit-capacitor-datacapture-barcode'
 
 
@@ -62,17 +64,24 @@ async function runApp() {
       const barcode = session.newlyRecognizedBarcodes[0];
 
       if (isValidBarcode(barcode)) {
-        // Emit success feedback
-        window.sparkScanView.emitFeedback(new SparkScanViewSuccessFeedback(null));
-
         codes[barcode.data] = barcode;
 
         updateResults();
-      } else {
-        // Show an error feedback and automatically resume scanning after 60 seconds
-        window.sparkScanView.emitFeedback(new SparkScanViewErrorFeedback('This code should not have been scanned', 60 * 1000, null, null));
       }
     }
+  };
+
+  // Setup the feedback delegate in order to emit different feedback based on the scanned barcode
+  const sparkScanFeedbackDelegate = {
+    feedbackForBarcode: (barcode) => {
+      if (isValidBarcode(barcode)) {
+        // return a success feedback
+        return new SparkScanBarcodeSuccessFeedback();
+      } else {
+        // customize and return an error feedback
+        return new SparkScanBarcodeErrorFeedback("This code should not have been scanned", 60 * 1000, Color.fromHex("#FF0000"), new Brush(Color.fromHex("#FF0000"), Color.fromHex("#FF0000"), 1));
+      }
+    },
   };
 
   // Add the listener to the spark scan mode.
@@ -81,6 +90,7 @@ async function runApp() {
   // To visualize the on-going barcode capturing process on screen, setup a spark scan view that renders the
   // camera preview. The view must be connected to the data capture context & spark scan mode.
   window.sparkScanView = SparkScanView.forContext(context, window.sparkScan);
+  window.sparkScanView.feedbackDelegate = sparkScanFeedbackDelegate;
 
   const updateResults = () => {
     const list = document.getElementById('list');
