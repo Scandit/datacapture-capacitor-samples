@@ -13,9 +13,9 @@
         "@capacitor/cli": "5.0.0",
         "@capacitor/core": "5.0.0",
         "@capacitor/ios": "5.0.0",
-        "scandit-capacitor-datacapture-id": "6.23.2",
-        "scandit-capacitor-datacapture-id-aamva-barcode-verification": "6.23.2",
-        "scandit-capacitor-datacapture-core": "6.23.2"
+        "scandit-capacitor-datacapture-id": "6.24.0",
+        "scandit-capacitor-datacapture-id-aamva-barcode-verification": "6.24.0",
+        "scandit-capacitor-datacapture-core": "6.24.0"
     },
     "devDependencies": {
         "clean-webpack-plugin": "4.0.0",

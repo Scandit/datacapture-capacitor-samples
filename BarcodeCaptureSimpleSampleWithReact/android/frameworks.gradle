@@ -41,7 +41,7 @@ ext {
         maven { url 'https://jitpack.io' }
     }
 
-    global_sdk_version = "6.23.2"
+    global_sdk_version = "6.24.0"
 
     if (System.getenv("SDC_FETCH_LIBS_SOURCE") != null) {
         fetch = System.getenv("SDC_FETCH_LIBS_SOURCE")
@@ -61,8 +61,4 @@ ext {
     if (System.getenv("SNAPSHOT_CACHE_DURATION_IN_SECONDS") != null) {
         snapshotCacheDuration = System.getenv("SNAPSHOT_CACHE_DURATION_IN_SECONDS") as Integer
     }
-}
-
-configurations.all {
-    resolutionStrategy.cacheChangingModulesFor snapshotCacheDuration, 'seconds'
 }

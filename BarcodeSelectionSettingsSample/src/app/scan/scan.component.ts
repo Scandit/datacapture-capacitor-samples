@@ -153,10 +153,10 @@ export class ScanComponent implements AfterViewInit {
     } else if (SELECTION_TYPE === BarcodeSelectionTypeName.Aimer) {
       this.barcodeSelectionSettings.selectionType = BarcodeSelectionAimerSelection.aimerSelection;
       if (SELECTION_STRATEGY === BarcodeSelectionStrategyType.Auto) {
-        this.barcodeSelectionSettings.selectionType
+        (this.barcodeSelectionSettings.selectionType as BarcodeSelectionAimerSelection).selectionStrategy
           = BarcodeSelectionAutoSelectionStrategy.autoSelectionStrategy;
       } else if (SELECTION_STRATEGY === BarcodeSelectionStrategyType.Manual) {
-        this.barcodeSelectionSettings.selectionType
+        (this.barcodeSelectionSettings.selectionType as BarcodeSelectionAimerSelection).selectionStrategy
           = BarcodeSelectionManualSelectionStrategy.manualSelectionStrategy;
       }
     }

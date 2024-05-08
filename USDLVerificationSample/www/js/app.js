@@ -118,12 +118,16 @@ async function runApp() {
                             window.showResult(reason);
                         });
                 }
+            } else {
+                window.showResult('Document is not a US driver’s license.');
             }
         },
         didRejectId: (_, session) => {
             if (session.newlyRejectedId == null) {
                 return;
             }
+
+            window.idCapture.isEnabled = false;
 
             window.showResult('Rejected!');
         }
