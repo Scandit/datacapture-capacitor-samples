@@ -8,5 +8,9 @@
 		"SplashScreen": {
 			"launchShowDuration": 0
 		}
-	}
+	},
+	"packageClassList": [
+		"ScanditCapacitorBarcode",
+		"ScanditCapacitorCore"
+	]
 }

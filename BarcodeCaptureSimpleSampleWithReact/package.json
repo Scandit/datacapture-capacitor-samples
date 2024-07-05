@@ -4,13 +4,13 @@
     "private": true,
     "description": "Scandit Data Capture SDK Barcode Capture Simple Sample using Ionic and React",
     "dependencies": {
-        "@capacitor/android": "5.0.0",
-        "@capacitor/app": "5.0.0",
-        "@capacitor/core": "5.0.0",
-        "@capacitor/haptics": "5.0.0",
-        "@capacitor/ios": "5.0.0",
-        "@capacitor/keyboard": "5.0.0",
-        "@capacitor/status-bar": "5.0.0",
+        "@capacitor/android": "^6.0.0",
+        "@capacitor/app": "^6.0.0",
+        "@capacitor/core": "^6.0.0",
+        "@capacitor/haptics": "^6.0.0",
+        "@capacitor/ios": "^6.0.0",
+        "@capacitor/keyboard": "^6.0.0",
+        "@capacitor/status-bar": "^6.0.0",
         "@ionic/react": "6.0.9",
         "@ionic/react-router": "6.0.9",
         "@types/jest": "26.0.24",
@@ -25,8 +25,8 @@
         "react-router": "5.2.1",
         "react-router-dom": "5.3.0",
         "react-scripts": "5.0.1",
-        "scandit-capacitor-datacapture-barcode": "6.24.1",
-        "scandit-capacitor-datacapture-core": "6.24.1",
+        "scandit-capacitor-datacapture-barcode": "6.25.0",
+        "scandit-capacitor-datacapture-core": "6.25.0",
         "typescript": "4.5.5",
         "web-vitals": "0.2.4",
         "workbox-background-sync": "5.1.4",
@@ -67,7 +67,7 @@
         ]
     },
     "devDependencies": {
-        "@capacitor/cli": "5.0.0"
+        "@capacitor/cli": "^6.0.0"
     },
     "resolutions": {
         "@yarnpkg/parsers": "3.0.0-rc.48.1",

@@ -1,12 +1,12 @@
 {
-  "appId": "com.scandit.matrixscanbubblessample",
-  "appName": "MSBubbles",
-  "bundledWebRuntime": true,
-  "npmClient": "yarn",
-  "webDir": "dist",
-  "plugins": {
-    "SplashScreen": {
-      "launchShowDuration": 0
-    }
-  }
+	"appId": "com.scandit.matrixscanbubblessample",
+	"appName": "MSBubbles",
+	"bundledWebRuntime": true,
+	"npmClient": "yarn",
+	"webDir": "dist",
+	"plugins": {
+		"SplashScreen": {
+			"launchShowDuration": 0
+		}
+	}
 }

@@ -1,26 +1,26 @@
 PODS:
-  - Capacitor (5.0.0):
+  - Capacitor (6.0.0):
     - CapacitorCordova
-  - CapacitorCordova (5.0.0)
-  - CapacitorSplashScreen (5.0.6):
+  - CapacitorCordova (6.0.0)
+  - CapacitorSplashScreen (6.0.0):
     - Capacitor
-  - scandit-datacapture-frameworks-barcode (6.23.0-beta.1-SNAPSHOT):
-    - scandit-datacapture-frameworks-core (= 6.23.0-beta.1-SNAPSHOT)
-  - scandit-datacapture-frameworks-core (6.23.0-beta.1-SNAPSHOT)
-  - ScanditCapacitorDatacaptureBarcode (6.23.0-beta.1-SNAPSHOT):
+  - scandit-datacapture-frameworks-barcode (6.25.0-beta.1-SNAPSHOT):
+    - scandit-datacapture-frameworks-core (= 6.25.0-beta.1-SNAPSHOT)
+  - scandit-datacapture-frameworks-core (6.25.0-beta.1-SNAPSHOT)
+  - ScanditCapacitorDatacaptureBarcode (6.25.0-beta.1-SNAPSHOT):
     - Capacitor
-    - scandit-datacapture-frameworks-barcode (= 6.23.0-beta.1-SNAPSHOT)
-    - ScanditCapacitorDatacaptureCore (= 6.23.0-beta.1-SNAPSHOT)
-  - ScanditCapacitorDatacaptureCore (6.23.0-beta.1-SNAPSHOT):
+    - scandit-datacapture-frameworks-barcode (= 6.25.0-beta.1-SNAPSHOT)
+    - ScanditCapacitorDatacaptureCore (= 6.25.0-beta.1-SNAPSHOT)
+  - ScanditCapacitorDatacaptureCore (6.25.0-beta.1-SNAPSHOT):
     - Capacitor
-    - scandit-datacapture-frameworks-core (= 6.23.0-beta.1-SNAPSHOT)
+    - scandit-datacapture-frameworks-core (= 6.25.0-beta.1-SNAPSHOT)
 
 DEPENDENCIES:
   - "Capacitor (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorSplashScreen (from `../../node_modules/@capacitor/splash-screen`)"
-  - scandit-datacapture-frameworks-barcode (from `/Users/konradgapinski/data-capture-sdk/frameworks/shared/ios/scandit-datacapture-frameworks-barcode`)
-  - scandit-datacapture-frameworks-core (from `/Users/konradgapinski/data-capture-sdk/frameworks/shared/ios/scandit-datacapture-frameworks-core`)
+  - scandit-datacapture-frameworks-barcode (from `/Users/aaron/Projects/data-capture-sdk/frameworks/shared/ios/scandit-datacapture-frameworks-barcode`)
+  - scandit-datacapture-frameworks-core (from `/Users/aaron/Projects/data-capture-sdk/frameworks/shared/ios/scandit-datacapture-frameworks-core`)
   - ScanditCapacitorDatacaptureBarcode (from `../../../../scandit-capacitor-datacapture-barcode`)
   - ScanditCapacitorDatacaptureCore (from `../../../../scandit-capacitor-datacapture-core`)
 
@@ -32,23 +32,23 @@ EXTERNAL SOURCES:
   CapacitorSplashScreen:
     :path: "../../node_modules/@capacitor/splash-screen"
   scandit-datacapture-frameworks-barcode:
-    :path: "/Users/konradgapinski/data-capture-sdk/frameworks/shared/ios/scandit-datacapture-frameworks-barcode"
+    :path: "/Users/aaron/Projects/data-capture-sdk/frameworks/shared/ios/scandit-datacapture-frameworks-barcode"
   scandit-datacapture-frameworks-core:
-    :path: "/Users/konradgapinski/data-capture-sdk/frameworks/shared/ios/scandit-datacapture-frameworks-core"
+    :path: "/Users/aaron/Projects/data-capture-sdk/frameworks/shared/ios/scandit-datacapture-frameworks-core"
   ScanditCapacitorDatacaptureBarcode:
     :path: "../../../../scandit-capacitor-datacapture-barcode"
   ScanditCapacitorDatacaptureCore:
     :path: "../../../../scandit-capacitor-datacapture-core"
 
 SPEC CHECKSUMS:
-  Capacitor: b332cb737d447561e854039fb72195206685dce2
-  CapacitorCordova: 4ea17670ee562680988a7ce9db68dee5160fe564
-  CapacitorSplashScreen: 5fa2ab5e46cf5cc530cf16a51c80c7a986579ccd
-  scandit-datacapture-frameworks-barcode: add54f51791abb26a2653b0d88eec8529405d303
-  scandit-datacapture-frameworks-core: f14cec128f938928cba85f5257a0d2ec4d303a3d
-  ScanditCapacitorDatacaptureBarcode: c2c143958d43d04cdecb4ff343205e034996e38e
-  ScanditCapacitorDatacaptureCore: 5293ff07f863004ed53f02e302911c94989a6b79
+  Capacitor: 559d073c4ca6c27f8e7002c807eea94c3ba435a9
+  CapacitorCordova: 8c4bfdf69368512e85b1d8b724dd7546abeb30af
+  CapacitorSplashScreen: 5431ab8d19c1c6e95777d53bfaa7a36a6c3d94c7
+  scandit-datacapture-frameworks-barcode: c9f10f4fe95572ef9eed67a8fab99ddbb426a57f
+  scandit-datacapture-frameworks-core: a0f91a9c4d50c81573b451ea6f03e65a656e56bd
+  ScanditCapacitorDatacaptureBarcode: ff57e6f84a25ab178ff040080c18a707649bcffc
+  ScanditCapacitorDatacaptureCore: bc2e64aff70e40ff075262c9cdf7f6ffb2da8e78
 
 PODFILE CHECKSUM: 666009619fadb385364f9b2101f8da8c0bb50967
 
-COCOAPODS: 1.12.1
+COCOAPODS: 1.14.3

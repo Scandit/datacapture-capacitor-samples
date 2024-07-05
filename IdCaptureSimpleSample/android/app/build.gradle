@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     namespace "com.scandit.idcapturesimplesample"
-    compileSdkVersion rootProject.ext.compileSdkVersion
+    compileSdk rootProject.ext.compileSdkVersion
     defaultConfig {
         applicationId "com.scandit.idcapturesimplesample"
         minSdkVersion rootProject.ext.minSdkVersion

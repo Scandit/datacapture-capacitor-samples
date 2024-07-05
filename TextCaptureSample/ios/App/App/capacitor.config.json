@@ -1,7 +1,12 @@
 {
-  "appId": "com.scandit.textcapturesample",
-  "appName": "TextCaptureSample",
-  "bundledWebRuntime": true,
-  "npmClient": "yarn",
-  "webDir": "dist"
+	"appId": "com.scandit.textcapturesample",
+	"appName": "TextCaptureSample",
+	"bundledWebRuntime": true,
+	"npmClient": "yarn",
+	"webDir": "dist",
+	"packageClassList": [
+		"ScanditCapacitorCore",
+		"ScanditTextNative",
+		"ScanditParserNative"
+	]
 }

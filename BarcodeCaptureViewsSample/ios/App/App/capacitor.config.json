@@ -2,5 +2,14 @@
 	"appId": "io.scandit.barcodecaptureviewssample",
 	"appName": "BarcodeCaptureViewsSample",
 	"webDir": "www",
-	"bundledWebRuntime": false
+	"bundledWebRuntime": false,
+	"packageClassList": [
+		"AppPlugin",
+		"HapticsPlugin",
+		"KeyboardPlugin",
+		"SplashScreenPlugin",
+		"StatusBarPlugin",
+		"ScanditCapacitorBarcode",
+		"ScanditCapacitorCore"
+	]
 }

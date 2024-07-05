@@ -3,7 +3,7 @@ include ':capacitor-android'
 project(':capacitor-android').projectDir = new File('../node_modules/@capacitor/android/capacitor')
 
 include ':scandit-capacitor-datacapture-barcode'
-project(':scandit-capacitor-datacapture-barcode').projectDir = new File('../node_modules/scandit-capacitor-datacapture-barcode/android')
+project(':scandit-capacitor-datacapture-barcode').projectDir = new File('../../../scandit-capacitor-datacapture-barcode/android')
 
 include ':scandit-capacitor-datacapture-core'
-project(':scandit-capacitor-datacapture-core').projectDir = new File('../node_modules/scandit-capacitor-datacapture-core/android')
+project(':scandit-capacitor-datacapture-core').projectDir = new File('../../../scandit-capacitor-datacapture-core/android')

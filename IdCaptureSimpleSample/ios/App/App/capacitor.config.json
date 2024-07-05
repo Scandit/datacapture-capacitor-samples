@@ -8,5 +8,10 @@
 		"SplashScreen": {
 			"launchShowDuration": 0
 		}
-	}
+	},
+	"packageClassList": [
+		"ScanditTextNative",
+		"ScanditIdNative",
+		"ScanditCapacitorCore"
+	]
 }

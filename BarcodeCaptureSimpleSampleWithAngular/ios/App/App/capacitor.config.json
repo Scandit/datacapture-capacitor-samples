@@ -2,5 +2,13 @@
 	"appId": "com.scandit.barcodecapturesimplesamplewithangular",
 	"appName": "BarcodeCaptureSimpleSampleWithAngular",
 	"webDir": "www",
-	"bundledWebRuntime": false
+	"bundledWebRuntime": false,
+	"packageClassList": [
+		"AppPlugin",
+		"HapticsPlugin",
+		"KeyboardPlugin",
+		"StatusBarPlugin",
+		"ScanditCapacitorBarcode",
+		"ScanditCapacitorCore"
+	]
 }
