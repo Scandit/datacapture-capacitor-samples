@@ -26,8 +26,8 @@
         "@capacitor/status-bar": "^6.0.0",
         "@ionic/angular": "^7.8.2",
         "rxjs": "^7.5.0",
-        "scandit-capacitor-datacapture-barcode": "6.25.1",
-        "scandit-capacitor-datacapture-core": "6.25.1",
+        "scandit-capacitor-datacapture-barcode": "6.25.2",
+        "scandit-capacitor-datacapture-core": "6.25.2",
         "tslib": "2.2.0",
         "zone.js": "0.14.4"
     },
