@@ -1,7 +1,7 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { ViewDidEnter, ViewWillLeave } from '@ionic/angular';
 import { BarcodeCaptureSettings, BarcodeCapture, BarcodeCaptureOverlay, Symbology, SymbologyDescription } from 'scandit-capacitor-datacapture-barcode';
-import { DataCaptureContext, Camera, DataCaptureView, LaserlineViewfinder, LaserlineViewfinderStyle, RadiusLocationSelection, NumberWithUnit, MeasureUnit, FrameSourceState } from 'scandit-capacitor-datacapture-core';
+import { DataCaptureContext, Camera, DataCaptureView, AimerViewfinder, RadiusLocationSelection, NumberWithUnit, MeasureUnit, FrameSourceState } from 'scandit-capacitor-datacapture-core';
 import { environment } from '../../environments/environment';
 
 interface Result {
@@ -36,7 +36,7 @@ export class SplitScreenPage implements AfterViewInit, ViewDidEnter, ViewWillLea
   ) { }
 
   ngAfterViewInit() {
-    this.overlay.viewfinder = new LaserlineViewfinder(LaserlineViewfinderStyle.Animated);
+    this.overlay.viewfinder = new AimerViewfinder();
 
     this.settings.enableSymbologies([
       Symbology.EAN13UPCA,
@@ -56,7 +56,8 @@ export class SplitScreenPage implements AfterViewInit, ViewDidEnter, ViewWillLea
 
     this.barcodeCapture.addListener({
       didScan: async (barcodeCapture, session) => {
-        const barcode = session.newlyRecognizedBarcodes[0];
+        const barcode = session.newlyRecognizedBarcode;
+        if (barcode == null) return;
         const symbology = new SymbologyDescription(barcode.symbology);
 
         this.results.push({ data: barcode.data!, symbology: symbology.readableName });
