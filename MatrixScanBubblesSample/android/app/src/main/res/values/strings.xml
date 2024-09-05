@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<resources>
-    <string name="app_name">MSBubbles</string>
-    <string name="title_activity_main">MSBubbles</string>
-    <string name="package_name">com.scandit.matrixscanbubblessample</string>
-    <string name="custom_url_scheme">com.scandit.matrixscanbubblessample</string>
-</resources>
