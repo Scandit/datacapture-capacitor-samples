@@ -79,7 +79,7 @@ async function runApp() {
         return new SparkScanBarcodeSuccessFeedback();
       } else {
         // customize and return an error feedback
-        return new SparkScanBarcodeErrorFeedback("This code should not have been scanned", 60, Color.fromHex("#FF0000"), new Brush(Color.fromHex("#FF0000"), Color.fromHex("#FF0000"), 1), null);
+        return new SparkScanBarcodeErrorFeedback("Wrong barcode", 60, Color.fromHex("#FF0000"), new Brush(Color.fromHex("#FF0000"), Color.fromHex("#FF0000"), 1), null);
       }
     },
   };

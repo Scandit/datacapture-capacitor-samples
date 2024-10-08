@@ -127,6 +127,7 @@ export class ScanComponent implements AfterViewInit {
     this.isPageActive = false;
     this.barcodeSelection.isEnabled = false;
     this.context.frameSource.switchToDesiredState(FrameSourceState.Off);
+    this.view.detachFromElement();
   }
 
   public ngAfterViewInit() {
@@ -240,11 +241,10 @@ export class ScanComponent implements AfterViewInit {
     if (!this.view) {
       this.view = DataCaptureView.forContext(this.context);
     }
+    this.view.connectToElement(this.captureView.nativeElement);
 
     this.applyPointOfInterestSettings();
     this.applyScanAreaSettings();
-
-    this.view.connectToElement(this.captureView.nativeElement);
 
     this.view.zoomGesture = null;
 

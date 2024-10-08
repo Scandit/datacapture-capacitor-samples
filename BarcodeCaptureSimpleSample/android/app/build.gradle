@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     namespace "com.scandit.barcodecapturesimplesample"
-    ndkVersion "26.1.10909125"
+    ndkVersion "27.0.12077973"
     compileSdk rootProject.ext.compileSdkVersion
     defaultConfig {
         applicationId "com.scandit.barcodecapturesimplesample"

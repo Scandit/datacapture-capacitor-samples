@@ -81,6 +81,7 @@ export class SplitScreenPage implements AfterViewInit, ViewDidEnter, ViewWillLea
   }
 
   ionViewWillLeave(): void {
+    clearTimeout(this.scanTimer);
     this.captureView.detachFromElement();
     this.isCaptureViewConnected = false;
 
@@ -99,8 +100,10 @@ export class SplitScreenPage implements AfterViewInit, ViewDidEnter, ViewWillLea
   public resetScanTimeout() {
     clearTimeout(this.scanTimer);
     this.barcodeCapture.isEnabled = true;
+    this.camera?.switchToDesiredState(FrameSourceState.On);
     this.scanTimer = setTimeout(() => {
       this.barcodeCapture.isEnabled = false;
+      this.camera?.switchToDesiredState(FrameSourceState.Standby);
       this.changeDetection.detectChanges();
     }, 10000);
   }
