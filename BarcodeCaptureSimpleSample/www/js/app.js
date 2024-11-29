@@ -62,7 +62,7 @@ async function runApp() {
 
     // Register a listener to get informed whenever a new barcode got recognized.
     window.barcodeCapture.addListener({
-        didScan: (barcodeCapture, session, _) => {
+        didScan: async (barcodeCapture, session, _) => {
             const barcode = session.newlyRecognizedBarcode;
             if (barcode == null) return;
             const symbology = new SymbologyDescription(barcode.symbology);

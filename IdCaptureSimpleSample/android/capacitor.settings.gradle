@@ -2,9 +2,6 @@
 include ':capacitor-android'
 project(':capacitor-android').projectDir = new File('../node_modules/@capacitor/android/capacitor')
 
-include ':scandit-capacitor-datacapture-text'
-project(':scandit-capacitor-datacapture-text').projectDir = new File('../node_modules/scandit-capacitor-datacapture-text/android')
-
 include ':scandit-capacitor-datacapture-id'
 project(':scandit-capacitor-datacapture-id').projectDir = new File('../node_modules/scandit-capacitor-datacapture-id/android')
 

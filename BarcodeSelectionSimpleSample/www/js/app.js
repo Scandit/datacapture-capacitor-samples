@@ -55,7 +55,7 @@ async function runApp() {
 
     // Register a listener to get informed whenever a new barcode got recognized.
     barcodeSelection.addListener({
-        didUpdateSelection: (mode, session, _) => {
+        didUpdateSelection: async (mode, session, _) => {
             const barcode = session.newlySelectedBarcodes[0];
 
             if (!barcode) { return }

@@ -4786,10 +4786,6 @@ class CapturedId {
     }
     get nationality() { return this.commonCapturedFields.nationality; }
     get address() { return this.commonCapturedFields.address; }
-    get capturedResultType() { return this.json.capturedResultType; }
-    get capturedResultTypes() {
-        return this.json.capturedResultTypes;
-    }
     get documentType() { return this.commonCapturedFields.documentType; }
     get issuingCountryIso() { return this.commonCapturedFields.issuingCountryIso; }
     get issuingCountry() { return this.commonCapturedFields.issuingCountry; }
@@ -5171,17 +5167,6 @@ CapturedId_decorate([
 ], AamvaVizBarcodeComparisonVerifier.prototype, "proxy", void 0);
 //# sourceMappingURL=CapturedId.js.map
 ;// CONCATENATED MODULE: ./node_modules/scandit-capacitor-datacapture-id/dist/esm/scandit-capacitor-datacapture-id/src/ts/Enums.js
-var CapturedResultType;
-(function (CapturedResultType) {
-    CapturedResultType["AAMVABarcodeResult"] = "aamvaBarcodeResult";
-    CapturedResultType["ArgentinaIdBarcodeResult"] = "argentinaIdBarcodeResult";
-    CapturedResultType["ColombiaIdBarcodeResult"] = "colombiaIdBarcodeResult";
-    CapturedResultType["MRZResult"] = "mrzResult";
-    CapturedResultType["SouthAfricaDlBarcodeResult"] = "southAfricaDlBarcodeResult";
-    CapturedResultType["SouthAfricaIdBarcodeResult"] = "southAfricaIdBarcodeResult";
-    CapturedResultType["USUniformedServicesBarcodeResult"] = "usUniformedServicesBarcodeResult";
-    CapturedResultType["VIZResult"] = "vizResult";
-})(CapturedResultType || (CapturedResultType = {}));
 var DocumentType;
 (function (DocumentType) {
     DocumentType["None"] = "none";
@@ -5252,28 +5237,17 @@ var IdDocumentType;
     IdDocumentType["USUSIdBarcode"] = "usUsIdBarcode";
     IdDocumentType["VisaMRZ"] = "visaMrz";
 })(IdDocumentType || (IdDocumentType = {}));
-var SupportedSides;
-(function (SupportedSides) {
-    SupportedSides["FrontOnly"] = "frontOnly";
-    SupportedSides["FrontAndBack"] = "frontAndBack";
-})(SupportedSides || (SupportedSides = {}));
+var CapturedSides;
+(function (CapturedSides) {
+    CapturedSides["FrontOnly"] = "frontOnly";
+    CapturedSides["FrontAndBack"] = "frontAndBack";
+})(CapturedSides || (CapturedSides = {}));
 var IdImageType;
 (function (IdImageType) {
     IdImageType["Face"] = "face";
     IdImageType["IdFront"] = "idFront";
     IdImageType["IdBack"] = "idBack";
 })(IdImageType || (IdImageType = {}));
-var IdLayout;
-(function (IdLayout) {
-    IdLayout["TD1"] = "td1";
-    IdLayout["TD2"] = "td2";
-    IdLayout["TD3"] = "td3";
-    IdLayout["MRVa"] = "mrvA";
-    IdLayout["VIZ"] = "viz";
-    IdLayout["PDF417"] = "pdf417";
-    IdLayout["Auto"] = "auto";
-    IdLayout["None"] = "none";
-})(IdLayout || (IdLayout = {}));
 var IdLayoutStyle;
 (function (IdLayoutStyle) {
     IdLayoutStyle["Rounded"] = "rounded";
@@ -5484,7 +5458,6 @@ class IdCaptureOverlay extends ts_Serializeable_DefaultSerializeable {
     constructor() {
         super();
         this.type = 'idCapture';
-        this._idLayout = IdLayout.Auto;
         this._idLayoutStyle = IdLayoutStyle.Rounded;
         this._defaultCapturedBrush = new Viewfinder_Brush(ts_Capacitor_Capacitor_Capacitor.defaults.IdCapture.IdCaptureOverlayDefaults.defaultCapturedBrush.fillColor, ts_Capacitor_Capacitor_Capacitor.defaults.IdCapture.IdCaptureOverlayDefaults.defaultCapturedBrush.strokeColor, ts_Capacitor_Capacitor_Capacitor.defaults.IdCapture.IdCaptureOverlayDefaults.defaultCapturedBrush.strokeWidth);
         this._defaultLocalizedBrush = new Viewfinder_Brush(ts_Capacitor_Capacitor_Capacitor.defaults.IdCapture.IdCaptureOverlayDefaults.defaultLocalizedBrush.fillColor, ts_Capacitor_Capacitor_Capacitor.defaults.IdCapture.IdCaptureOverlayDefaults.defaultLocalizedBrush.strokeColor, ts_Capacitor_Capacitor_Capacitor.defaults.IdCapture.IdCaptureOverlayDefaults.defaultLocalizedBrush.strokeWidth);
@@ -5504,10 +5477,6 @@ class IdCaptureOverlay extends ts_Serializeable_DefaultSerializeable {
             view.addOverlay(overlay);
         }
         return overlay;
-    }
-    setIdLayout(idLayout) {
-        this._idLayout = idLayout;
-        this.idCapture.didChange();
     }
     get idLayoutStyle() {
         return this._idLayoutStyle;
@@ -5557,9 +5526,6 @@ class IdCaptureOverlay extends ts_Serializeable_DefaultSerializeable {
 IdCapture_Related_decorate([
     Serializeable_ignoreFromSerialization
 ], IdCaptureOverlay.prototype, "idCapture", void 0);
-IdCapture_Related_decorate([
-    Serializeable_nameForSerialization('idLayout')
-], IdCaptureOverlay.prototype, "_idLayout", void 0);
 IdCapture_Related_decorate([
     Serializeable_nameForSerialization('idLayoutStyle')
 ], IdCaptureOverlay.prototype, "_idLayoutStyle", void 0);
@@ -5752,7 +5718,7 @@ class IdCaptureSettings extends ts_Serializeable_DefaultSerializeable {
         this.properties = {};
         this.imageToResult = {};
         this.supportedDocuments = [];
-        this.supportedSides = SupportedSides.FrontOnly;
+        this.capturedSides = CapturedSides.FrontOnly;
     }
     setProperty(name, value) {
         this.properties[name] = value;
@@ -5789,14 +5755,12 @@ class ScanditIdPlugin extends core_dist_WebPlugin {
             IdCaptureOverlay: IdCaptureOverlay,
             IdCaptureSession: IdCaptureSession,
             IdCaptureSettings: IdCaptureSettings,
-            CapturedResultType: CapturedResultType,
             DocumentType: DocumentType,
             IdImageType: IdImageType,
             IdDocumentType: IdDocumentType,
-            SupportedSides: SupportedSides,
+            CapturedSides: CapturedSides,
             IdLayoutStyle: IdLayoutStyle,
             IdLayoutLineStyle: IdLayoutLineStyle,
-            IdLayout: IdLayout,
             ComparisonCheckResult: ComparisonCheckResult,
             AAMVABarcodeResult: AAMVABarcodeResult,
             AamvaVizBarcodeComparisonResult: AamvaVizBarcodeComparisonResult,
@@ -6038,7 +6002,6 @@ window.descriptionForCapturedId = (result) => {
   Nationality: ${result.nationality || "empty"}<br>
   Address: ${result.address || "empty"}<br>
   Document Type: ${result.documentType}<br>
-  Captured Result Type: ${result.capturedResultType}<br>
   Issuing Country: ${result.issuingCountry || "empty"}<br>
   Issuing Country ISO: ${result.issuingCountryIso || "empty"}<br>
   Document Number: ${result.documentNumber || "empty"}<br>

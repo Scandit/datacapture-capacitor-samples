@@ -96,7 +96,7 @@ export default defineComponent({
 
       // Register a listener to get informed whenever a new barcode got recognized.
       barcodeCapture.addListener({
-        didScan: (mode: any, session: any) => {
+        didScan: async (mode: any, session: any) => {
           const barcode = session.newlyRecognizedBarcode;
           if (barcode == null) return;
           const symbology = new SymbologyDescription(barcode.symbology);

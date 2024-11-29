@@ -6,8 +6,6 @@ This repository contains both simple and advanced samples that show you how use 
 
 **Simple Sample (**[Capacitor](https://github.com/Scandit/datacapture-capacitor-samples/tree/master/BarcodeCaptureSimpleSample) ([Angular](https://github.com/Scandit/datacapture-capacitor-samples/tree/master/BarcodeCaptureSimpleSampleWithAngular), [React](https://github.com/Scandit/datacapture-capacitor-samples/tree/master/BarcodeCaptureSimpleSampleWithReact), [Vue](https://github.com/Scandit/datacapture-capacitor-samples/tree/master/BarcodeCaptureSimpleSampleWithVue)))
 
-**Views Sample** ([Capacitor](https://github.com/Scandit/datacapture-capacitor-samples/tree/master/BarcodeCaptureViewsSample))
-
 ### Scan One of Many Barcodes (Barcode Selection)
 
 Barcode Selection is a pre-built component that provides a UI for selecting the right code when codes are crowded (and cannot be selected programmatically as demonstrated by Barcode Capture Reject Sample)

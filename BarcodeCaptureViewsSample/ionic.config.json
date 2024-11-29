@@ -1,7 +1,0 @@
-{
-  "name": "BarcodeCaptureViewsSample",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "angular"
-}

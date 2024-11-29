@@ -7,11 +7,16 @@ import {
 } from 'scandit-capacitor-datacapture-core';
 
 import {
-    IdDocumentType,
+    FullDocumentScanner,
     IdCapture,
     IdCaptureOverlay,
     IdCaptureSettings,
-    IdLayoutStyle
+    IdLayoutStyle,
+    IdCaptureRegion,
+    IdCard,
+    DriverLicense,
+    Passport,
+    RejectionReason
 } from 'scandit-capacitor-datacapture-id';
 
 async function runApp() {
@@ -31,11 +36,13 @@ async function runApp() {
     // and are then applied to the ID capture instance that manages id recognition.
     const settings = new IdCaptureSettings();
 
-    // We are interested in the front side of national Id Cards.
-    settings.supportedDocuments = [
-        IdDocumentType.IdCardVIZ,
-        IdDocumentType.DLVIZ,
-    ]
+    // Recognize national ID cards, driver's licenses and passports.
+    settings.acceptedDocuments.push(
+        new IdCard(IdCaptureRegion.Any),
+        new DriverLicense(IdCaptureRegion.Any),
+        new Passport(IdCaptureRegion.Any),
+    );
+    settings.scannerType = new FullDocumentScanner();
 
     // To visualize the on-going id capturing process on screen, setup a data capture view that renders the
     // camera preview. The view must be connected to the data capture context.
@@ -53,21 +60,15 @@ async function runApp() {
 
     // Register a listener to get informed whenever a new id got recognized.
     window.idCapture.addListener({
-        didCaptureId: (_, session) => {
-            if (session.newlyCapturedId == null) {
-                return
-            }
-
+        didCaptureId: (_, capturedId) => {
             window.idCapture.isEnabled = false;
 
-            if (session.newlyCapturedId.vizResult != null) {
-                window.showResult(window.descriptionForVizResult(session.newlyCapturedId));
-            } else {
-                window.showResult(window.descriptionForCapturedId(session.newlyCapturedId));
-            }
+            window.showResult(window.descriptionForCapturedId(capturedId));
         },
-        didFailWithError: (_, error, session) => {
-            window.showResult(error.message);
+        didRejectId: (_, rejectedId, reason) => {
+            window.idCapture.isEnabled = false;
+            
+            window.showResult(window.getRejectionReasonMessage(reason));
         }
     });
 
@@ -92,27 +93,15 @@ window.continueScanning = () => {
 
 // === //
 
-window.descriptionForVizResult = (result) => {
-    return `
-  ${descriptionForCapturedId(result)}<br><br>
-  Additional Name Information: ${result.vizResult.additionalNameInformation || "empty"}<br>
-  Additional Address Information: ${result.vizResult.additionalAddressInformation || "empty"}<br>
-  Place of Birth: ${result.vizResult.placeOfBirth || "empty"}<br>
-  Race: ${result.vizResult.race || "empty"}<br>
-  Religion: ${result.vizResult.religion || "empty"}<br>
-  Profession: ${result.vizResult.profession || "empty"}<br>
-  Marital Status: ${result.vizResult.maritalStatus || "empty"}<br>
-  Residential Status: ${result.vizResult.residentialStatus || "empty"}<br>
-  Employer: ${result.vizResult.employer || "empty"}<br>
-  Personal Id Number: ${result.vizResult.personalIdNumber || "empty"}<br>
-  Document Additional Number: ${result.vizResult.documentAdditionalNumber || "empty"}<br>
-  Issuing Jurisdiction: ${result.vizResult.issuingJurisdiction || "empty"}<br>
-  Issuing Authority: ${result.vizResult.issuingAuthority || "empty"}<br>
-  Blood Type: ${result.vizResult.bloodType}<br>
-  Sponsor: ${result.vizResult.sponsor}<br>
-  Mother\'s Name: ${result.vizResult.mothersName}<br>
-  Father\'s Name: ${result.vizResult.fathersName}<br>
-  `;
+window.getRejectionReasonMessage = (reason) => {
+    switch (reason) {
+        case RejectionReason.NotAcceptedDocumentType:
+            return 'Document not supported. Try scanning another document.';
+        case RejectionReason.Timeout:
+            return 'Document capture failed. Make sure the document is well lit and free of glare. Alternatively, try scanning another document';
+        default:
+            return `Document capture was rejected. Reason=${reason}`;
+    }
 }
 
 window.descriptionForCapturedId = (result) => {
@@ -120,23 +109,13 @@ window.descriptionForCapturedId = (result) => {
         return dateObject && dateObject.localDate ? dateObject.localDate
             .toLocaleDateString("en-GB") : "empty";
     }
-
     return `
-  Name: ${result.firstName || "empty"}<br>
-  Last Name: ${result.lastName || "empty"}<br>
   Full Name: ${result.fullName}<br>
-  Sex: ${result.sex || "empty"}<br>
   Date of Birth: ${getDateAsString(result.dateOfBirth)}<br>
-  Nationality: ${result.nationality || "empty"}<br>
-  Address: ${result.address || "empty"}<br>
-  Document Type: ${result.documentType}<br>
-  Captured Result Type: ${result.capturedResultType}<br>
-  Issuing Country: ${result.issuingCountry || "empty"}<br>
-  Issuing Country ISO: ${result.issuingCountryIso || "empty"}<br>
-  Document Number: ${result.documentNumber || "empty"}<br>
   Date of Expiry: ${getDateAsString(result.dateOfExpiry)}<br>
-  Date of Issue: ${getDateAsString(result.dateOfIssue)}<br>
-  `
+  Document Number: ${result.documentNumber || "empty"}<br>
+  Nationality: ${result.nationality || "empty"}<br>
+  `;
 }
 
 (function () {

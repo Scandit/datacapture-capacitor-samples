@@ -11,7 +11,8 @@ import {
   SparkScanView,
   Symbology,
   SparkScanBarcodeSuccessFeedback,
-  SparkScanBarcodeErrorFeedback
+  SparkScanBarcodeErrorFeedback,
+  SymbologyDescription
 } from 'scandit-capacitor-datacapture-barcode'
 
 
@@ -59,7 +60,7 @@ async function runApp() {
 
   // Register a listener to get informed whenever a new barcode is scanned.
   const sparkScanListener = {
-    didScan: (_, session) => {
+    didScan: async (_, session) => {
       const barcode = session.newlyRecognizedBarcode;
       if (barcode == null) return;
 
@@ -96,8 +97,10 @@ async function runApp() {
     const list = document.getElementById('list');
     list.innerHTML = Object.values(codes)
       .map(barcode => {
+        const symbology = new SymbologyDescription(barcode.symbology);
+
         const dataHTML = `<p class="barcodeData">${barcode.data}</p>`
-        const symbologyHTML = `<p class="symbology">${barcode.symbology}</p>`
+        const symbologyHTML = `<p class="symbology">${symbology.readableName}</p>`
         return `<div class="result">${dataHTML}${symbologyHTML}</div>`;
       })
       .join('');

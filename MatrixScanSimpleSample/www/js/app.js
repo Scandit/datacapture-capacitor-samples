@@ -8,10 +8,10 @@ import {
 } from 'scandit-capacitor-datacapture-core';
 
 import {
-    BarcodeTracking,
-    BarcodeTrackingBasicOverlay,
-    BarcodeTrackingBasicOverlayStyle,
-    BarcodeTrackingSettings,
+    BarcodeBatch,
+    BarcodeBatchBasicOverlay,
+    BarcodeBatchBasicOverlayStyle,
+    BarcodeBatchSettings,
     Symbology,
     SymbologyDescription,
 } from 'scandit-capacitor-datacapture-barcode';
@@ -33,9 +33,9 @@ async function runApp() {
     camera.preferredResolution = VideoResolution.FullHD;
     context.setFrameSource(camera);
 
-    // The barcode tracking process is configured through barcode tracking settings
-    // which are then applied to the barcode tracking instance that manages barcode tracking.
-    const settings = new BarcodeTrackingSettings();
+    // The barcode batch process is configured through barcode batch settings
+    // which are then applied to the barcode batch instance that manages barcode batch.
+    const settings = new BarcodeBatchSettings();
 
     // The settings instance initially has all types of barcodes (symbologies) disabled. For the purpose of this
     // sample we enable a very generous set of symbologies. In your own app ensure that you only enable the
@@ -48,37 +48,37 @@ async function runApp() {
         Symbology.Code128,
     ]);
 
-    // Create new barcode tracking mode with the settings from above.
-    const barcodeTracking = BarcodeTracking.forContext(context, settings);
+    // Create new barcode batch mode with the settings from above.
+    const barcodeBatch = BarcodeBatch.forContext(context, settings);
 
     // Register a listener to get informed whenever a new barcode is tracked.
-    barcodeTracking.addListener({
-        didUpdateSession: (barcodeTracking, session) => {
+    barcodeBatch.addListener({
+        didUpdateSession: async (barcodeBatch, session) => {
             Object.values(session.trackedBarcodes).forEach(trackedBarcode => {
                 results[trackedBarcode.barcode.data] = trackedBarcode;
             });
         }
     });
 
-    // To visualize the on-going barcode tracking process on screen, setup a data capture view that renders the
+    // To visualize the on-going barcode batch process on screen, setup a data capture view that renders the
     // camera preview. The view must be connected to the data capture context.
     const view = DataCaptureView.forContext(context);
 
     // Connect the data capture view to the HTML element, so it can fill up its size and follow its position.
     view.connectToElement(document.getElementById('data-capture-view'));
 
-    // Add a barcode tracking overlay to the data capture view to render the location of captured barcodes on top of
+    // Add a barcode batch overlay to the data capture view to render the location of captured barcodes on top of
     // the video preview. This is optional, but recommended for better visual feedback.
-    BarcodeTrackingBasicOverlay.withBarcodeTrackingForViewWithStyle(
-        barcodeTracking,
+    BarcodeBatchBasicOverlay.withBarcodeBatchForViewWithStyle(
+        barcodeBatch,
         view,
-        BarcodeTrackingBasicOverlayStyle.Frame
+        BarcodeBatchBasicOverlayStyle.Frame
     );
 
-    // Switch camera on to start streaming frames and enable the barcode tracking mode.
+    // Switch camera on to start streaming frames and enable the barcode batch mode.
     // The camera is started asynchronously and will take some time to completely turn on.
     camera.switchToDesiredState(FrameSourceState.On);
-    barcodeTracking.isEnabled = true;
+    barcodeBatch.isEnabled = true;
 
     const updateResults = () => {
         const list = document.getElementById('list');
@@ -99,13 +99,13 @@ async function runApp() {
 
     const done = () => {
         updateResults();
-        barcodeTracking.isEnabled = false;
+        barcodeBatch.isEnabled = false;
         document.getElementById('results').hidden = false;
     }
 
     const scanAgain = () => {
         resetResults();
-        barcodeTracking.isEnabled = true;
+        barcodeBatch.isEnabled = true;
     }
 
     document.getElementById('scan-again').addEventListener('click', scanAgain.bind(this));

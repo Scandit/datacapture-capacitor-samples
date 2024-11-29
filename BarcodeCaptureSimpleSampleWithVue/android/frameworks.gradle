@@ -1,5 +1,6 @@
 ext {
     repos = {
+        mavenLocal()
         maven {
             // Repository used to fetch native libs published by develop/release pipelines
             name = "internal"
@@ -41,7 +42,7 @@ ext {
         maven { url 'https://jitpack.io' }
     }
 
-    global_sdk_version = "6.28.1"
+    global_sdk_version = "7.0.0"
 
     if (System.getenv("SDC_FETCH_LIBS_SOURCE") != null) {
         fetch = System.getenv("SDC_FETCH_LIBS_SOURCE")

@@ -76,40 +76,40 @@ export class ScanComponent implements AfterViewInit {
     await this.barcodeSelection.applySettings(this.getBarcodeSelectionSettings());
 
     this.listener = {
-    didUpdateSelection: async (_: BarcodeSelection, session: BarcodeSelectionSession) => {
-      if (!this.isPageActive) {
-        return;
-      }
-
-      if (session.newlySelectedBarcodes.length === 0) {
-        return;
-      }
-
-      this.captureView.nativeElement.style.zIndex = '-1';
-
-      const barcode = session.newlySelectedBarcodes[0];
-      const symbology = new SymbologyDescription(barcode.symbology);
-      const count = await session.getCount(barcode);
-
-      (await this.toastController.getTop())?.dismiss();
-      const toast = await this.toastController.create({
-        message: `Scan Results\n${symbology.readableName}: ${barcode.data}\nTimes: ${count}`,
-        duration: 500,
-      });
-
-      toast.onDidDismiss().then(() => {
-        if (this.isPageActive) {
-          this.captureView.nativeElement.style.zIndex = '1';
+      didUpdateSelection: async (_: BarcodeSelection, session: BarcodeSelectionSession) => {
+        if (!this.isPageActive) {
+          return;
         }
-      });
 
-      toast.present();
-    },
-    didUpdateSession: (_: BarcodeSelection, session: BarcodeSelectionSession) => {
-      // Called every frame.
-      console.info(session);
-    }
-  };
+        if (session.newlySelectedBarcodes.length === 0) {
+          return;
+        }
+
+        this.captureView.nativeElement.style.zIndex = '-1';
+
+        const barcode = session.newlySelectedBarcodes[0];
+        const symbology = new SymbologyDescription(barcode.symbology);
+        const count = await session.getCount(barcode);
+
+        (await this.toastController.getTop())?.dismiss();
+        const toast = await this.toastController.create({
+          message: `Scan Results\n${symbology.readableName}: ${barcode.data}\nTimes: ${count}`,
+          duration: 500,
+        });
+
+        toast.onDidDismiss().then(() => {
+          if (this.isPageActive) {
+            this.captureView.nativeElement.style.zIndex = '1';
+          }
+        });
+
+        toast.present();
+      },
+      didUpdateSession: async (_: BarcodeSelection, session: BarcodeSelectionSession) => {
+        // Called every frame.
+        console.info(session);
+      }
+    };
 
     this.barcodeSelection.addListener(this.listener);
 
@@ -123,8 +123,9 @@ export class ScanComponent implements AfterViewInit {
     this.barcodeSelection.isEnabled = true;
   }
 
-  public ionViewWillLeave() {
+  public ionViewDidLeave() {
     this.isPageActive = false;
+    this.barcodeSelection.removeListener(this.listener);
     this.barcodeSelection.isEnabled = false;
     this.context.frameSource.switchToDesiredState(FrameSourceState.Off);
     this.view.detachFromElement();
@@ -133,7 +134,6 @@ export class ScanComponent implements AfterViewInit {
   public ngAfterViewInit() {
     this.context = DataCaptureContext.forLicenseKey(environment.scanditLicenseKey);
     this.barcodeSelection = BarcodeSelection.forContext(this.context, null);
-    this.barcodeSelection.addListener(this.listener);
   }
 
   public getBarcodeSelectionSettings() {
@@ -327,9 +327,9 @@ export class ScanComponent implements AfterViewInit {
     overlay.aimedBrush = AIMED_BRUSH === Brush.Default ?
       overlay.aimedBrush : new ScanditBrush(this.getColor(AIMED_BRUSH), this.getColor(AIMED_BRUSH), 1);
     overlay.selectingBrush = SELECTING_BRUSH === Brush.Default ?
-      overlay.selectingBrush: new ScanditBrush(this.getColor(SELECTING_BRUSH), this.getColor(SELECTING_BRUSH), 1);
+      overlay.selectingBrush : new ScanditBrush(this.getColor(SELECTING_BRUSH), this.getColor(SELECTING_BRUSH), 1);
     overlay.selectedBrush = SELECTED_BRUSH === Brush.Default ?
-      overlay.selectedBrush: new ScanditBrush(this.getColor(SELECTED_BRUSH), this.getColor(SELECTED_BRUSH), 1);
+      overlay.selectedBrush : new ScanditBrush(this.getColor(SELECTED_BRUSH), this.getColor(SELECTED_BRUSH), 1);
   }
 
   private getColor(rgbaString: string) {

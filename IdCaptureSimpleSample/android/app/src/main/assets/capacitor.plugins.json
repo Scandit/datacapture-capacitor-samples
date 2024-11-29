@@ -1,9 +1,5 @@
 [
 	{
-		"pkg": "scandit-capacitor-datacapture-text",
-		"classpath": "com.scandit.capacitor.datacapture.text.ScanditTextNative"
-	},
-	{
 		"pkg": "scandit-capacitor-datacapture-id",
 		"classpath": "com.scandit.capacitor.datacapture.id.ScanditIdNative"
 	},

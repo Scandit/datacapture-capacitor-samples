@@ -7,15 +7,16 @@ import {
 } from 'scandit-capacitor-datacapture-core';
 
 import {
+    AamvaBarcodeVerificationStatus,
     AamvaBarcodeVerifier,
-    AamvaVizBarcodeComparisonVerifier,
-    DocumentType,
     IdCapture,
     IdCaptureOverlay,
     IdCaptureSettings,
-    IdDocumentType,
+    IdCaptureRegion,
     IdLayoutStyle,
-    SupportedSides
+    FullDocumentScanner,
+    DriverLicense,
+    RejectionReason
 } from 'scandit-capacitor-datacapture-id';
 
 async function runApp() {
@@ -36,8 +37,12 @@ async function runApp() {
     const settings = new IdCaptureSettings();
 
     // We are interested in both front and back sides of US DL.
-    settings.supportedDocuments = [IdDocumentType.DLVIZ];
-    settings.supportedSides = SupportedSides.FrontAndBack;
+    settings.acceptedDocuments.push(
+        new DriverLicense(IdCaptureRegion.Us),
+    );
+
+    // We are interested in the front side of national Id Cards, Passports, Driver Licenses and Residence Permits.
+    settings.scannerType = new FullDocumentScanner();
 
     // To visualize the on-going id capturing process on screen, setup a data capture view that renders the
     // camera preview. The view must be connected to the data capture context.
@@ -55,92 +60,44 @@ async function runApp() {
 
     // Register a listener to get informed whenever a new id got recognized.
     window.idCapture.addListener({
-        didCaptureId: (_, session) => {
-            if (session.newlyCapturedId == null) {
-                return
-            }
-
+        didCaptureId: (_, capturedId) => {
             window.idCapture.isEnabled = false;
 
-            if (
-                (
-                    session.newlyCapturedId.documentType === DocumentType.DrivingLicense
-                    && session.newlyCapturedId.issuingCountryIso === 'USA'
-                    && session.newlyCapturedId.vizResult.isBackSideCaptureSupported
-                ) || window.isScanningBackside === true) {
-
-                if (!window.isScanningBackside === true) {
-                    // Scan the back side of the document.
-                    window.isScanningBackside = true;
-                    window.idCapture.isEnabled = true;
-                } else {
-                    // Front and back were scanned; perform a verification of the captured ID.
-                    AamvaVizBarcodeComparisonVerifier
-                        .create()
-                        .verify(session.newlyCapturedId)
-                        .then(result => {
-                            if (!result.checksPassed) {
-                                window.showResult(
-                                    window.descriptionForCapturedId(
-                                        session.newlyCapturedId,
-                                        result.checksPassed,
-                                        false
-                                    )
-                                );
-                                return;
-                            }
-
-                            // If front and back match AND ID is not expired, run verification
-                            if (!session.newlyCapturedId.isExpired && result.checksPassed) {
-                                AamvaBarcodeVerifier.create(context)
-                                    .then(verifier => {
-                                        verifier.verify(session.newlyCapturedId).then(verificationResult => {
-                                            window.showResult(
-                                                window.descriptionForCapturedId(
-                                                    session.newlyCapturedId,
-                                                    result.checksPassed,
-                                                    verificationResult?.allChecksPassed == true
-                                                )
-                                            );
-                                        });
-                                    });
-                            } else {
-                                window.showResult(
-                                    window.descriptionForCapturedId(
-                                        session.newlyCapturedId,
-                                        result.checksPassed,
-                                        false
-                                    )
-                                );
-                            }
-                        })
-                        .catch(reason => {
-                            window.showResult(reason);
+            if (capturedId.isExpired === false) {
+                AamvaBarcodeVerifier.create(context)
+                    .then(verifier => {
+                        verifier.verify(capturedId).then(verificationResult => {
+                            window.showResult(
+                                window.descriptionForCapturedId(
+                                    capturedId,
+                                    verificationResult?.allChecksPassed == true,
+                                    verificationResult
+                                )
+                            );
                         });
-                }
+                    });
             } else {
-                window.showResult('Document is not a US driver’s license.');
+                window.showResult(
+                    window.descriptionForCapturedId(
+                        capturedId,
+                        false,
+                        null
+                    )
+                );
             }
         },
-        didRejectId: (_, session) => {
-            if (session.newlyRejectedId == null) {
-                return;
-            }
-
+        didRejectId: (_, rejectedId, reason) => {
             window.idCapture.isEnabled = false;
 
-            window.showResult('Rejected!');
+            window.showResult(window.getRejectionReasonMessage(reason));
         }
     });
 
     window.idCaptureOverlay = IdCaptureOverlay.withIdCaptureForView(window.idCapture, view);
     window.idCaptureOverlay.idLayoutStyle = IdLayoutStyle.Square;
-    
+
     window.idCapture.isEnabled = true;
 }
-
-
-
 
 window.showResult = result => {
     const resultElement = document.createElement('div');
@@ -167,7 +124,18 @@ window.continueScanning = () => {
 
 // === //
 
-window.descriptionForCapturedId = (capturedId, passedChecks, verificationAllChecksPassed) => {
+window.getRejectionReasonMessage = (reason) => {
+    switch (reason) {
+        case RejectionReason.NotAcceptedDocumentType:
+            return 'Document not supported. Try scanning another document.';
+        case RejectionReason.Timeout:
+            return 'Document capture failed. Make sure the document is well lit and free of glare. Alternatively, try scanning another document';
+        default:
+            return `Document capture was rejected. Reason=${reason}`;
+    }
+}
+
+window.descriptionForCapturedId = (capturedId, verificationAllChecksPassed, barcodeVerificationResult) => {
     function getDateAsString(dateObject) {
         return `${(dateObject && new Date(Date.UTC(
             dateObject.year,
@@ -176,25 +144,35 @@ window.descriptionForCapturedId = (capturedId, passedChecks, verificationAllChec
         )).toLocaleDateString("en-GB", { timeZone: "UTC" })) || "empty"}`;
     }
 
+    let verificationStatusSpan = '';
+
+    if (capturedId.isExpired === false) {
+        verificationStatusSpan += `${verificationAllChecksPassed ? "<span class='green'>Verification checks passed.</span>" : "<span class='red'>Verification checks failed.</span>"}`;
+
+        if (barcodeVerificationResult != null) {
+            switch (barcodeVerificationResult.status) {
+                case AamvaBarcodeVerificationStatus.Authentic:
+                    verificationStatusSpan += "<span class='green'>Document barcode is authentic.</span>"
+                    break;
+                case AamvaBarcodeVerificationStatus.LikelyForged:
+                    verificationStatusSpan += "<span class='yellow'>Document barcode is likely forged.</span>"
+                    break;
+                case AamvaBarcodeVerificationStatus.Forged:
+                    verificationStatusSpan += "<span class='red'>Document barcode is forged.</span>"
+                    break;
+            }
+        }
+    };
+
     return `
   ${capturedId.isExpired === true ? "<span class='red'>Document is expired.</span>" : "<span class='green'>Document is not expired.</span>"}<br>
-  ${passedChecks ? "<span class='green'>Information on front and back match.</span>" : "<span class='red'>Information on front and back do not match.</span>"}<br>
-  ${verificationAllChecksPassed ? "<span class='green'>Verification checks passed.</span>" : "<span class='red'>Verification checks failed.</span>"}<br>
+  ${verificationStatusSpan}<br>
   <br>
-  Name: ${capturedId.firstName || "empty"}<br>
-  Last Name: ${capturedId.lastName || "empty"}<br>
   Full Name: ${capturedId.fullName}<br>
-  Sex: ${capturedId.sex || "empty"}<br>
   Date of Birth: ${getDateAsString(capturedId.dateOfBirth)}<br>
-  Nationality: ${capturedId.nationality || "empty"}<br>
-  Address: ${capturedId.address || "empty"}<br>
-  Document Type: ${capturedId.documentType}<br>
-  Captured Result Type: ${capturedId.capturedResultType}<br>
-  Issuing Country: ${capturedId.issuingCountry || "empty"}<br>
-  Issuing Country ISO: ${capturedId.issuingCountryIso || "empty"}<br>
-  Document Number: ${capturedId.documentNumber || "empty"}<br>
   Date of Expiry: ${getDateAsString(capturedId.dateOfExpiry)}<br>
-  Date of Issue: ${getDateAsString(capturedId.dateOfIssue)}<br>
+  Document Number: ${capturedId.documentNumber || "empty"}<br>
+  Nationality: ${capturedId.nationality || "empty"}<br>
   `
 }
 
