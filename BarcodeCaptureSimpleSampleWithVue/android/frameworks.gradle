@@ -41,7 +41,7 @@ ext {
         google()
     }
 
-    global_sdk_version = "7.0.1"
+    global_sdk_version = "7.0.2"
 
     if (System.getenv("SDC_FETCH_LIBS_SOURCE") != null) {
         fetch = System.getenv("SDC_FETCH_LIBS_SOURCE")
