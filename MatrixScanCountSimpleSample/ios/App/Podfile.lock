@@ -1,0 +1,60 @@
+PODS:
+  - Capacitor (6.1.2):
+    - CapacitorCordova
+  - CapacitorCamera (6.0.2):
+    - Capacitor
+  - CapacitorCordova (6.1.2)
+  - CapacitorSplashScreen (6.0.2):
+    - Capacitor
+  - scandit-datacapture-frameworks-barcode (7.0.0-beta.1-SNAPSHOT):
+    - scandit-datacapture-frameworks-core (= 7.0.0-beta.1-SNAPSHOT)
+  - scandit-datacapture-frameworks-core (7.0.0-beta.1-SNAPSHOT)
+  - ScanditCapacitorDatacaptureBarcode (7.0.0-beta.1-SNAPSHOT):
+    - Capacitor
+    - scandit-datacapture-frameworks-barcode (= 7.0.0-beta.1-SNAPSHOT)
+    - ScanditCapacitorDatacaptureCore (= 7.0.0-beta.1-SNAPSHOT)
+  - ScanditCapacitorDatacaptureCore (7.0.0-beta.1-SNAPSHOT):
+    - Capacitor
+    - scandit-datacapture-frameworks-core (= 7.0.0-beta.1-SNAPSHOT)
+
+DEPENDENCIES:
+  - "Capacitor (from `../../node_modules/@capacitor/ios`)"
+  - "CapacitorCamera (from `../../node_modules/@capacitor/camera`)"
+  - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
+  - "CapacitorSplashScreen (from `../../node_modules/@capacitor/splash-screen`)"
+  - scandit-datacapture-frameworks-barcode (from `/Users/aaron/Projects/data-capture-sdk/frameworks/shared/ios/scandit-datacapture-frameworks-barcode`)
+  - scandit-datacapture-frameworks-core (from `/Users/aaron/Projects/data-capture-sdk/frameworks/shared/ios/scandit-datacapture-frameworks-core`)
+  - ScanditCapacitorDatacaptureBarcode (from `../../../../scandit-capacitor-datacapture-barcode`)
+  - ScanditCapacitorDatacaptureCore (from `../../../../scandit-capacitor-datacapture-core`)
+
+EXTERNAL SOURCES:
+  Capacitor:
+    :path: "../../node_modules/@capacitor/ios"
+  CapacitorCamera:
+    :path: "../../node_modules/@capacitor/camera"
+  CapacitorCordova:
+    :path: "../../node_modules/@capacitor/ios"
+  CapacitorSplashScreen:
+    :path: "../../node_modules/@capacitor/splash-screen"
+  scandit-datacapture-frameworks-barcode:
+    :path: "/Users/aaron/Projects/data-capture-sdk/frameworks/shared/ios/scandit-datacapture-frameworks-barcode"
+  scandit-datacapture-frameworks-core:
+    :path: "/Users/aaron/Projects/data-capture-sdk/frameworks/shared/ios/scandit-datacapture-frameworks-core"
+  ScanditCapacitorDatacaptureBarcode:
+    :path: "../../../../scandit-capacitor-datacapture-barcode"
+  ScanditCapacitorDatacaptureCore:
+    :path: "../../../../scandit-capacitor-datacapture-core"
+
+SPEC CHECKSUMS:
+  Capacitor: 679f9673fdf30597493a6362a5d5bf233d46abc2
+  CapacitorCamera: ed022171dbf3853e68eec877b4d78995378af6b7
+  CapacitorCordova: f48c89f96c319101cd2f0ce8a2b7449b5fb8b3dd
+  CapacitorSplashScreen: 250df9ef8014fac5c7c1fd231f0f8b1d8f0b5624
+  scandit-datacapture-frameworks-barcode: 84b5a58ff1388cd719ef8d0a67dc13e4b15d07b3
+  scandit-datacapture-frameworks-core: 15e3a7c6ec82449ab1818f1b30f7c9c850a4b0ee
+  ScanditCapacitorDatacaptureBarcode: 5e3a27fce3747c22f17c2d89f0fbc7a601dfdf27
+  ScanditCapacitorDatacaptureCore: 2d795bbb07a7b71445975b83a5dcef9708acb27b
+
+PODFILE CHECKSUM: eb527fe3af0d26fa39f2a4538f775d207881bd29
+
+COCOAPODS: 1.14.3
