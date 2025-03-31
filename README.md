@@ -4,7 +4,7 @@ This repository contains both simple and advanced samples that show you how use 
 
 ### Single Scanning (Barcode Capture)
 
-**Simple Sample (**[Capacitor](https://github.com/Scandit/datacapture-capacitor-samples/tree/master/BarcodeCaptureSimpleSample) ([Angular](https://github.com/Scandit/datacapture-capacitor-samples/tree/master/BarcodeCaptureSimpleSampleWithAngular), [React](https://github.com/Scandit/datacapture-capacitor-samples/tree/master/BarcodeCaptureSimpleSampleWithReact), [Vue](https://github.com/Scandit/datacapture-capacitor-samples/tree/master/BarcodeCaptureSimpleSampleWithVue)))
+**Simple Sample (**[Capacitor](https://github.com/Scandit/datacapture-capacitor-samples/tree/master/01_Single_Scanning_Samples/02_Barcode_Scanning_with_Low_Level_API/BarcodeCaptureSimpleSample) ([Angular](https://github.com/Scandit/datacapture-capacitor-samples/tree/master/01_Single_Scanning_Samples/02_Barcode_Scanning_with_Low_Level_API/BarcodeCaptureSimpleSampleWithAngular), [React](https://github.com/Scandit/datacapture-capacitor-samples/tree/master/01_Single_Scanning_Samples/02_Barcode_Scanning_with_Low_Level_API/BarcodeCaptureSimpleSampleWithReact), [Vue](https://github.com/Scandit/datacapture-capacitor-samples/tree/master/01_Single_Scanning_Samples/02_Barcode_Scanning_with_Low_Level_API/BarcodeCaptureSimpleSampleWithVue)))
 
 ### Scan One of Many Barcodes (Barcode Selection)
 
@@ -22,9 +22,9 @@ Consider Barcode Selection when **accuracy** is more important than **speed**.
   ![TapToSelect.png](https://github.com/Scandit/.github/blob/main/images/TapToSelect.png)
 
 
-**Barcode Selection Simple Sample (**[Capacitor](https://github.com/Scandit/datacapture-capacitor-samples/tree/master/BarcodeSelectionSimpleSample))
+**Barcode Selection Simple Sample (**[Capacitor](https://github.com/Scandit/datacapture-capacitor-samples/tree/master/01_Single_Scanning_Samples/02_Barcode_Scanning_with_Low_Level_API/BarcodeSelectionSimpleSample))
 
-**Barcode Selection Settings Sample (**[Capacitor](https://github.com/Scandit/datacapture-capacitor-samples/tree/master/BarcodeSelectionSettingsSample))
+**Barcode Selection Settings Sample (**[Capacitor](https://github.com/Scandit/datacapture-capacitor-samples/tree/master/01_Single_Scanning_Samples/02_Barcode_Scanning_with_Low_Level_API/BarcodeSelectionSettingsSample))
 
 ### ID Scanning and Verification Samples
 
@@ -32,15 +32,15 @@ ID Scanning Samples demonstrate the features of the ID Capture API and demonstra
 
 ![IDScanning.png](https://github.com/Scandit/.github/blob/main/images/IDScanning.png)
 
-**ID Capture Simple Sample** ([Capacitor](https://github.com/Scandit/datacapture-capacitor-samples/tree/master/IdCaptureSimpleSample))
+**ID Capture Simple Sample** ([Capacitor](https://github.com/Scandit/datacapture-capacitor-samples/tree/master/02_ID_Scanning_Samples/IdCaptureSimpleSample))
 
-**US Drivers’ License Verification Sample** ([Capacitor](https://github.com/Scandit/datacapture-capacitor-samples/tree/master/USDLVerificationSample))
+**US Drivers' License Verification Sample** ([Capacitor](https://github.com/Scandit/datacapture-capacitor-samples/tree/master/02_ID_Scanning_Samples/USDLVerificationSample))
 
 ### MatrixScan AR Sam**ples**
 
-**MatrixScan Simple Sample** ([Capacitor](https://github.com/Scandit/datacapture-capacitor-samples/tree/master/MatrixScanSimpleSample))
+**MatrixScan Simple Sample** ([Capacitor](https://github.com/Scandit/datacapture-capacitor-samples/tree/master/03_Advanced_Batch_Scanning_Samples/01_Batch_Scanning_and_AR_Info_Lookup/MatrixScanSimpleSample))
 
-**MatrixScan Bubbles Sample** ([Capacitor](https://github.com/Scandit/datacapture-capacitor-samples/tree/master/MatrixScanBubblesSample))
+**MatrixScan Bubbles Sample** ([Capacitor](https://github.com/Scandit/datacapture-capacitor-samples/tree/master/03_Advanced_Batch_Scanning_Samples/01_Batch_Scanning_and_AR_Info_Lookup/MatrixScanBubblesSample))
 
 ## Samples on Other Frameworks
 
