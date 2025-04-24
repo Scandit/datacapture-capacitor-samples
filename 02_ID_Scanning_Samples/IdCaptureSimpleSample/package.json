@@ -12,8 +12,8 @@
         "@capacitor/android": "^6.0.0",
         "@capacitor/core": "^6.0.0",
         "@capacitor/ios": "^6.0.0",
-        "scandit-capacitor-datacapture-id": "7.2.0",
-        "scandit-capacitor-datacapture-core": "7.2.0"
+        "scandit-capacitor-datacapture-id": "7.2.1",
+        "scandit-capacitor-datacapture-core": "7.2.1"
     },
     "devDependencies": {
         "@capacitor/cli": "^6.0.0",
