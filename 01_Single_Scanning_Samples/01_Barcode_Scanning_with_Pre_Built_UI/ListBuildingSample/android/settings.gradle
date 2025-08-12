@@ -13,3 +13,15 @@ if (file("../../../../../../common/libs.versions.toml").exists()) {
         }
     }
 }
+
+// Remote cache configuration
+def useRemoteCache = System.getenv().containsKey("GRADLE_REMOTE_CACHE_URL")
+if (useRemoteCache) {
+    buildCache {
+        remote(HttpBuildCache) {
+            url = uri(System.getenv("GRADLE_REMOTE_CACHE_URL"))
+            allowInsecureProtocol = true
+            push = true
+        }
+    }
+}
