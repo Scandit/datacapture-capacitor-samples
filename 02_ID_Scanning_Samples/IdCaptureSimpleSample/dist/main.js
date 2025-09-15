@@ -5893,8 +5893,10 @@ window.descriptionForMrzResult = (result) => {
   ${descriptionForCapturedId(result)}<br><br>
   Document Code: ${result.mrzResult.documentCode}<br>
   Names Are Truncated: ${result.mrzResult.namesAreTruncated ? "Yes" : "No"}<br>
-  Optional: ${result.mrzResult.optional || "empty"}<br>
-  Optional 1: ${result.mrzResult.optional1 || "empty"}<br>
+  Optional (deprecated): ${result.mrzResult.optional || "empty"}<br>
+  Optional 1 (deprecated): ${result.mrzResult.optional1 || "empty"}<br>
+  Optional Data In Line 1: ${result.mrzResult.optionalDataInLine1 || "empty"}<br>
+  Optional Data In Line 2: ${result.mrzResult.optionalDataInLine2 || "empty"}<br>
   `
 }
 
