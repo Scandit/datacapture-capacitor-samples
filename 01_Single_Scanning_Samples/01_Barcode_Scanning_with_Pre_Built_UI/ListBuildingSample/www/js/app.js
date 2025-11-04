@@ -24,7 +24,7 @@ async function runApp() {
 
   // Enter your Scandit License key here.
   // Your Scandit License key is available via your Scandit SDK web account.
-  const context = DataCaptureContext.forLicenseKey('-- ENTER YOUR SCANDIT LICENSE KEY HERE --');
+  const context = DataCaptureContext.initialize('-- ENTER YOUR SCANDIT LICENSE KEY HERE --');
 
   // The spark scan process is configured through SparkScan settings
   // which are then applied to the spark scan instance that manages the spark scan.
@@ -56,7 +56,7 @@ async function runApp() {
 
   // Create the spark scan instance.
   // Spark scan will automatically apply and maintain the optimal camera settings.
-  window.sparkScan = SparkScan.forSettings(sparkScanSettings);
+  window.sparkScan = new SparkScan(sparkScanSettings);
 
   // Register a listener to get informed whenever a new barcode is scanned.
   const sparkScanListener = {

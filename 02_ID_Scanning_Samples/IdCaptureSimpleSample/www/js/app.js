@@ -16,20 +16,22 @@ import {
     IdCard,
     DriverLicense,
     Passport,
-    RejectionReason
+    RejectionReason,
+    IdCaptureScanner,
 } from 'scandit-capacitor-datacapture-id';
 
 async function runApp() {
     // Initialize the plugins.
     await ScanditCaptureCorePlugin.initializePlugins();
 
-    // Create data capture context using your license key.
-    const context = DataCaptureContext.forLicenseKey('-- ENTER YOUR SCANDIT LICENSE KEY HERE --');
+    // Enter your Scandit License key here.
+    // Your Scandit License key is available via your Scandit SDK web account.
+    const context = DataCaptureContext.initialize('-- ENTER YOUR SCANDIT LICENSE KEY HERE --');
 
     // Use the world-facing (back) camera and set it as the frame source of the context. The camera is off by
     // default and must be turned on to start streaming frames to the data capture context for recognition.
     // Use the recommended camera settings for the IdCapture mode.
-    const camera = Camera.withSettings(IdCapture.recommendedCameraSettings);
+    const camera = Camera.withSettings(IdCapture.createRecommendedCameraSettings());
     context.setFrameSource(camera);
 
     // The ID capturing process is configured through ID capture settings
@@ -42,7 +44,7 @@ async function runApp() {
         new DriverLicense(IdCaptureRegion.Any),
         new Passport(IdCaptureRegion.Any),
     );
-    settings.scannerType = new FullDocumentScanner();
+    settings.scanner = new IdCaptureScanner(new FullDocumentScanner());
 
     // To visualize the on-going id capturing process on screen, setup a data capture view that renders the
     // camera preview. The view must be connected to the data capture context.
@@ -56,7 +58,7 @@ async function runApp() {
     camera.switchToDesiredState(FrameSourceState.On);
 
     // Create new id capture mode with the settings from above.
-    window.idCapture = IdCapture.forContext(context, settings);
+    window.idCapture = new IdCapture(settings);
 
     // Register a listener to get informed whenever a new id got recognized.
     window.idCapture.addListener({
@@ -72,10 +74,19 @@ async function runApp() {
         }
     });
 
-    window.idCaptureOverlay = IdCaptureOverlay.withIdCaptureForView(window.idCapture, view);
+    window.idCapture.isEnabled = true;
+
+    // Set mode to context
+    context.setMode(window.idCapture);
+
+    // Create overlay
+    window.idCaptureOverlay = new IdCaptureOverlay(window.idCapture);
+
+    // Set layout style
     window.idCaptureOverlay.idLayoutStyle = IdLayoutStyle.Square;
 
-    window.idCapture.isEnabled = true;
+    // Add overlay to view
+    view.addOverlay(window.idCaptureOverlay); 
 }
 
 window.showResult = result => {

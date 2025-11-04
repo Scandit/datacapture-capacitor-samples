@@ -2,16 +2,16 @@
 
 android {
   compileOptions {
-      sourceCompatibility JavaVersion.VERSION_17
-      targetCompatibility JavaVersion.VERSION_17
+      sourceCompatibility JavaVersion.VERSION_21
+      targetCompatibility JavaVersion.VERSION_21
   }
 }
 
 apply from: "../capacitor-cordova-android-plugins/cordova.variables.gradle"
 dependencies {
+    implementation project(':scandit-capacitor-datacapture-core')
     implementation project(':scandit-capacitor-datacapture-id')
     implementation project(':scandit-capacitor-datacapture-id-aamva-barcode-verification')
-    implementation project(':scandit-capacitor-datacapture-core')
 
 }
 

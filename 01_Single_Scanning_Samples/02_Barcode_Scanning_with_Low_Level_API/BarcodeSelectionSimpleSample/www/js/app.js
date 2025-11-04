@@ -25,12 +25,12 @@ async function runApp() {
 
     // Enter your Scandit License key here.
     // Your Scandit License key is available via your Scandit SDK web account.
-    const context = DataCaptureContext.forLicenseKey('-- ENTER YOUR SCANDIT LICENSE KEY HERE --');
+    const context = DataCaptureContext.initialize('-- ENTER YOUR SCANDIT LICENSE KEY HERE --');
 
     // Use the world-facing (back) camera and set it as the frame source of the context. The camera is off by
     // default and must be turned on to start streaming frames to the data capture context for recognition.
     // Use the recommended camera settings for the BarcodeSelection mode as default settings.
-    const camera = Camera.withSettings(BarcodeSelection.recommendedCameraSettings);
+    const camera = Camera.withSettings(BarcodeSelection.createRecommendedCameraSettings());
     context.setFrameSource(camera);
 
     // The barcode selection process is configured through barcode selection settings
@@ -51,7 +51,7 @@ async function runApp() {
     ]);
 
     // Create new barcode selection mode with the settings from above.
-    barcodeSelection = BarcodeSelection.forContext(context, barcodeSelectionSettings);
+    barcodeSelection = new BarcodeSelection(barcodeSelectionSettings);
 
     // Register a listener to get informed whenever a new barcode got recognized.
     barcodeSelection.addListener({
@@ -68,6 +68,9 @@ async function runApp() {
         }
     });
 
+    // Set the barcode selection mode to the context.
+    context.setMode(barcodeSelection);
+
     // To visualize the on-going barcode selection process on screen, setup a data capture view that renders the
     // camera preview. The view must be connected to the data capture context.
     const view = DataCaptureView.forContext(context);
@@ -77,7 +80,8 @@ async function runApp() {
 
     // Add a barcode selection overlay to the data capture view to render the location of captured barcodes on top of
     // the video preview. This is optional, but recommended for better visual feedback.
-    BarcodeSelectionBasicOverlay.withBarcodeSelectionForView(barcodeSelection, view);
+    const overlay = new BarcodeSelectionBasicOverlay(barcodeSelection);
+    view.addOverlay(overlay);
 
     window.toggleBarcodeSelectionType(true);
     // Switch camera on to start streaming frames and enable the barcode selection mode.

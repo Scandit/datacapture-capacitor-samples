@@ -1,14 +1,14 @@
 [
 	{
+		"pkg": "scandit-capacitor-datacapture-core",
+		"classpath": "com.scandit.capacitor.datacapture.core.ScanditCaptureCoreNative"
+	},
+	{
 		"pkg": "scandit-capacitor-datacapture-id",
 		"classpath": "com.scandit.capacitor.datacapture.id.ScanditIdNative"
 	},
 	{
 		"pkg": "scandit-capacitor-datacapture-id-aamva-barcode-verification",
-		"classpath": "com.scandit.capacitor.datacapture.id_aamva_barcode_verification.ScanditIdAamvaBarcodeVerificationNative"
-	},
-	{
-		"pkg": "scandit-capacitor-datacapture-core",
-		"classpath": "com.scandit.capacitor.datacapture.core.ScanditCaptureCoreNative"
+		"classpath": "com.scandit.capacitor.datacapture.id_aamva_barcode_verification.ScanditIdAamvaBarcodeVerificationNativePlugin"
 	}
 ]

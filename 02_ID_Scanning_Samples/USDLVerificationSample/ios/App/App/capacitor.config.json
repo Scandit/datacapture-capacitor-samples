@@ -10,8 +10,8 @@
 		}
 	},
 	"packageClassList": [
+		"ScanditCapacitorCore",
 		"ScanditIdNative",
-		"ScanditIdAamvaBarcodeVerificationNativePlugin",
-		"ScanditCapacitorCore"
+		"ScanditIdAamvaBarcodeVerificationNativePlugin"
 	]
 }

@@ -17,7 +17,6 @@ import {
     BarcodeBatchAdvancedOverlay,
     BarcodeBatchBasicOverlay,
     BarcodeBatchBasicOverlayStyle,
-    BarcodeBatchScenario,
     BarcodeBatchSettings,
     Symbology,
     TrackedBarcodeView
@@ -42,12 +41,12 @@ async function runApp() {
 
     // Enter your Scandit License key here.
     // Your Scandit License key is available via your Scandit SDK web account.
-    const context = DataCaptureContext.forLicenseKey('-- ENTER YOUR SCANDIT LICENSE KEY HERE --');
+    const context = DataCaptureContext.initialize('-- ENTER YOUR SCANDIT LICENSE KEY HERE --');
 
     // Use the recommended camera settings for the BarcodeBatch mode as default settings.
     // The preferred resolution is automatically chosen, which currently defaults to HD on all devices.
     // Setting the preferred resolution to 4K helps to get a better decode range.
-    const cameraSettings = BarcodeBatch.recommendedCameraSettings;
+    const cameraSettings = BarcodeBatch.createRecommendedCameraSettings();
     cameraSettings.preferredResolution = VideoResolution.UHD4K;
 
     // Use the default camera and set it as the frame source of the context. The camera is off by
@@ -57,7 +56,7 @@ async function runApp() {
 
     // The barcode batch process is configured through barcode batch settings
     // and are then applied to the barcode batch instance that manages barcode batch.
-    const settings = BarcodeBatchSettings.forScenario(BarcodeBatchScenario.A);
+    const settings = new BarcodeBatchSettings();
 
     // The settings instance initially has all types of barcodes (symbologies) disabled. For the purpose of this
     // sample we enable a very generous set of symbologies. In your own app ensure that you only enable the
@@ -71,7 +70,7 @@ async function runApp() {
     ]);
 
     // Create new barcode batch mode with the settings from above.
-    window.barcodeBatch = BarcodeBatch.forContext(context, settings);
+    window.barcodeBatch = new BarcodeBatch(settings);
 
     // Register a listener to get informed of tracked barcodes.
     window.barcodeBatch.addListener({
@@ -90,6 +89,9 @@ async function runApp() {
         }
     });
 
+    // Set the barcode batch mode to the context.
+    context.setMode(window.barcodeBatch);
+
     // To visualize the on-going barcode batch process on screen, setup a data capture view that renders the
     // camera preview. The view must be connected to the data capture context.
     window.view = DataCaptureView.forContext(context);
@@ -100,15 +102,13 @@ async function runApp() {
     // Add a barcode batch overlay to the data capture view to render the tracked barcodes on top of the video
     // preview. This is optional, but recommended for better visual feedback. The overlay is automatically added
     // to the view.
-    BarcodeBatchBasicOverlay.withBarcodeBatchForViewWithStyle(
-        barcodeBatch,
-        window.view,
-        BarcodeBatchBasicOverlayStyle.Dot
-    );
+    const basicOverlay = new BarcodeBatchBasicOverlay(window.barcodeBatch, BarcodeBatchBasicOverlayStyle.Dot);
+    // Add the overlay to the view.
+    window.view.addOverlay(basicOverlay);
 
     // Add an advanced barcode batch overlay to the data capture view to render AR visualization on top of
     // the camera preview.
-    window.advancedOverlay = BarcodeBatchAdvancedOverlay.withBarcodeBatchForView(barcodeBatch, window.view);
+    window.advancedOverlay = new BarcodeBatchAdvancedOverlay(window.barcodeBatch);
     window.advancedOverlay.listener = {
         didTapViewForTrackedBarcode: (overlay, trackedBarcode) => {
             window.view.viewQuadrilateralForFrameQuadrilateral(trackedBarcode.location)
@@ -128,24 +128,27 @@ async function runApp() {
         }
     }
 
+    // Add the advanced overlay to the view.
+    window.view.addOverlay(window.advancedOverlay);
+
     // Switch camera on to start streaming frames and enable the barcode batch mode.
     // The camera is started asynchronously and will take some time to completely turn on.
-    window.camera.switchToDesiredState(FrameSourceState.On);
+    await window.camera.switchToDesiredState(FrameSourceState.On);
     window.barcodeBatch.isEnabled = true;
 }
 
-const freeze = () => {
+const freeze = async () => {
     // Disable barcode batch to stop processing frames.
     window.barcodeBatch.isEnabled = false
     // Switch the camera off to stop streaming frames. The camera is stopped asynchronously.
-    window.camera.switchToDesiredState(FrameSourceState.Off)
+    await window.camera.switchToDesiredState(FrameSourceState.Off)
 }
 
-const unfreeze = () => {
+const unfreeze = async () => {
     // Enable barcode batch to resume processing frames.
     window.barcodeBatch.isEnabled = true
     // Switch the camera on to start streaming frames. The camera is started asynchronously.
-    window.camera.switchToDesiredState(FrameSourceState.On)
+    await window.camera.switchToDesiredState(FrameSourceState.On)
 }
 
 const toggleFreeze = () => {

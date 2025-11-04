@@ -8,26 +8,26 @@
         "build": "vite build"
     },
     "dependencies": {
-        "@capacitor/android": "^6.0.0",
-        "@capacitor/app": "^6.0.0",
-        "@capacitor/core": "^6.0.0",
-        "@capacitor/haptics": "^6.0.0",
-        "@capacitor/ios": "^6.0.0",
-        "@capacitor/keyboard": "^6.0.0",
-        "@capacitor/status-bar": "^6.0.0",
+        "@capacitor/android": "^7.0.0",
+        "@capacitor/app": "^7.0.0",
+        "@capacitor/core": "^7.0.0",
+        "@capacitor/haptics": "^7.0.0",
+        "@capacitor/ios": "^7.0.0",
+        "@capacitor/keyboard": "^7.0.0",
+        "@capacitor/status-bar": "^7.0.0",
         "@ionic/vue": "8.3.1",
         "@ionic/vue-router": "8.3.1",
         "core-js": "3.31.0",
-        "scandit-capacitor-datacapture-barcode": "7.6.3",
-        "scandit-capacitor-datacapture-core": "7.6.3",
+        "scandit-capacitor-datacapture-barcode": "8.0.0",
+        "scandit-capacitor-datacapture-core": "8.0.0",
         "vue": "3.5.6",
         "vue-router": "4.4.5"
     },
     "devDependencies": {
-        "@capacitor/cli": "^6.0.0",
+        "@capacitor/cli": "^7.0.0",
+        "@vitejs/plugin-vue": "5.1.4",
         "typescript": "5.6.2",
-        "vite": "5.4.6",
-        "@vitejs/plugin-vue": "5.1.4"
+        "vite": "5.4.6"
     },
     "resolutions": {
         "@yarnpkg/parsers": "3.0.0-rc.48.1"

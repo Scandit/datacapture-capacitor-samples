@@ -4926,8 +4926,8 @@ class AAMVABarcodeResult {
 class MRZResult {
     get documentCode() { return this.json.documentCode; }
     get namesAreTruncated() { return this.json.namesAreTruncated; }
-    get optional() { return this.json.optional; }
-    get optional1() { return this.json.optional1; }
+    get optionalDataInLine1() { return this.json.optionalDataInLine1; }
+    get optionalDataInLine2() { return this.json.optionalDataInLine2; }
     get capturedMrz() { return this.json.capturedMrz; }
     static fromJSON(json) {
         const result = new MRZResult();
@@ -5893,8 +5893,6 @@ window.descriptionForMrzResult = (result) => {
   ${descriptionForCapturedId(result)}<br><br>
   Document Code: ${result.mrzResult.documentCode}<br>
   Names Are Truncated: ${result.mrzResult.namesAreTruncated ? "Yes" : "No"}<br>
-  Optional (deprecated): ${result.mrzResult.optional || "empty"}<br>
-  Optional 1 (deprecated): ${result.mrzResult.optional1 || "empty"}<br>
   Optional Data In Line 1: ${result.mrzResult.optionalDataInLine1 || "empty"}<br>
   Optional Data In Line 2: ${result.mrzResult.optionalDataInLine2 || "empty"}<br>
   `

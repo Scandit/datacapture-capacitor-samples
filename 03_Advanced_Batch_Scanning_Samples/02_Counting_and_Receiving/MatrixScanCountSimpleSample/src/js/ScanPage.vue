@@ -24,8 +24,9 @@ onMounted(async () => {
   // Initialize the plugins.
   await ScanditCaptureCorePlugin.initializePlugins();
 
-// Create data capture context using your license key.
-  dataCaptureContext = DataCaptureContext.forLicenseKey('-- ENTER YOUR SCANDIT LICENSE KEY HERE --');
+// Enter your Scandit License key here.
+// Your Scandit License key is available via your Scandit SDK web account.
+  dataCaptureContext = DataCaptureContext.initialize('-- ENTER YOUR SCANDIT LICENSE KEY HERE --');
   // Use the world-facing (back) camera and set it as the frame source of the context. The camera is off by
   // default and must be turned on to start streaming frames to the data capture context for recognition.
   await startCamera()
@@ -52,7 +53,7 @@ function setupScanning() {
   ]);
 
   // Create new barcode count mode with the settings from above.
-  barcodeCount = BarcodeCount.forContext(dataCaptureContext, settings);
+  barcodeCount = new BarcodeCount(settings);
 
   // Register a listener to get informed whenever a new barcode is tracked.
   const barcodeCountListener = {
@@ -105,7 +106,11 @@ function setupScanning() {
 
   // To visualize the on-going barcode capturing process on screen, setup a data capture view that renders the
   // camera preview. The view must be connected to the data capture context.
-  const view = BarcodeCountView.forContextWithModeAndStyle(dataCaptureContext, barcodeCount, BarcodeCountViewStyle.Icon);
+  const view = new BarcodeCountView({
+    context: dataCaptureContext,
+    barcodeCount,
+    style: BarcodeCountViewStyle.Icon
+  });
   view.uiListener = viewUiListener
   view.listener = viewListener;
 

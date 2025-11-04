@@ -42,7 +42,6 @@ import {
   BarcodeCapture,
   SymbologyDescription,
   BarcodeCaptureOverlay,
-  BarcodeCaptureOverlayStyle
 } from 'scandit-capacitor-datacapture-barcode';
 
 export default defineComponent({
@@ -58,7 +57,7 @@ export default defineComponent({
 
       // Enter your Scandit License key here.
       // Your Scandit License key is available via your Scandit SDK web account.
-      const context = DataCaptureContext.forLicenseKey('-- ENTER YOUR SCANDIT LICENSE KEY HERE --');
+      const context = DataCaptureContext.initialize('-- ENTER YOUR SCANDIT LICENSE KEY HERE --');
 
       // Use the world-facing (back) camera and set it as the frame source of the context. The camera is off by
       // default and must be turned on to start streaming frames to the data capture context for recognition.
@@ -92,7 +91,7 @@ export default defineComponent({
       symbologySettings.activeSymbolCounts = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
 
       // Create new barcode capture mode with the settings from above.
-      const barcodeCapture = BarcodeCapture.forContext(context, settings);
+      const barcodeCapture = new BarcodeCapture(settings);
 
       // Register a listener to get informed whenever a new barcode got recognized.
       barcodeCapture.addListener({
@@ -112,6 +111,9 @@ export default defineComponent({
         }
       });
 
+      // Set the barcode capture mode to the context.
+      context.setMode(barcodeCapture);
+
       // To visualize the on-going barcode capturing process on screen, setup a data capture view that renders the
       // camera preview. The view must be connected to the data capture context.
       const view = DataCaptureView.forContext(context);
@@ -121,15 +123,14 @@ export default defineComponent({
 
       // Add a barcode capture overlay to the data capture view to render the location of captured barcodes on top of
       // the video preview. This is optional, but recommended for better visual feedback.
-      const overlay = BarcodeCaptureOverlay.withBarcodeCaptureForViewWithStyle(
-        barcodeCapture,
-        view,
-        BarcodeCaptureOverlayStyle.Frame
-      );
+      const overlay = new BarcodeCaptureOverlay(barcodeCapture);
       overlay.viewfinder = new RectangularViewfinder(
         RectangularViewfinderStyle.Square,
         RectangularViewfinderLineStyle.Light,
       );
+
+      // Add the overlay to the view.
+      view.addOverlay(overlay);
 
       // Switch camera on to start streaming frames and enable the barcode capture mode.
       // The camera is started asynchronously and will take some time to completely turn on.
