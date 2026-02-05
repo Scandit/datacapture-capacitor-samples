@@ -234,3 +234,8 @@ http://ionicframework.com/docs/theming/ */
     --ion-card-background: #1e1e1e;
   }
 }
+
+/* Fix for Android status bar overlay with fullscreen content */
+ion-header ion-toolbar {
+  padding-top: env(safe-area-inset-top);
+}

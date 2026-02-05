@@ -50,6 +50,8 @@ ion-content {
 ion-header {
   ion-toolbar {
     --background: #{$headerBackground};
+    // Add safe area padding for Android to prevent status bar overlap
+    padding-top: env(safe-area-inset-top);
   }
 }
 
