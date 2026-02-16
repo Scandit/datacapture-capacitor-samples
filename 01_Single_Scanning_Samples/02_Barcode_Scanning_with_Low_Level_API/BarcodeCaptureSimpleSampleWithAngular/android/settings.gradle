@@ -3,17 +3,6 @@ include ':capacitor-cordova-android-plugins'
 project(':capacitor-cordova-android-plugins').projectDir = new File('./capacitor-cordova-android-plugins/')
 
 apply from: 'capacitor.settings.gradle'
-
-if (file("../../../../../../common/libs.versions.toml").exists()) {
-  dependencyResolutionManagement {
-    versionCatalogs {
-      libs {
-        from(files("../../../../../../common/libs.versions.toml"))
-      }
-    }
-  }
-}
-
 // Remote cache configuration
 def useRemoteCache = System.getenv().containsKey("GRADLE_REMOTE_CACHE_URL")
 if (useRemoteCache) {
