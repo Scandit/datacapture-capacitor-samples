@@ -70,8 +70,9 @@ async function runApp() {
     // Connect the data capture view to the HTML element, so it can fill up its size and follow its position.
     view.connectToElement(document.getElementById('data-capture-view'));
 
-    // Add a barcode batch overlay to the data capture view to render the location of captured barcodes on top of
-    // the video preview. This is optional, but recommended for better visual feedback.
+    // Add a Barcode Batch overlay to the data capture view to render the tracked barcodes on
+    // top of the video preview.
+    // This is optional, but recommended for better visual feedback.
     const basicOverlay = new BarcodeBatchBasicOverlay(barcodeBatch, BarcodeBatchBasicOverlayStyle.Frame);
     // Add the overlay to the view.
     view.addOverlay(basicOverlay);

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">LabelCaptureSimpleSample</string>
+    <string name="title_activity_main">LabelCaptureSimpleSample</string>
+    <string name="package_name">com.scandit.capacitor.labelcapturesimplesample</string>
+    <string name="custom_url_scheme">com.scandit.capacitor.labelcapturesimplesample</string>
+</resources>

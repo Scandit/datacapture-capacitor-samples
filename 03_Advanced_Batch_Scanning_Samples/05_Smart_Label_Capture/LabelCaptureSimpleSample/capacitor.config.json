@@ -1,0 +1,15 @@
+{
+  "appId": "com.scandit.capacitor.labelcapturesimplesample",
+  "appName": "LabelCaptureSimpleSample",
+  "bundledWebRuntime": true,
+  "npmClient": "yarn",
+  "webDir": "dist",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

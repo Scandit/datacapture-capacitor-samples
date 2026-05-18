@@ -95,8 +95,10 @@ const initializeApp = async (present: any) => {
     // Connect the data capture view to the HTML element, so it can fill up its size and follow its position.
     view.connectToElement(document.getElementById('dataCaptureView')!);
 
-    // Add a barcode capture overlay to the data capture view to render the location of captured barcodes on top of
-    // the video preview. This is optional, but recommended for better visual feedback.
+    // Add a Barcode Capture overlay to the data capture view to render the location of captured
+    // barcodes on top of the video preview. Viewfinders are visual components only, and as such
+    // will not restrict the scan area.
+    // This is optional, but recommended for better visual feedback.
     const overlay = new BarcodeCaptureOverlay(barcodeCapture);
     overlay.viewfinder = new RectangularViewfinder(
         RectangularViewfinderStyle.Square,

@@ -1,0 +1,56 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    ext {
+        agpVersion = "8.13.0"
+        kotlin_version = "2.2.20"
+    }
+
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:$agpVersion"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+apply from: "variables.gradle"
+
+def custom_config_scripts = [
+        "$rootDir/frameworks.gradle",
+        "$rootDir/../../../../../../common/frameworks.gradle"
+]
+
+
+allprojects {
+    def customConfigApplied = false
+    custom_config_scripts.each { location ->
+        def file = file(location)
+        if (file.exists()) {
+            apply from: file
+            repositories repos
+            customConfigApplied = true
+            return
+        }
+    }
+
+    if (!customConfigApplied) {
+        repositories {
+            mavenCentral()
+            google()
+            maven { url 'https://jitpack.io' }
+        }
+    }
+
+    configurations.all {
+        if (project.hasProperty("snapshotCacheDuration")) {
+            resolutionStrategy.cacheChangingModulesFor project.property("snapshotCacheDuration"), 'seconds'
+        }
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
