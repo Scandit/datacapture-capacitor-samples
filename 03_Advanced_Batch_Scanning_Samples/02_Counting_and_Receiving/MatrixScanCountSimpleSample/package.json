@@ -21,8 +21,8 @@
         "@ionic/vue": "8.8.3",
         "@ionic/vue-router": "8.8.3",
         "pinia": "2.3.1",
-        "scandit-capacitor-datacapture-barcode": "8.4.0",
-        "scandit-capacitor-datacapture-core": "8.4.0",
+        "scandit-capacitor-datacapture-barcode": "8.4.1",
+        "scandit-capacitor-datacapture-core": "8.4.1",
         "vue": "3.5.31",
         "vue-router": "4.6.4"
     },

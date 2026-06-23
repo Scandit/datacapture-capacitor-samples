@@ -12,10 +12,10 @@
         "@capacitor/core": "^8.3.0",
         "@capacitor/ios": "^8.3.0",
         "@capacitor/splash-screen": "^8.0.1",
-        "scandit-capacitor-datacapture-barcode": "8.4.0",
-        "scandit-capacitor-datacapture-core": "8.4.0",
-        "scandit-capacitor-datacapture-label": "8.4.0",
-        "scandit-capacitor-datacapture-label-text": "8.4.0"
+        "scandit-capacitor-datacapture-barcode": "8.4.1",
+        "scandit-capacitor-datacapture-core": "8.4.1",
+        "scandit-capacitor-datacapture-label": "8.4.1",
+        "scandit-capacitor-datacapture-label-text": "8.4.1"
     },
     "devDependencies": {
         "@capacitor/cli": "^8.3.0",
