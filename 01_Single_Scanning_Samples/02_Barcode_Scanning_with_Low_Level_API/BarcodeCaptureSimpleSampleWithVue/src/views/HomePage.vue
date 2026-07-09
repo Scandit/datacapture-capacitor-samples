@@ -11,16 +11,8 @@
 </template>
 
 <script lang="ts">
-import {
-  alertController,
-  IonHeader,
-  IonTitle,
-  IonToolbar,
-} from '@ionic/vue';
-import {
-  defineComponent,
-  onMounted,
-} from 'vue';
+import { alertController, IonHeader, IonTitle, IonToolbar } from '@ionic/vue';
+import { defineComponent, onMounted } from 'vue';
 
 import 'scandit-capacitor-datacapture-core';
 import 'scandit-capacitor-datacapture-barcode';
@@ -33,7 +25,7 @@ import {
   RectangularViewfinder,
   RectangularViewfinderLineStyle,
   RectangularViewfinderStyle,
-  ScanditCaptureCorePlugin
+  ScanditCaptureCorePlugin,
 } from 'scandit-capacitor-datacapture-core';
 
 import {
@@ -48,7 +40,7 @@ export default defineComponent({
   components: {
     IonHeader,
     IonTitle,
-    IonToolbar
+    IonToolbar,
   },
   setup() {
     const initializeApp = async () => {
@@ -108,7 +100,7 @@ export default defineComponent({
 
           mode.isEnabled = false;
           showResult(`Scanned: ${barcode.data} (${symbology.readableName})`, mode);
-        }
+        },
       });
 
       // Set the barcode capture mode to the context.
@@ -128,7 +120,7 @@ export default defineComponent({
       const overlay = new BarcodeCaptureOverlay(barcodeCapture);
       overlay.viewfinder = new RectangularViewfinder(
         RectangularViewfinderStyle.Square,
-        RectangularViewfinderLineStyle.Light,
+        RectangularViewfinderLineStyle.Light
       );
 
       // Add the overlay to the view.
@@ -146,31 +138,30 @@ export default defineComponent({
       // eslint-disable-next-line
       document.getElementById('dataCaptureView')!.style.zIndex = '-1';
 
-      const alert = await alertController
-        .create({
-          header: 'Scan result',
-          backdropDismiss: false,
-          message,
-          buttons: [
-            {
-              text: 'OK',
-              id: 'confirm-button',
-              handler: () => {
-                barcodeCapture.isEnabled = true;
-                // To show the DataCapture view again, simply set the z-index property of its attached element to 1
-                // eslint-disable-next-line
-                document.getElementById('dataCaptureView')!.style.zIndex = '1';
-              },
+      const alert = await alertController.create({
+        header: 'Scan result',
+        backdropDismiss: false,
+        message,
+        buttons: [
+          {
+            text: 'OK',
+            id: 'confirm-button',
+            handler: () => {
+              barcodeCapture.isEnabled = true;
+              // To show the DataCapture view again, simply set the z-index property of its attached element to 1
+              // eslint-disable-next-line
+              document.getElementById('dataCaptureView')!.style.zIndex = '1';
             },
-          ],
-        });
+          },
+        ],
+      });
       return alert.present();
-    }
+    };
 
-    onMounted(initializeApp)
+    onMounted(initializeApp);
 
-    return {}
-  }
+    return {};
+  },
 });
 </script>
 

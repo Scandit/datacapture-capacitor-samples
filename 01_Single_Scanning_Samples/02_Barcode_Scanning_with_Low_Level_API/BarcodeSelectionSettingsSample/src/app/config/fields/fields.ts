@@ -19,7 +19,6 @@ import { SettingsFieldName } from './fields-name';
 import { SettingsFieldType } from './fields-type';
 import { CameraPosition, VideoResolution, FocusRange } from 'scandit-capacitor-datacapture-core';
 
-
 export interface SettingsFieldOption<T = string> {
   label: string;
   value: T;
@@ -39,7 +38,6 @@ export interface SettingsField<V = any> {
 export type SettingsFields = EnumDictionary<SettingsFieldName, SettingsField>;
 
 export const settingsFields = (): SettingsFields => ({
-
   // barcode selection
   // barcode selection - selection type
   [SettingsFieldName.SELECTION_TYPE]: {

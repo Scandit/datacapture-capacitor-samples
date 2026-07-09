@@ -1,17 +1,13 @@
 {
-	"appId": "com.scandit.usdlverificationsample",
-	"appName": "USDLVerificationSample",
-	"bundledWebRuntime": true,
-	"npmClient": "yarn",
-	"webDir": "dist",
-	"plugins": {
-		"SplashScreen": {
-			"launchShowDuration": 0
-		}
-	},
-	"packageClassList": [
-		"ScanditCapacitorCore",
-		"ScanditIdNative",
-		"ScanditIdAamvaBarcodeVerificationNativePlugin"
-	]
+  "appId": "com.scandit.usdlverificationsample",
+  "appName": "USDLVerificationSample",
+  "bundledWebRuntime": true,
+  "npmClient": "yarn",
+  "webDir": "dist",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  },
+  "packageClassList": ["ScanditCapacitorCore", "ScanditIdNative", "ScanditIdAamvaBarcodeVerificationNativePlugin"]
 }

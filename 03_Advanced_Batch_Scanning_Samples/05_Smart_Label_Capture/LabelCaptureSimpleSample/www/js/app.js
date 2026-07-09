@@ -19,9 +19,7 @@ import {
   TotalPriceText,
 } from 'scandit-capacitor-datacapture-label';
 
-import {
-  Symbology,
-} from 'scandit-capacitor-datacapture-barcode';
+import { Symbology } from 'scandit-capacitor-datacapture-barcode';
 
 async function runApp() {
   // Initialize the plugins.
@@ -142,7 +140,7 @@ function hideResult() {
 
 function formatLabelFields(labelFields) {
   return labelFields
-    .map((field) => {
+    .map(field => {
       if (field.type === 'barcode') {
         const barcodeData = field.barcode?.data ?? field.text ?? 'N/A';
         return `${field.name}: ${barcodeData}`;

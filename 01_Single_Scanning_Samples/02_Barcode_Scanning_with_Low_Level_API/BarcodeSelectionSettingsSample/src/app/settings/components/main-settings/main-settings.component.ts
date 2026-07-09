@@ -16,7 +16,6 @@ import { DataCaptureVersion } from 'scandit-capacitor-datacapture-core';
   styleUrls: ['./main-settings.component.scss'],
 })
 export class MainSettingsComponent extends SettingsBase implements OnInit {
-
   public items$: Observable<NavigationItem[]>;
 
   public version: string;
@@ -25,7 +24,7 @@ export class MainSettingsComponent extends SettingsBase implements OnInit {
     protected route: ActivatedRoute,
     protected platform: Platform,
     protected uiService: UiService,
-    protected settingsService: SettingsService,
+    protected settingsService: SettingsService
   ) {
     super(route, platform, uiService);
   }

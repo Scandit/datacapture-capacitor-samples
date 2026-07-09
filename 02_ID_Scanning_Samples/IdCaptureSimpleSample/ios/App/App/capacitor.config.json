@@ -1,17 +1,13 @@
 {
-	"appId": "com.scandit.idcapturesimplesample",
-	"appName": "IdCaptureSimpleSample",
-	"bundledWebRuntime": true,
-	"npmClient": "yarn",
-	"webDir": "dist",
-	"plugins": {
-		"SplashScreen": {
-			"launchShowDuration": 0
-		}
-	},
-	"packageClassList": [
-		"ScanditTextNative",
-		"ScanditIdNative",
-		"ScanditCapacitorCore"
-	]
+  "appId": "com.scandit.idcapturesimplesample",
+  "appName": "IdCaptureSimpleSample",
+  "bundledWebRuntime": true,
+  "npmClient": "yarn",
+  "webDir": "dist",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  },
+  "packageClassList": ["ScanditTextNative", "ScanditIdNative", "ScanditCapacitorCore"]
 }

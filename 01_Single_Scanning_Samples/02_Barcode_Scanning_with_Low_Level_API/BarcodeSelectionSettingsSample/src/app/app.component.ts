@@ -10,12 +10,10 @@ import { ScanditCaptureCorePlugin } from 'scandit-capacitor-datacapture-core';
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
-  styleUrls: ['app.component.scss']
+  styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
-  constructor(
-    private platform: Platform,
-  ) {
+  constructor(private platform: Platform) {
     this.initializeApp();
   }
 

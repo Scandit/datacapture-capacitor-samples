@@ -16,7 +16,6 @@ import {
 
 @Directive()
 export class SettingsBase implements OnInit, OnDestroy {
-
   protected destroyed$ = new Subject<boolean>();
 
   public items$: Observable<NavigationItem[]>;
@@ -27,7 +26,7 @@ export class SettingsBase implements OnInit, OnDestroy {
   constructor(
     protected route: ActivatedRoute,
     protected platform: Platform,
-    protected uiService: UiService,
+    protected uiService: UiService
   ) {}
 
   public ngOnInit() {
@@ -55,10 +54,9 @@ export class SettingsBase implements OnInit, OnDestroy {
     return fields.reduce(
       (value, field) => ({
         ...value,
-        [field]: this.getField(field)
+        [field]: this.getField(field),
       }),
       {} as SettingsFields
     );
   }
-
 }

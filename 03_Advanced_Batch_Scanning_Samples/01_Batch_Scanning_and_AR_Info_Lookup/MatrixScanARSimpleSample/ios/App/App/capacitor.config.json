@@ -1,17 +1,13 @@
 {
-	"appId": "com.scandit.matrixscanarsimplesample",
-	"appName": "MatrixScanARSimpleSample",
-	"bundledWebRuntime": true,
-	"npmClient": "yarn",
-	"webDir": "dist",
-	"plugins": {
-		"SplashScreen": {
-			"launchShowDuration": 0
-		}
-	},
-	"packageClassList": [
-		"AppPlugin",
-		"ScanditCapacitorBarcode",
-		"ScanditCapacitorCore"
-	]
+  "appId": "com.scandit.matrixscanarsimplesample",
+  "appName": "MatrixScanARSimpleSample",
+  "bundledWebRuntime": true,
+  "npmClient": "yarn",
+  "webDir": "dist",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  },
+  "packageClassList": ["AppPlugin", "ScanditCapacitorBarcode", "ScanditCapacitorCore"]
 }

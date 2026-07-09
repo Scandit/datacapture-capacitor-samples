@@ -1,5 +1,5 @@
 {
-	"appId": "com.scandit.barcodeselectionsettingssample",
-	"appName": "BarcodeSelectionSettingsSample",
-	"webDir": "www"
+  "appId": "com.scandit.barcodeselectionsettingssample",
+  "appName": "BarcodeSelectionSettingsSample",
+  "webDir": "www"
 }

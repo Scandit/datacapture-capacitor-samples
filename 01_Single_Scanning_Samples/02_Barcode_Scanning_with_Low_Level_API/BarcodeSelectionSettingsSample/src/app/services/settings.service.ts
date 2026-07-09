@@ -20,32 +20,28 @@ import {
   ViewViewfinderForm,
 } from '../models';
 import { isArray, isObject } from '../shared/utils';
-import {
-  BarcodeSelectionSettings,
-  Symbology,
-  SymbologyDescription
-} from 'scandit-capacitor-datacapture-barcode';
+import { BarcodeSelectionSettings, Symbology, SymbologyDescription } from 'scandit-capacitor-datacapture-barcode';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SettingsService {
-
   public settingsForm: SettingsForm;
   public symbologies;
   public reset = false;
 
   constructor(private formBuilder: UntypedFormBuilder) {
-
     const barcodeSelectionSettings = new BarcodeSelectionSettings();
-    this.symbologies = fieldsStructure().barcodeSelection.symbologies
-      .reduce((symbologies, symbology) => ({
+    this.symbologies = fieldsStructure().barcodeSelection.symbologies.reduce(
+      (symbologies, symbology) => ({
         ...symbologies,
         [symbology]: {
           settings: barcodeSelectionSettings.settingsForSymbology(Symbology[symbology]),
           description: new SymbologyDescription(Symbology[symbology]),
         },
-      }), {});
+      }),
+      {}
+    );
 
     this.settingsForm = this.buildFormPart(fieldsStructure()) as SettingsForm;
   }
@@ -75,7 +71,8 @@ export class SettingsService {
   }
 
   public get singleBarcodeAutoDetectionForm() {
-    return this.barcodeSelectionForm.controls.singleBarcodeAutoDetection as BarcodeSelectionSingleBarcodeAutoDetectionForm;
+    return this.barcodeSelectionForm.controls
+      .singleBarcodeAutoDetection as BarcodeSelectionSingleBarcodeAutoDetectionForm;
   }
 
   public get cameraForm() {
@@ -108,8 +105,10 @@ export class SettingsService {
     }
 
     if (isObject(config)) {
-      const group = Object.keys(config)
-        .reduce((current, key) => ({ ...current, [key]: this.buildFormPart(config[key])}), {});
+      const group = Object.keys(config).reduce(
+        (current, key) => ({ ...current, [key]: this.buildFormPart(config[key]) }),
+        {}
+      );
 
       return this.formBuilder.group(group);
     }
@@ -119,7 +118,7 @@ export class SettingsService {
     return fields.reduce(
       (value, field) => ({
         ...value,
-        [field]: this.getFieldConfig(field)
+        [field]: this.getFieldConfig(field),
       }),
       {} as EnumDictionary<SettingsFieldName, UntypedFormControl>
     );
@@ -130,19 +129,23 @@ export class SettingsService {
       const { description, settings: symbology } = this.symbologies[field];
 
       const enabled = { enabled: this.formBuilder.control(symbology.isEnabled) };
-      const colorInverted = description.isColorInvertible ?
-        { colorInverted: this.formBuilder.control(symbology.isColorInvertedEnabled) } : {};
+      const colorInverted = description.isColorInvertible
+        ? { colorInverted: this.formBuilder.control(symbology.isColorInvertedEnabled) }
+        : {};
 
       const hasExtensions = description.supportedExtensions?.length || symbology.enabledExtensions?.length;
       const extensions = hasExtensions ? { extensions: this.formBuilder.control(symbology.enabledExtensions) } : {};
 
-      const rangeEnabled = description?.activeSymbolCountRange &&
+      const rangeEnabled =
+        description?.activeSymbolCountRange &&
         (description.activeSymbolCountRange.minimum || description.activeSymbolCountRange.maximum);
 
-      const range = rangeEnabled ? {
-        minimum: this.formBuilder.control(description.defaultSymbolCountRange.minimum),
-        maximum: this.formBuilder.control(description.defaultSymbolCountRange.maximum),
-      } : {};
+      const range = rangeEnabled
+        ? {
+            minimum: this.formBuilder.control(description.defaultSymbolCountRange.minimum),
+            maximum: this.formBuilder.control(description.defaultSymbolCountRange.maximum),
+          }
+        : {};
 
       return this.formBuilder.group({
         ...enabled,
@@ -154,5 +157,4 @@ export class SettingsService {
 
     return this.formBuilder.control(settingsFields()[field].defaultValue);
   }
-
 }

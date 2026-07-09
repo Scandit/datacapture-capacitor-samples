@@ -1,15 +1,15 @@
 import { createRouter, createWebHashHistory } from '@ionic/vue-router';
-import ResultPage from "./ResultPage.vue";
-import ScanPage from "./ScanPage.vue";
+import ResultPage from './ResultPage.vue';
+import ScanPage from './ScanPage.vue';
 
 const routes = [
-    { path: '/results', name: 'results', component: ResultPage },
-    { path: '/', name: 'scan', component: ScanPage },
+  { path: '/results', name: 'results', component: ResultPage },
+  { path: '/', name: 'scan', component: ScanPage },
 ];
 
 const router = createRouter({
-    history: createWebHashHistory(),
-    routes,
+  history: createWebHashHistory(),
+  routes,
 });
 
 export default router;

@@ -21,7 +21,7 @@ import {
   BarcodeSelectionSettings,
   BarcodeSelectionTapSelection,
   Symbology,
-  SymbologyDescription
+  SymbologyDescription,
 } from 'scandit-capacitor-datacapture-barcode';
 
 import {
@@ -37,7 +37,7 @@ import {
   NumberWithUnit,
   PointWithUnit,
   TorchState,
-  MeasureUnit
+  MeasureUnit,
 } from 'scandit-capacitor-datacapture-core';
 
 @Component({
@@ -56,12 +56,10 @@ export class ScanComponent implements AfterViewInit {
 
   private barcodeSelectionSettings = new BarcodeSelectionSettings();
 
-
-
   constructor(
     private settingsService: SettingsService,
-    private toastController: ToastController,
-  ) { }
+    private toastController: ToastController
+  ) {}
 
   public async ionViewDidEnter() {
     this.isPageActive = true;
@@ -106,7 +104,7 @@ export class ScanComponent implements AfterViewInit {
       didUpdateSession: async (_: BarcodeSelection, session: BarcodeSelectionSession) => {
         // Called every frame.
         console.info(session);
-      }
+      },
     };
 
     this.barcodeSelection.addListener(this.listener);
@@ -140,33 +138,33 @@ export class ScanComponent implements AfterViewInit {
       .map(([key, value]) => ({ ...value, key }))
       .filter(settings => settings.enabled);
 
-    const {
-      SELECTION_TYPE,
-      FREEZE_BEHAVIOUR,
-      TAP_BEHAVIOUR,
-      SELECTION_STRATEGY,
-    } = this.settingsService.selectionTypeForm.value;
+    const { SELECTION_TYPE, FREEZE_BEHAVIOUR, TAP_BEHAVIOUR, SELECTION_STRATEGY } =
+      this.settingsService.selectionTypeForm.value;
 
     if (SELECTION_TYPE === BarcodeSelectionTypeName.Tap) {
-      this.barcodeSelectionSettings.selectionType = BarcodeSelectionTapSelection
-        .withFreezeBehaviorAndTapBehavior(FREEZE_BEHAVIOUR, TAP_BEHAVIOUR);
+      this.barcodeSelectionSettings.selectionType = BarcodeSelectionTapSelection.withFreezeBehaviorAndTapBehavior(
+        FREEZE_BEHAVIOUR,
+        TAP_BEHAVIOUR
+      );
     } else if (SELECTION_TYPE === BarcodeSelectionTypeName.Aimer) {
       this.barcodeSelectionSettings.selectionType = BarcodeSelectionAimerSelection.aimerSelection;
       if (SELECTION_STRATEGY === BarcodeSelectionStrategyType.Auto) {
-        (this.barcodeSelectionSettings.selectionType as BarcodeSelectionAimerSelection).selectionStrategy
-          = BarcodeSelectionAutoSelectionStrategy.autoSelectionStrategy;
+        (this.barcodeSelectionSettings.selectionType as BarcodeSelectionAimerSelection).selectionStrategy =
+          BarcodeSelectionAutoSelectionStrategy.autoSelectionStrategy;
       } else if (SELECTION_STRATEGY === BarcodeSelectionStrategyType.Manual) {
-        (this.barcodeSelectionSettings.selectionType as BarcodeSelectionAimerSelection).selectionStrategy
-          = BarcodeSelectionManualSelectionStrategy.manualSelectionStrategy;
+        (this.barcodeSelectionSettings.selectionType as BarcodeSelectionAimerSelection).selectionStrategy =
+          BarcodeSelectionManualSelectionStrategy.manualSelectionStrategy;
       }
     }
 
     this.barcodeSelectionSettings.enableSymbologies(enabledSymbologiesSettings.map(({ key }) => Symbology[key]));
 
-    enabledSymbologiesSettings.forEach(settings => this.applySymbologySettings(this.barcodeSelectionSettings, settings));
+    enabledSymbologiesSettings.forEach(settings =>
+      this.applySymbologySettings(this.barcodeSelectionSettings, settings)
+    );
 
-    this.barcodeSelectionSettings.singleBarcodeAutoDetection
-      = this.settingsService.singleBarcodeAutoDetectionForm.value.SINGLE_BARCODE_AUTO_DETECTION;
+    this.barcodeSelectionSettings.singleBarcodeAutoDetection =
+      this.settingsService.singleBarcodeAutoDetectionForm.value.SINGLE_BARCODE_AUTO_DETECTION;
 
     return this.barcodeSelectionSettings;
   }
@@ -207,13 +205,8 @@ export class ScanComponent implements AfterViewInit {
   }
 
   public applyCameraSettings(): Promise<void> {
-    const {
-      DESIRED_TORCH_STATE,
-      CAMERA_POSITION,
-      PREFERRED_RESOLUTION,
-      ZOOM_FACTOR,
-      FOCUS_RANGE,
-    } = this.settingsService.cameraForm.value;
+    const { DESIRED_TORCH_STATE, CAMERA_POSITION, PREFERRED_RESOLUTION, ZOOM_FACTOR, FOCUS_RANGE } =
+      this.settingsService.cameraForm.value;
 
     const cameraSettings = new CameraSettings();
     cameraSettings.preferredResolution = PREFERRED_RESOLUTION;
@@ -224,9 +217,9 @@ export class ScanComponent implements AfterViewInit {
 
     camera.desiredTorchState = DESIRED_TORCH_STATE ? TorchState.On : TorchState.Off;
 
-    const switchToDesiredStatePromise = this.context.frameSource ?
-      this.context.frameSource.switchToDesiredState(FrameSourceState.Off) :
-      Promise.resolve();
+    const switchToDesiredStatePromise = this.context.frameSource
+      ? this.context.frameSource.switchToDesiredState(FrameSourceState.Off)
+      : Promise.resolve();
 
     return switchToDesiredStatePromise
       .then(() => camera.applySettings(cameraSettings))
@@ -253,7 +246,7 @@ export class ScanComponent implements AfterViewInit {
 
   private applySymbologySettings(
     barcodeSelectionSettings,
-    settings: BarcodeSelectionSymbologyFormValue & { key: string },
+    settings: BarcodeSelectionSymbologyFormValue & { key: string }
   ) {
     const symbologySettings = barcodeSelectionSettings.settingsForSymbology(Symbology[settings.key]);
 
@@ -286,12 +279,8 @@ export class ScanComponent implements AfterViewInit {
   }
 
   private applyScanAreaSettings() {
-    const {
-      SCAN_AREA_MARGIN_BOTTOM,
-      SCAN_AREA_MARGIN_LEFT,
-      SCAN_AREA_MARGIN_RIGHT,
-      SCAN_AREA_MARGIN_TOP,
-    } = this.settingsService.scanAreaForm.value;
+    const { SCAN_AREA_MARGIN_BOTTOM, SCAN_AREA_MARGIN_LEFT, SCAN_AREA_MARGIN_RIGHT, SCAN_AREA_MARGIN_TOP } =
+      this.settingsService.scanAreaForm.value;
 
     const scanAreaTop = this.getNumberWithUnit(SCAN_AREA_MARGIN_TOP);
     const scanAreaRight = this.getNumberWithUnit(SCAN_AREA_MARGIN_RIGHT);
@@ -302,30 +291,34 @@ export class ScanComponent implements AfterViewInit {
   }
 
   private applyOverlayStyleSettings(SCAN_AREA_GUIDES, view) {
-    const {
-      OVERLAY_STYLE,
-      TRACKED_BRUSH,
-      AIMED_BRUSH,
-      SELECTING_BRUSH,
-      SELECTED_BRUSH,
-      SHOULD_SHOW_HINTS
-    } = this.settingsService.overlayForm.value;
+    const { OVERLAY_STYLE, TRACKED_BRUSH, AIMED_BRUSH, SELECTING_BRUSH, SELECTED_BRUSH, SHOULD_SHOW_HINTS } =
+      this.settingsService.overlayForm.value;
 
-    view.baseDataCaptureView.overlays.forEach((viewOverlay: BarcodeSelectionBasicOverlay) => view.removeOverlay(viewOverlay));
+    view.baseDataCaptureView.overlays.forEach((viewOverlay: BarcodeSelectionBasicOverlay) =>
+      view.removeOverlay(viewOverlay)
+    );
 
     const overlay = new BarcodeSelectionBasicOverlay(this.barcodeSelection, OVERLAY_STYLE);
 
     overlay.shouldShowScanAreaGuides = SCAN_AREA_GUIDES;
     overlay.shouldShowHints = SHOULD_SHOW_HINTS;
 
-    overlay.trackedBrush = TRACKED_BRUSH === Brush.Default ?
-      overlay.trackedBrush : new ScanditBrush(this.getColor(TRACKED_BRUSH), this.getColor(TRACKED_BRUSH), 1);
-    overlay.aimedBrush = AIMED_BRUSH === Brush.Default ?
-      overlay.aimedBrush : new ScanditBrush(this.getColor(AIMED_BRUSH), this.getColor(AIMED_BRUSH), 1);
-    overlay.selectingBrush = SELECTING_BRUSH === Brush.Default ?
-      overlay.selectingBrush : new ScanditBrush(this.getColor(SELECTING_BRUSH), this.getColor(SELECTING_BRUSH), 1);
-    overlay.selectedBrush = SELECTED_BRUSH === Brush.Default ?
-      overlay.selectedBrush : new ScanditBrush(this.getColor(SELECTED_BRUSH), this.getColor(SELECTED_BRUSH), 1);
+    overlay.trackedBrush =
+      TRACKED_BRUSH === Brush.Default
+        ? overlay.trackedBrush
+        : new ScanditBrush(this.getColor(TRACKED_BRUSH), this.getColor(TRACKED_BRUSH), 1);
+    overlay.aimedBrush =
+      AIMED_BRUSH === Brush.Default
+        ? overlay.aimedBrush
+        : new ScanditBrush(this.getColor(AIMED_BRUSH), this.getColor(AIMED_BRUSH), 1);
+    overlay.selectingBrush =
+      SELECTING_BRUSH === Brush.Default
+        ? overlay.selectingBrush
+        : new ScanditBrush(this.getColor(SELECTING_BRUSH), this.getColor(SELECTING_BRUSH), 1);
+    overlay.selectedBrush =
+      SELECTED_BRUSH === Brush.Default
+        ? overlay.selectedBrush
+        : new ScanditBrush(this.getColor(SELECTED_BRUSH), this.getColor(SELECTED_BRUSH), 1);
 
     // Add the overlay to the view.
     view.addOverlay(overlay);
@@ -340,5 +333,4 @@ export class ScanComponent implements AfterViewInit {
   private getNumberWithUnit({ value, unit }: { value: number; unit: MeasureUnit }) {
     return new NumberWithUnit(value, unit);
   }
-
 }

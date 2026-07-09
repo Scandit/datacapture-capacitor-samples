@@ -4,7 +4,7 @@ const config: CapacitorConfig = {
   appId: 'com.scandit.barcodecapturesimplesamplewithangular',
   appName: 'BarcodeCaptureSimpleSampleWithAngular',
   webDir: 'www',
-  bundledWebRuntime: false
+  bundledWebRuntime: false,
 };
 
 export default config;

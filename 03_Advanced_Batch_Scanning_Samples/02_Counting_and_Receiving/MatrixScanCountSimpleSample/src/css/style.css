@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
   font-family: 'Helvetica', 'Arial';
   width: 100%;
   height: 100%;
@@ -25,5 +26,5 @@ html, body {
 }
 
 #freeze-button.unfreeze {
-  background-image: url(assets/Unfreeze.svg)
+  background-image: url(assets/Unfreeze.svg);
 }

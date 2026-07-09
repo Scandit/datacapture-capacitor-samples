@@ -1,67 +1,60 @@
 <script setup>
+import { useAppState } from './AppState';
+import { useRouter } from 'vue-router';
+import { computed } from 'vue';
 
-import {useAppState} from "./AppState";
-import {useRouter} from "vue-router";
-import {computed} from "vue";
-
-const appState = useAppState()
-const router = useRouter()
+const appState = useAppState();
+const router = useRouter();
 
 function handleResumeClick() {
   if (appState.exitPressed) {
-    appState.resetRequired = true
-    appState.exitPressed = false
+    appState.resetRequired = true;
+    appState.exitPressed = false;
   }
-  router.back()
+  router.back();
 }
 
 function handleClearListClick() {
-  appState.clearRequired = true
-  router.back()
+  appState.clearRequired = true;
+  router.back();
 }
 
 const scanCount = computed(() => {
-  const l = appState.codes.length
-  return l === 1 ? `Item (1)` : `Items (${l})`
-})
-
+  const l = appState.codes.length;
+  return l === 1 ? `Item (1)` : `Items (${l})`;
+});
 </script>
 
 <template>
-
   <div class="container">
     <div class="header">
       <p>Scanned Items</p>
     </div>
     <div class="scan-count">
-      {{scanCount}}
+      {{ scanCount }}
     </div>
     <div class="results">
       <div v-for="(code, index) in appState.codes">
         <div class="result-item">
           <div class="result-item-image"></div>
           <div class="result-item-body">
-            <span>Item {{index + 1}}</span>
-            <br>
-            <span class="result-item-symbology">{{code.symbology}}: {{code.data}}</span>
+            <span>Item {{ index + 1 }}</span>
+            <br />
+            <span class="result-item-symbology">{{ code.symbology }}: {{ code.data }}</span>
           </div>
         </div>
       </div>
     </div>
     <div class="btn-list">
       <button class="resume-scanning-btn" @click="handleResumeClick()">
-        {{appState.exitPressed ? 'START NEW SCANNING' : 'RESUME SCANNING'}}
+        {{ appState.exitPressed ? 'START NEW SCANNING' : 'RESUME SCANNING' }}
       </button>
-      <button class="clear-list-btn" @click="handleClearListClick()">
-        CLEAR LIST
-      </button>
+      <button class="clear-list-btn" @click="handleClearListClick()">CLEAR LIST</button>
     </div>
   </div>
-
 </template>
 
 <style scoped>
-
 .container {
   background-color: white;
   display: flex;
@@ -69,7 +62,7 @@ const scanCount = computed(() => {
 }
 
 .results {
-  background-color: #FFF;
+  background-color: #fff;
   flex-grow: 1;
   overflow-y: auto;
   overflow-x: hidden;
@@ -88,7 +81,7 @@ const scanCount = computed(() => {
   min-height: 48px;
   width: 48px;
   min-width: 48px;
-  background-color: #F1F5F8;
+  background-color: #f1f5f8;
 }
 
 .result-item-body {
@@ -100,7 +93,7 @@ const scanCount = computed(() => {
 
 .result-item-symbology {
   flex: 1;
-  color: #8795A1;
+  color: #8795a1;
   font-size: 14px;
   text-transform: uppercase;
   text-overflow: ellipsis;
@@ -142,12 +135,11 @@ const scanCount = computed(() => {
 }
 
 .scan-count {
-  color: #3D4852;
+  color: #3d4852;
   font-size: 14px;
   font-weight: 600;
   padding-inline-start: 16px;
   padding-top: 16px;
   padding-bottom: 10px;
 }
-
 </style>

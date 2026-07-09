@@ -1,11 +1,7 @@
 import { OnInit, Directive } from '@angular/core';
 import { Platform } from '@ionic/angular';
 
-import {
-  settingsFields,
-  SettingsFieldName,
-  SettingsField,
-} from '../../config';
+import { settingsFields, SettingsFieldName, SettingsField } from '../../config';
 import { ControlValueAccessor } from '@angular/forms';
 
 type OnTouchFn = () => void;
@@ -13,7 +9,6 @@ type OnChangeFn = (value: any) => void;
 
 @Directive()
 export class ControlBase<Type> implements OnInit, ControlValueAccessor {
-
   public field: SettingsField;
   public formControlName: SettingsFieldName;
 
@@ -22,9 +17,7 @@ export class ControlBase<Type> implements OnInit, ControlValueAccessor {
   private onChange: OnChangeFn = () => null;
   private onTouch: OnTouchFn = () => null;
 
-  constructor(
-    protected platform: Platform,
-  ) {}
+  constructor(protected platform: Platform) {}
 
   public writeValue(value: Type): void {
     this.value = value;
@@ -58,5 +51,4 @@ export class ControlBase<Type> implements OnInit, ControlValueAccessor {
     this.value = value;
     this.onChange(value);
   }
-
 }

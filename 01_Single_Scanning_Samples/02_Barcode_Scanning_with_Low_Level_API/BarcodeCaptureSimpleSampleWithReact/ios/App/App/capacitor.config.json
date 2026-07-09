@@ -1,14 +1,14 @@
 {
-	"appId": "com.scandit.barcodecapturesimplesamplewithreact",
-	"appName": "BarcodeCaptureSimpleSampleWithReact",
-	"webDir": "build",
-	"bundledWebRuntime": false,
-	"packageClassList": [
-		"AppPlugin",
-		"HapticsPlugin",
-		"KeyboardPlugin",
-		"StatusBarPlugin",
-		"ScanditCapacitorBarcode",
-		"ScanditCapacitorCore"
-	]
+  "appId": "com.scandit.barcodecapturesimplesamplewithreact",
+  "appName": "BarcodeCaptureSimpleSampleWithReact",
+  "webDir": "build",
+  "bundledWebRuntime": false,
+  "packageClassList": [
+    "AppPlugin",
+    "HapticsPlugin",
+    "KeyboardPlugin",
+    "StatusBarPlugin",
+    "ScanditCapacitorBarcode",
+    "ScanditCapacitorCore"
+  ]
 }

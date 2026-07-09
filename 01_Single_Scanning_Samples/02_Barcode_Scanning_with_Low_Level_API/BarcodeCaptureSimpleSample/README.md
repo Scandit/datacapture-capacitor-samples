@@ -10,7 +10,7 @@ Consider also the **pre-built component** designed for ergonomic high-speed sing
 
 ## Documentation
 
-BarcodeCapture is a fully-flexible API of the Scandit Data Capture SDK.  Our SDK is supported on most popular frameworks.
+BarcodeCapture is a fully-flexible API of the Scandit Data Capture SDK. Our SDK is supported on most popular frameworks.
 
 [iOS](https://docs.scandit.com/data-capture-sdk/ios/index.html), [Android](https://docs.scandit.com/data-capture-sdk/android/index.html), [Web](https://docs.scandit.com/data-capture-sdk/web/index.html), [Cordova](https://docs.scandit.com/data-capture-sdk/cordova/index.html), Xamarin ([iOS](https://docs.scandit.com/data-capture-sdk/xamarin.ios/index.html), [Android](https://docs.scandit.com/data-capture-sdk/xamarin.android/index.html), [Forms](https://docs.scandit.com/data-capture-sdk/xamarin.forms/index.html)), .NET ([iOS](https://docs.scandit.com/data-capture-sdk/dotnet.ios/index.html), [Android](https://docs.scandit.com/data-capture-sdk/dotnet.android/index.html)), [React Native](https://docs.scandit.com/data-capture-sdk/react-native/index.html), [Flutter](https://docs.scandit.com/data-capture-sdk/flutter/index.html), [Capacitor](https://docs.scandit.com/data-capture-sdk/capacitor/index.html), [Titanium](https://docs.scandit.com/data-capture-sdk/titanium/index.html)
 
@@ -20,7 +20,7 @@ Once you get the sample up and running, go find some barcodes to scan. Don’t f
 
 ## Trial Signup
 
-To add Barcode Capture to your app, sign up for your Scandit Developer Account  and get instant access to your license key: [https://ssl.scandit.com/dashboard/sign-up?p=test](https://ssl.scandit.com/dashboard/sign-up?p=test)
+To add Barcode Capture to your app, sign up for your Scandit Developer Account and get instant access to your license key: [https://ssl.scandit.com/dashboard/sign-up?p=test](https://ssl.scandit.com/dashboard/sign-up?p=test)
 
 ## Support
 
@@ -36,8 +36,8 @@ This app was created using the `npx @capacitor/cli create` command, and comes wi
 minimal shell for building an app.
 
 Note: unless you know what you're doing, we don't recommend using the `create` way of building an app. Instead, you'll
-likely want to create an app using your framework's tooling (such as `create-react-app`), and then *add* capacitor
-to *that* project (using `npx @capacitor/cli init`).
+likely want to create an app using your framework's tooling (such as `create-react-app`), and then _add_ capacitor
+to _that_ project (using `npx @capacitor/cli init`).
 
 ### Running this example
 

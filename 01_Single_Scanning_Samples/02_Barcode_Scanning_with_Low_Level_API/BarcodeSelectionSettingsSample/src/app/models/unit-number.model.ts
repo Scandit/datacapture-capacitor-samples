@@ -1,4 +1,4 @@
-import { MeasureUnit } from "scandit-capacitor-datacapture-core";
+import { MeasureUnit } from 'scandit-capacitor-datacapture-core';
 
 export const DEFAULT_UNIT_NUMBER_VALUE = (): UnitNumber => ({
   value: 0,

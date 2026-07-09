@@ -10,7 +10,7 @@ import {
   RectangularViewfinder,
   RectangularViewfinderLineStyle,
   RectangularViewfinderStyle,
-  ScanditCaptureCorePlugin
+  ScanditCaptureCorePlugin,
 } from 'scandit-capacitor-datacapture-core';
 
 import {
@@ -18,7 +18,7 @@ import {
   Symbology,
   BarcodeCapture,
   SymbologyDescription,
-  BarcodeCaptureOverlay
+  BarcodeCaptureOverlay,
 } from 'scandit-capacitor-datacapture-barcode';
 
 @Component({
@@ -31,7 +31,7 @@ export class HomePage {
 
   constructor(
     private platform: Platform,
-    private alertController: AlertController,
+    private alertController: AlertController
   ) {
     this.barcodeCapture = null;
     this.initializeApp();
@@ -94,7 +94,7 @@ export class HomePage {
 
           barcodeCapture.isEnabled = false;
           this.showResult(`Scanned: ${barcode.data} (${symbology.readableName})`);
-        }
+        },
       });
 
       // Set the barcode capture mode to the context.
@@ -114,7 +114,7 @@ export class HomePage {
       const overlay = new BarcodeCaptureOverlay(this.barcodeCapture);
       overlay.viewfinder = new RectangularViewfinder(
         RectangularViewfinderStyle.Square,
-        RectangularViewfinderLineStyle.Light,
+        RectangularViewfinderLineStyle.Light
       );
 
       // Add the overlay to the view.
@@ -127,7 +127,7 @@ export class HomePage {
     });
   };
 
-  showResult = async (result) => {
+  showResult = async result => {
     const alert = await this.alertController.create({
       header: 'Scan result',
       message: result,
@@ -140,9 +140,9 @@ export class HomePage {
             this.barcodeCapture.isEnabled = true;
             // To show the DataCapture view again, simply set the z-index property of its attached element to 1
             document.getElementById('dataCaptureView').style.zIndex = '1';
-          }
-        }
-      ]
+          },
+        },
+      ],
     });
 
     // The DataCapture view is drawn on top of the webview. To display html elements in place of the

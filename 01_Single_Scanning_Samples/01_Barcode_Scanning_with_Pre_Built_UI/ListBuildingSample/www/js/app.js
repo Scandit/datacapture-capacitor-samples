@@ -1,9 +1,4 @@
-import {
-  DataCaptureContext,
-  ScanditCaptureCorePlugin,
-  Color,
-  Brush
-} from 'scandit-capacitor-datacapture-core';
+import { DataCaptureContext, ScanditCaptureCorePlugin, Color, Brush } from 'scandit-capacitor-datacapture-core';
 
 import {
   SparkScan,
@@ -12,9 +7,8 @@ import {
   Symbology,
   SparkScanBarcodeSuccessFeedback,
   SparkScanBarcodeErrorFeedback,
-  SymbologyDescription
-} from 'scandit-capacitor-datacapture-barcode'
-
+  SymbologyDescription,
+} from 'scandit-capacitor-datacapture-barcode';
 
 async function runApp() {
   let codes = {};
@@ -49,8 +43,7 @@ async function runApp() {
   // falling outside the default range, you may need to adjust the "active symbol counts"
   // for this symbology. This is shown in the following few lines of code for one of the
   // variable-length symbologies.
-  const symbologySettings =
-    sparkScanSettings.settingsForSymbology(Symbology.Code39);
+  const symbologySettings = sparkScanSettings.settingsForSymbology(Symbology.Code39);
 
   symbologySettings.activeSymbolCounts = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
 
@@ -69,18 +62,24 @@ async function runApp() {
 
         updateResults();
       }
-    }
+    },
   };
 
   // Setup the feedback delegate in order to emit different feedback based on the scanned barcode
   const sparkScanFeedbackDelegate = {
-    feedbackForBarcode: (barcode) => {
+    feedbackForBarcode: barcode => {
       if (isValidBarcode(barcode)) {
         // return a success feedback
         return new SparkScanBarcodeSuccessFeedback();
       } else {
         // customize and return an error feedback
-        return new SparkScanBarcodeErrorFeedback("Wrong barcode", 60, Color.fromHex("#FF0000"), new Brush(Color.fromHex("#FF0000"), Color.fromHex("#FF0000"), 1), null);
+        return new SparkScanBarcodeErrorFeedback(
+          'Wrong barcode',
+          60,
+          Color.fromHex('#FF0000'),
+          new Brush(Color.fromHex('#FF0000'), Color.fromHex('#FF0000'), 1),
+          null
+        );
       }
     },
   };
@@ -99,19 +98,19 @@ async function runApp() {
       .map(barcode => {
         const symbology = new SymbologyDescription(barcode.symbology);
 
-        const dataHTML = `<p class="barcodeData">${barcode.data}</p>`
-        const symbologyHTML = `<p class="symbology">${symbology.readableName}</p>`
+        const dataHTML = `<p class="barcodeData">${barcode.data}</p>`;
+        const symbologyHTML = `<p class="symbology">${symbology.readableName}</p>`;
         return `<div class="result">${dataHTML}${symbologyHTML}</div>`;
       })
       .join('');
-  }
+  };
 
   const clearList = () => {
     codes = {};
     updateResults();
-  }
+  };
 
-  const isValidBarcode = (barcode) => {
+  const isValidBarcode = barcode => {
     return barcode.data != null && barcode.data !== '123456789';
   };
 

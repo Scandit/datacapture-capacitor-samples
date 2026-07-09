@@ -83,7 +83,7 @@ async function runApp() {
 
   window.idCaptureOverlay = new IdCaptureOverlay(window.idCapture);
   window.idCaptureOverlay.idLayoutStyle = IdLayoutStyle.Square;
-  
+
   // Add overlay to view
   view.addOverlay(window.idCaptureOverlay);
 }
