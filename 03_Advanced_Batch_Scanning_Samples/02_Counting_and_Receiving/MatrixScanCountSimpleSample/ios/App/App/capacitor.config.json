@@ -1,0 +1,10 @@
+{
+  "appId": "com.scandit.matrixscancountsimplesample",
+  "appName": "MatrixScanCountSimpleSample",
+  "webDir": "dist",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  }
+}

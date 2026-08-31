@@ -9,5 +9,5 @@
       "launchShowDuration": 0
     }
   },
-  "packageClassList": ["ScanditTextNative", "ScanditIdNative", "ScanditCapacitorCore"]
+  "packageClassList": ["ScanditCapacitorBarcode", "ScanditCapacitorCore"]
 }

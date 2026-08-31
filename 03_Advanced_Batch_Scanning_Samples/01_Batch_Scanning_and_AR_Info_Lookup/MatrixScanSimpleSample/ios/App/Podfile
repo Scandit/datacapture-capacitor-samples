@@ -23,15 +23,17 @@ def capacitor_pods
   pod 'CapacitorCordova', :path => '../../node_modules/@capacitor/ios'
   pod 'ScanditCapacitorDatacaptureBarcode', :path => '../../node_modules/scandit-capacitor-datacapture-barcode'
   pod 'ScanditCapacitorDatacaptureCore', :path => '../../node_modules/scandit-capacitor-datacapture-core'
-  # Do not delete
 end
 
 def find_core_plugin(start_path)
   current_path = File.expand_path(start_path)
   until current_path == "/"
-    folder_path = File.join(current_path, 'scandit-capacitor-datacapture-core')
-    if Dir.exist?(folder_path)
-      return folder_path
+    candidates = [
+      File.join(current_path, 'scandit-capacitor-datacapture-core'),
+      File.join(current_path, 'node_modules', 'scandit-capacitor-datacapture-core')
+    ]
+    candidates.each do |folder_path|
+      return folder_path if Dir.exist?(folder_path)
     end
     current_path = File.dirname(current_path)
   end
@@ -47,4 +49,3 @@ end
 target 'App' do
   capacitor_pods
   # Add your Pods here
-end

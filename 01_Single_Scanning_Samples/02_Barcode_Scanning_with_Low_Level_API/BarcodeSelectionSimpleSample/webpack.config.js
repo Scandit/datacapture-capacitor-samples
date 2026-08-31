@@ -9,7 +9,7 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
-      title: 'BCSimpleSample',
+      title: 'BarcodeSelectionSimpleSample',
       template: path.resolve(__dirname, 'www/index.html'),
     }),
     new CopyPlugin({
@@ -17,6 +17,12 @@ module.exports = {
         {
           from: path.resolve(__dirname, 'www/css'),
           to: path.resolve(__dirname, 'dist/css'),
+          noErrorOnMissing: true,
+        },
+        {
+          from: path.resolve(__dirname, 'www/assets'),
+          to: path.resolve(__dirname, 'dist/assets'),
+          noErrorOnMissing: true,
         },
       ],
     }),

@@ -141,6 +141,15 @@ async function runApp() {
   // Switch camera on to start streaming frames and enable the barcode batch mode.
   // The camera is started asynchronously and will take some time to completely turn on.
   await window.camera.switchToDesiredState(FrameSourceState.On);
+
+  // Tear down the capture process when leaving the page — the same steps any
+  // multi-page app should take before navigating away: stop the camera,
+  // detach the modes, and remove the native capture view.
+  window.dispose = async () => {
+    await window.camera.switchToDesiredState(FrameSourceState.Off);
+    await context.removeAllModes();
+    await window.view.removeNativeView();
+  };
   window.barcodeBatch.isEnabled = true;
 }
 

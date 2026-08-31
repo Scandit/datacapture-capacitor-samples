@@ -59,6 +59,15 @@ async function runApp() {
   // The camera is started asynchronously and will take some time to completely turn on.
   camera.switchToDesiredState(FrameSourceState.On);
 
+  // Tear down the capture process when leaving the page — the same steps any
+  // multi-page app should take before navigating away: stop the camera,
+  // detach the modes, and remove the native capture view.
+  window.dispose = async () => {
+    await camera.switchToDesiredState(FrameSourceState.Off);
+    await context.removeAllModes();
+    await view.removeNativeView();
+  };
+
   // Create new id capture mode with the settings from above.
   window.idCapture = new IdCapture(settings);
 

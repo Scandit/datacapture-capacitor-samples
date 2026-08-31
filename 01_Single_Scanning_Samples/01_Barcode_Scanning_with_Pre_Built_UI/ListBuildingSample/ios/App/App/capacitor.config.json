@@ -1,0 +1,13 @@
+{
+  "appId": "com.scandit.listbuildingsample",
+  "appName": "ListBuildingSample",
+  "bundledWebRuntime": true,
+  "npmClient": "yarn",
+  "webDir": "dist",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  },
+  "packageClassList": ["ScanditCapacitorBarcode", "ScanditCapacitorCore"]
+}

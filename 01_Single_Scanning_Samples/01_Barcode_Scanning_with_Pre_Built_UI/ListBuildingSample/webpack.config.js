@@ -17,10 +17,12 @@ module.exports = {
         {
           from: path.resolve(__dirname, 'www/css'),
           to: path.resolve(__dirname, 'dist/css'),
+          noErrorOnMissing: true,
         },
         {
           from: path.resolve(__dirname, 'www/assets'),
           to: path.resolve(__dirname, 'dist/assets'),
+          noErrorOnMissing: true,
         },
       ],
     }),

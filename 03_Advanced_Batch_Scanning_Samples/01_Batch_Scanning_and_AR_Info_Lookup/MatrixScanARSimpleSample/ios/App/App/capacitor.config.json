@@ -9,5 +9,5 @@
       "launchShowDuration": 0
     }
   },
-  "packageClassList": ["AppPlugin", "ScanditCapacitorBarcode", "ScanditCapacitorCore"]
+  "packageClassList": ["ScanditCapacitorBarcode", "ScanditCapacitorCore"]
 }

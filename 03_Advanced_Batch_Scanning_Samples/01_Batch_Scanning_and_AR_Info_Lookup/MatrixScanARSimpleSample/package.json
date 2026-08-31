@@ -2,7 +2,7 @@
     "name": "matrixscan-ar-simple-sample",
     "version": "1.0.0",
     "private": true,
-    "description": "Scandit Data Capture SDK MatrixScanAR Simple Sample",
+    "description": "Advanced sample demonstrating how to use the various prebuilt highlights and annotations in MatrixScan AR.",
     "main": "index.js",
     "scripts": {
         "build": "webpack",
@@ -10,11 +10,11 @@
     },
     "dependencies": {
         "@capacitor/android": "^8.3.0",
-        "@capacitor/app": "^8.1.0",
         "@capacitor/core": "^8.3.0",
         "@capacitor/ios": "^8.3.0",
-        "scandit-capacitor-datacapture-barcode": "8.5.3",
-        "scandit-capacitor-datacapture-core": "8.5.3"
+        "@capacitor/app": "^8.1.0",
+        "scandit-capacitor-datacapture-core": "8.6.0",
+        "scandit-capacitor-datacapture-barcode": "8.6.0"
     },
     "devDependencies": {
         "@capacitor/cli": "^8.3.0",

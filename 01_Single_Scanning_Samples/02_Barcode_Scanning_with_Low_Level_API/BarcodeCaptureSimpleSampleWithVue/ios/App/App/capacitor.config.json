@@ -2,13 +2,5 @@
   "appId": "com.scandit.barcodecapturesimplesamplewithvue",
   "appName": "BarcodeCaptureSimpleSampleWithVue",
   "webDir": "dist",
-  "bundledWebRuntime": false,
-  "packageClassList": [
-    "AppPlugin",
-    "HapticsPlugin",
-    "KeyboardPlugin",
-    "StatusBarPlugin",
-    "ScanditCapacitorBarcode",
-    "ScanditCapacitorCore"
-  ]
+  "bundledWebRuntime": false
 }

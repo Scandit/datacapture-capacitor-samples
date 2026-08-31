@@ -92,6 +92,14 @@ async function runApp() {
   window.sparkScanView = SparkScanView.forContext(context, window.sparkScan);
   window.sparkScanView.feedbackDelegate = sparkScanFeedbackDelegate;
 
+  // Tear down the capture process when leaving the page — SparkScan owns the
+  // camera, so removing the mode and disposing the view is the complete
+  // teardown a multi-page app should run before navigating away.
+  window.dispose = async () => {
+    await context.removeMode(window.sparkScan);
+    await window.sparkScanView.dispose();
+  };
+
   const updateResults = () => {
     const list = document.getElementById('list');
     list.innerHTML = Object.values(codes)

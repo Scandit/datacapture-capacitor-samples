@@ -21,7 +21,7 @@ apply from: "variables.gradle"
 
 def custom_config_scripts = [
         "$rootDir/frameworks.gradle",
-        "$rootDir/../../../../../common/frameworks.gradle"
+        "$rootDir/../../../../../../common/frameworks.gradle"
 ]
 
 allprojects {

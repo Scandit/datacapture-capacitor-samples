@@ -10,6 +10,7 @@ buildscript {
         google()
         mavenCentral()
     }
+
     dependencies {
         classpath "com.android.tools.build:gradle:$agpVersion"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
@@ -22,7 +23,6 @@ def custom_config_scripts = [
         "$rootDir/frameworks.gradle",
         "$rootDir/../../../../../../common/frameworks.gradle"
 ]
-
 
 allprojects {
     def customConfigApplied = false

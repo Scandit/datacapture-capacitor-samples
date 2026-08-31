@@ -1,0 +1,22 @@
+[
+  {
+    "pkg": "@capacitor/splash-screen",
+    "classpath": "com.capacitorjs.plugins.splashscreen.SplashScreenPlugin"
+  },
+  {
+    "pkg": "scandit-capacitor-datacapture-barcode",
+    "classpath": "com.scandit.capacitor.datacapture.barcode.ScanditBarcodeNative"
+  },
+  {
+    "pkg": "scandit-capacitor-datacapture-core",
+    "classpath": "com.scandit.capacitor.datacapture.core.ScanditCaptureCoreNative"
+  },
+  {
+    "pkg": "scandit-capacitor-datacapture-label",
+    "classpath": "com.scandit.capacitor.datacapture.label.ScanditLabelNative"
+  },
+  {
+    "pkg": "scandit-capacitor-datacapture-label-text",
+    "classpath": "com.scandit.capacitor.datacapture.label_text.ScanditLabelTextNativePlugin"
+  }
+]

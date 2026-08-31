@@ -25,8 +25,6 @@
         "react-router": "5.3.4",
         "react-router-dom": "5.3.4",
         "react-scripts": "5.0.1",
-        "scandit-capacitor-datacapture-barcode": "8.5.3",
-        "scandit-capacitor-datacapture-core": "8.5.3",
         "typescript": "4.5.5",
         "web-vitals": "3.5.2",
         "workbox-background-sync": "7.4.0",
@@ -40,7 +38,9 @@
         "workbox-range-requests": "7.4.0",
         "workbox-routing": "7.4.0",
         "workbox-strategies": "7.4.0",
-        "workbox-streams": "7.4.0"
+        "workbox-streams": "7.4.0",
+        "scandit-capacitor-datacapture-core": "8.6.0",
+        "scandit-capacitor-datacapture-barcode": "8.6.0"
     },
     "scripts": {
         "start": "react-scripts start",

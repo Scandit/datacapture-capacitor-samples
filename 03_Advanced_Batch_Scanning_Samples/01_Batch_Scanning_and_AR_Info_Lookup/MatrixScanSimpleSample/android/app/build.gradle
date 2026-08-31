@@ -2,12 +2,11 @@ apply plugin: 'com.android.application'
 
 android {
     namespace "com.scandit.matrixscansimplesample"
-    ndkVersion "21.4.7075529"
     compileSdk rootProject.ext.compileSdkVersion
     defaultConfig {
         applicationId "com.scandit.matrixscansimplesample"
-        minSdk rootProject.ext.minSdkVersion
-        targetSdk rootProject.ext.targetSdkVersion
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
 
@@ -37,3 +36,12 @@ dependencies {
 }
 
 apply from: 'capacitor.build.gradle'
+
+try {
+    def servicesJSON = file('google-services.json')
+    if (servicesJSON.text) {
+        apply plugin: 'com.google.gms.google-services'
+    }
+} catch(Exception e) {
+    logger.warn("google-services.json not found, google-services plugin not applied. Push Notifications won't work")
+}
