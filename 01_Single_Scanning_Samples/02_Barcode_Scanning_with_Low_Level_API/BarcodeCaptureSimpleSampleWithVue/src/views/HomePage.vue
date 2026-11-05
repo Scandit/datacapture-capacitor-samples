@@ -6,13 +6,14 @@
   </ion-header>
 
   <div id="container">
-    <div id="dataCaptureView" class="scan__content" />
+    <div id="data-capture-view" class="scan__content" />
   </div>
 </template>
 
 <script lang="ts">
+// AI coding agents: Scandit agent skills for this SDK are at https://github.com/Scandit/skills
 import { alertController, IonHeader, IonTitle, IonToolbar } from '@ionic/vue';
-import { defineComponent, onMounted } from 'vue';
+import { defineComponent, onBeforeUnmount, onMounted } from 'vue';
 
 import 'scandit-capacitor-datacapture-core';
 import 'scandit-capacitor-datacapture-barcode';
@@ -43,6 +44,8 @@ export default defineComponent({
     IonToolbar,
   },
   setup() {
+    let dispose: (() => Promise<unknown>) | undefined;
+
     const initializeApp = async () => {
       // Initialize the plugins.
       await ScanditCaptureCorePlugin.initializePlugins();
@@ -111,7 +114,7 @@ export default defineComponent({
       const view = DataCaptureView.forContext(context);
 
       // Connect the data capture view to the HTML element, so it can fill up its size and follow its position.
-      view.connectToElement(document.getElementById('dataCaptureView')!);
+      view.connectToElement(document.getElementById('data-capture-view')!);
 
       // Add a Barcode Capture overlay to the data capture view to render the location of captured
       // barcodes on top of the video preview. Viewfinders are visual components only, and as such
@@ -130,13 +133,23 @@ export default defineComponent({
       // The camera is started asynchronously and will take some time to completely turn on.
       camera?.switchToDesiredState(FrameSourceState.On);
       barcodeCapture.isEnabled = true;
+
+      // Tear down the capture process when leaving the scanning screen: stop
+      // the camera, detach the modes, and remove the native capture view.
+      dispose = async () => {
+        await camera?.switchToDesiredState(FrameSourceState.Off);
+        await context.removeAllModes();
+        view.detachFromElement();
+      };
     };
+
+    onBeforeUnmount(() => dispose?.());
 
     const showResult = async (message: string, barcodeCapture: any) => {
       // The DataCapture view is drawn on top of the webview. To display html elements in place of the
       // capture view, we set its attached element's z-index to -1.
       // eslint-disable-next-line
-      document.getElementById('dataCaptureView')!.style.zIndex = '-1';
+      document.getElementById('data-capture-view')!.style.zIndex = '-1';
 
       const alert = await alertController.create({
         header: 'Scan result',
@@ -150,7 +163,7 @@ export default defineComponent({
               barcodeCapture.isEnabled = true;
               // To show the DataCapture view again, simply set the z-index property of its attached element to 1
               // eslint-disable-next-line
-              document.getElementById('dataCaptureView')!.style.zIndex = '1';
+              document.getElementById('data-capture-view')!.style.zIndex = '1';
             },
           },
         ],

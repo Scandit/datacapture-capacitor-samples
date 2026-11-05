@@ -33,6 +33,8 @@
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Required to scan mobile identity documents via Bluetooth.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>To Take Photos and Video</string>
 	<key>UILaunchStoryboardName</key>

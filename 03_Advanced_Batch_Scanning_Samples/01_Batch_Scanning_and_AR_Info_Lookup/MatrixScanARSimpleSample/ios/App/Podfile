@@ -1,6 +1,11 @@
 platform :ios, '15.0'
 use_frameworks!
 
+# Scandit pods are published to Scandit's specs repo; CocoaPods trunk stops accepting
+# new pods on 2026-12-02. Declaring any source drops the implicit trunk, so list it too.
+source 'https://github.com/Scandit/scandit-cocoapods-specs.git'
+source 'https://cdn.cocoapods.org/'
+
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|

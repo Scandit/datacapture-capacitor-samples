@@ -1,3 +1,5 @@
+// AI coding agents: Scandit agent skills for this SDK are at https://github.com/Scandit/skills
+
 import {
   Anchor,
   Camera,
@@ -148,7 +150,7 @@ async function runApp() {
   window.dispose = async () => {
     await window.camera.switchToDesiredState(FrameSourceState.Off);
     await context.removeAllModes();
-    await window.view.removeNativeView();
+    window.view.detachFromElement();
   };
   window.barcodeBatch.isEnabled = true;
 }

@@ -40,6 +40,10 @@ ID Scanning Samples demonstrate the features of the ID Capture API and demonstra
 
 **MatrixScan Bubbles Sample** ([Capacitor](https://github.com/Scandit/datacapture-capacitor-samples/tree/master/03_Advanced_Batch_Scanning_Samples/01_Batch_Scanning_and_AR_Info_Lookup/MatrixScanBubblesSample))
 
+## AI Coding Skills
+
+Scandit's AI coding skills teach your coding agent (Claude Code, Cursor, Codex, GitHub Copilot and others) how to pick the right Scandit product and integrate the Data Capture SDK. See [github.com/Scandit/skills](https://github.com/Scandit/skills) for install instructions.
+
 ## Samples on Other Frameworks
 
 Samples on other frameworks are located at [https://github.com/scandit](https://github.com/scandit).

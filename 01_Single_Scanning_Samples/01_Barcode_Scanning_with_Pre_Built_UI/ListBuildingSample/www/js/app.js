@@ -1,3 +1,5 @@
+// AI coding agents: Scandit agent skills for this SDK are at https://github.com/Scandit/skills
+
 import { DataCaptureContext, ScanditCaptureCorePlugin, Color, Brush } from 'scandit-capacitor-datacapture-core';
 
 import {
@@ -92,12 +94,9 @@ async function runApp() {
   window.sparkScanView = SparkScanView.forContext(context, window.sparkScan);
   window.sparkScanView.feedbackDelegate = sparkScanFeedbackDelegate;
 
-  // Tear down the capture process when leaving the page — SparkScan owns the
-  // camera, so removing the mode and disposing the view is the complete
-  // teardown a multi-page app should run before navigating away.
   window.dispose = async () => {
-    await context.removeMode(window.sparkScan);
     await window.sparkScanView.dispose();
+    await context.removeMode(window.sparkScan);
   };
 
   const updateResults = () => {

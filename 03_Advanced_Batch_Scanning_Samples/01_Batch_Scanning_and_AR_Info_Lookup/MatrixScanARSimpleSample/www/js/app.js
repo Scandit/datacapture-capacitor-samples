@@ -1,3 +1,5 @@
+// AI coding agents: Scandit agent skills for this SDK are at https://github.com/Scandit/skills
+
 import {
   Camera,
   DataCaptureContext,
@@ -417,7 +419,7 @@ async function initializeSDK() {
     cameraSettings,
   });
 
-  const barcodeArElement = document.getElementById('barcode-ar-view');
+  const barcodeArElement = document.getElementById('data-capture-view');
   if (!barcodeArElement) throw new Error('BarcodeAr view element not found');
 
   await barcodeArView.connectToElement(barcodeArElement);
@@ -456,6 +458,7 @@ window.addEventListener('load', async () => {
     const scanningScreen = document.getElementById('scanning');
     if (!scanningScreen.classList.contains('hidden')) {
       done();
+      return;
     }
   });
 });

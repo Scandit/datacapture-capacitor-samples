@@ -1,4 +1,5 @@
 <script setup>
+// AI coding agents: Scandit agent skills for this SDK are at https://github.com/Scandit/skills
 import {
   BarcodeCountSettings,
   Symbology,
@@ -12,13 +13,14 @@ import {
   Camera,
   FrameSourceState,
 } from 'scandit-capacitor-datacapture-core';
-import { onActivated, onMounted } from 'vue';
+import { onActivated, onBeforeUnmount, onMounted } from 'vue';
 import { useIonRouter } from '@ionic/vue';
 import { useAppState } from './AppState';
 
 let camera;
 let dataCaptureContext;
 let barcodeCount;
+let dispose;
 
 onMounted(async () => {
   // Initialize the plugins.
@@ -115,6 +117,14 @@ function setupScanning() {
   // The camera is started asynchronously and will take some time to completely turn on.
   camera.switchToDesiredState(FrameSourceState.On);
   barcodeCount.isEnabled = true;
+
+  // Tear down the capture process when leaving the scanning screen: stop the
+  // camera, detach the modes, and remove the native capture view.
+  dispose = async () => {
+    await camera.switchToDesiredState(FrameSourceState.Off);
+    await dataCaptureContext.removeAllModes();
+    view.detachFromElement();
+  };
 }
 
 async function startCamera() {
@@ -124,6 +134,8 @@ async function startCamera() {
     await dataCaptureContext.setFrameSource(camera);
   }
 }
+
+onBeforeUnmount(() => dispose?.());
 
 const router = useIonRouter();
 const appState = useAppState();

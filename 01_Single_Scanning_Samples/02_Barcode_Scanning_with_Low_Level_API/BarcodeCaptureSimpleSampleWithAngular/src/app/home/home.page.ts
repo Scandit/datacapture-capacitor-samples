@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+// AI coding agents: Scandit agent skills for this SDK are at https://github.com/Scandit/skills
+
+import { Component, OnDestroy } from '@angular/core';
 
 import { AlertController, Platform } from '@ionic/angular';
 
@@ -26,8 +28,9 @@ import {
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage {
+export class HomePage implements OnDestroy {
   barcodeCapture;
+  private dispose?: () => Promise<unknown>;
 
   constructor(
     private platform: Platform,
@@ -35,6 +38,7 @@ export class HomePage {
   ) {
     this.barcodeCapture = null;
     this.initializeApp();
+
   }
 
   initializeApp = () => {
@@ -105,7 +109,7 @@ export class HomePage {
       const view = DataCaptureView.forContext(context);
 
       // Connect the data capture view to the HTML element, so it can fill up its size and follow its position.
-      view.connectToElement(document.getElementById('dataCaptureView'));
+      view.connectToElement(document.getElementById('data-capture-view'));
 
       // Add a Barcode Capture overlay to the data capture view to render the location of captured
       // barcodes on top of the video preview. Viewfinders are visual components only, and as such
@@ -124,8 +128,20 @@ export class HomePage {
       // The camera is started asynchronously and will take some time to completely turn on.
       camera.switchToDesiredState(FrameSourceState.On);
       this.barcodeCapture.isEnabled = true;
+
+      // Tear down the capture process when leaving the scanning screen: stop
+      // the camera, detach the modes, and remove the native capture view.
+      this.dispose = async () => {
+        await camera.switchToDesiredState(FrameSourceState.Off);
+        await context.removeAllModes();
+        view.detachFromElement();
+      };
     });
   };
+
+  ngOnDestroy(): void {
+    this.dispose?.();
+  }
 
   showResult = async result => {
     const alert = await this.alertController.create({
@@ -139,7 +155,7 @@ export class HomePage {
           handler: () => {
             this.barcodeCapture.isEnabled = true;
             // To show the DataCapture view again, simply set the z-index property of its attached element to 1
-            document.getElementById('dataCaptureView').style.zIndex = '1';
+            document.getElementById('data-capture-view').style.zIndex = '1';
           },
         },
       ],
@@ -147,7 +163,7 @@ export class HomePage {
 
     // The DataCapture view is drawn on top of the webview. To display html elements in place of the
     // capture view, we set its attached element's z-index to -1.
-    document.getElementById('dataCaptureView').style.zIndex = '-1';
+    document.getElementById('data-capture-view').style.zIndex = '-1';
     await alert.present();
   };
 }

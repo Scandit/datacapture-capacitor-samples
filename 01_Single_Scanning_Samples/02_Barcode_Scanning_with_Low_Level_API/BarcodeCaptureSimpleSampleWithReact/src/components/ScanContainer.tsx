@@ -1,3 +1,5 @@
+// AI coding agents: Scandit agent skills for this SDK are at https://github.com/Scandit/skills
+
 import './ScanContainer.css';
 
 import React, { useRef, useEffect } from 'react';
@@ -93,7 +95,7 @@ const initializeApp = async (present: any) => {
   const view = DataCaptureView.forContext(context);
 
   // Connect the data capture view to the HTML element, so it can fill up its size and follow its position.
-  view.connectToElement(document.getElementById('dataCaptureView')!);
+  view.connectToElement(document.getElementById('data-capture-view')!);
 
   // Add a Barcode Capture overlay to the data capture view to render the location of captured
   // barcodes on top of the video preview. Viewfinders are visual components only, and as such
@@ -112,12 +114,21 @@ const initializeApp = async (present: any) => {
   // The camera is started asynchronously and will take some time to completely turn on.
   camera?.switchToDesiredState(FrameSourceState.On);
   barcodeCapture.isEnabled = true;
+
+  // Tear down the capture process when leaving the scanning screen: stop the
+  // camera, detach the modes, and remove the native capture view.
+  const dispose = async () => {
+    await camera?.switchToDesiredState(FrameSourceState.Off);
+    await context.removeAllModes();
+    view.detachFromElement();
+  };
+  return dispose;
 };
 
 const showResult = async (message: string, barcodeCapture: any, present: any) => {
   // The DataCapture view is drawn on top of the webview. To display html elements in place of the
   // capture view, we set its attached element's z-index to -1.
-  document.getElementById('dataCaptureView')!.style.zIndex = '-1';
+  document.getElementById('data-capture-view')!.style.zIndex = '-1';
 
   await present({
     header: 'Scan result',
@@ -127,7 +138,7 @@ const showResult = async (message: string, barcodeCapture: any, present: any) =>
     onDidDismiss: () => {
       barcodeCapture.isEnabled = true;
       // To show the DataCapture view again, simply set the z-index property of its attached element to 1
-      document.getElementById('dataCaptureView')!.style.zIndex = '1';
+      document.getElementById('data-capture-view')!.style.zIndex = '1';
     },
   });
 };
@@ -137,12 +148,18 @@ const ScanContainer: React.FC<ContainerProps> = () => {
   const [present] = useIonAlert();
 
   useEffect(() => {
-    initializeApp(present);
+    const disposePromise = initializeApp(present).catch(error => {
+      console.error('initialization failed:', error);
+      return undefined;
+    });
+    return () => {
+      disposePromise.then(dispose => dispose?.());
+    };
   }, [present]);
 
   return (
     <div className="container">
-      <div id="dataCaptureView" className="scan__content" ref={dataCaptureViewRef} />
+      <div id="data-capture-view" className="scan__content" ref={dataCaptureViewRef} />
     </div>
   );
 };

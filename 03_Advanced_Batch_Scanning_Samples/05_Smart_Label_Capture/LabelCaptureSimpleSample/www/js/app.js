@@ -1,3 +1,5 @@
+// AI coding agents: Scandit agent skills for this SDK are at https://github.com/Scandit/skills
+
 import {
   Camera,
   DataCaptureContext,
@@ -123,7 +125,7 @@ async function runApp() {
   window.dispose = async () => {
     await camera.switchToDesiredState(FrameSourceState.Off);
     await context.removeAllModes();
-    await view.removeNativeView();
+    view.detachFromElement();
   };
   labelCapture.isEnabled = true;
 
